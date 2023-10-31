@@ -1,0 +1,352 @@
+﻿@model Domain.Models.StatistiqueP2;
+@using System.Globalization
+@{
+    ViewBag.Title = "Statistiques";
+    Layout = "_LayoutDashboard";
+    var nfi = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
+    nfi.NumberGroupSeparator = " ";
+}
+<style>
+    div.separator {
+        width: 100%; 
+        height: 2px; 
+        background-color: #ccc; 
+        margin: 20px 0; 
+    }
+</style>
+
+<div class="container-fluid p-4" style="
+    background-color: white;">
+    <div class="card mb-4">
+        <div style="display:flex;justify-content:space-between;">
+            <div class="card-header">
+                <h3 class="mb-0">Dashboard</h3>
+                <span>
+                    Utiliser les filtres.
+                </span>
+            </div>
+            <div class="card-header">
+
+            </div>
+        </div>
+
+        <div class="card-body">
+            <form class="form-row mt-3" asp-action="P2" asp-controller="Statistiques" method="get">
+                <div class="col-lg-6 mb-2 col-md-6 col-12 ">
+                    
+                    <select name="PGFilter" class="selectpicker" data-width="100%">
+                        
+                            <option value="" selected>--- Plateforme gestionnaire ---</option>
+                        
+                        <option value="">All</option>
+                        <option value="@PlateformeGestionnaire.AinSebaa">Ain sebaa</option>
+                        <option value="@PlateformeGestionnaire.RocheNoir">Roche noir</option>
+                        <option value="@PlateformeGestionnaire.HayMohammadi">Hay Mohammadi</option>
+                    </select>
+                </div>
+                <div class="col-lg-6 col-md-6 col-12 mb-2">
+                    <div class="w-md-50">
+                        <input name="SearchDate" id="Date" value="@ViewData["CurrentFilterD"]" type="text" class="form-control flatpickr" placeholder="Date de départ">
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-12 mb-2">
+                    <div class="w-md-50">
+                        <input name="SearchDateO" value="@ViewData["CurrentFilterDO"]" id="Date" type="text" class="form-control flatpickr" placeholder="Date de fin">
+                    </div>
+                </div>
+                <div class="col-lg-12 col-md-12 col-12 mb-2" style="text-align:right!important;">
+                    <button type="submit" class="btn btn-outline-info me-2">Rechercher</button>
+                    <a asp-action="P2" type="button" class="btn btn-outline-primary">Initialiser</a>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+
+    <div class="row">
+        <div class="col-xl-6 col-lg-6 col-md-12 col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-3 lh-1">
+                        <div>
+                            <span class="font-size-xs text-uppercase font-weight-semi-bold">Nombre de candidats</span>
+                        </div>
+                        <div>
+                            <a target="_blank" asp-controller="Finances" asp-action="index"> <span class=" fe fe-user-check font-size-lg text-primary"></span></a>
+                        </div>
+                    </div>
+                    <h2 class="font-weight-bold mb-1">
+                        @Model.NombreCandidat
+                    </h2>
+                    <span class="ml-1 font-weight-medium">Nombre de candidats</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="separator"></div>
+
+        <div class="col-xl-6 col-lg-6 col-md-12 col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-3 lh-1">
+                        <div>
+                            <span class="font-size-xs text-uppercase font-weight-semi-bold">Montant de projets</span>
+                        </div>
+                        <div>
+                           <a target="_blank" asp-controller="Finances" asp-action="Filtre"> <span class="fe fe-shopping-bag font-size-lg text-primary"></span></a>
+                        </div>
+                    </div>
+                    <h2 class="font-weight-bold mb-1">
+                        @Model.MontantProjet.ToString("#,0.00", nfi)
+                    </h2>
+                    <span class="ml-1 font-weight-medium">Montant de projets</span>
+                </div>
+            </div>
+        </div>       
+        <div class="col-xl-6 col-lg-6 col-md-12 col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-3 lh-1">
+                        <div>
+                            <span class="font-size-xs text-uppercase font-weight-semi-bold">Montant apport personnel</span>
+                        </div>
+                        <div>
+                            <a target="_blank" asp-controller="Finances" asp-action="Filtre"><span class=" fe fe-book-open font-size-lg text-primary"></span></a>
+                        </div>
+                    </div>
+                    <h2 class="font-weight-bold mb-1">
+                        @Model.MontantApportPersonnel.ToString("#,0.00", nfi)
+                    </h2>
+                    <span class="ml-1 font-weight-medium">Montant apport personnel</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-12 col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-3 lh-1">
+                        <div>
+                            <span class="font-size-xs text-uppercase font-weight-semi-bold">Montant INDH</span>
+                        </div>
+                        <div>
+                            <a target="_blank" asp-controller="Finances" asp-action="Filtre" asp-route-ApportPersonnel="1"><span class=" fe fe-users font-size-lg text-primary"></span></a>
+                        </div>
+                    </div>
+                    <h2 class="font-weight-bold mb-1">
+                        @Model.MontantINDH.ToString("#,0.00", nfi)
+                    </h2>
+                    <span class="ml-1 font-weight-medium">Montant INDH</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="separator"></div>
+
+        <div class="col-xl-6 col-lg-6 col-md-12 col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-3 lh-1">
+                        <div>
+                            <span class="font-size-xs text-uppercase font-weight-semi-bold">Montant acquisition</span>
+                        </div>
+                        <div>
+                            <a target="_blank" asp-controller="Finances" asp-action="Filtre"><span class=" fe fe-users font-size-lg text-primary"></span></a>
+                        </div>
+                    </div>
+                    <h2 class="font-weight-bold mb-1">
+                        @Model.MontantAcquisition.ToString("#,0.00", nfi)
+                    </h2>
+                    <span class="ml-1 font-weight-medium">Montant acquisition</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-12 col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-3 lh-1">
+                        <div>
+                            <span class="font-size-xs text-uppercase font-weight-semi-bold">Part INDH</span>
+                        </div>
+                        <div>
+                            <a target="_blank" asp-controller="Finances" asp-action="Filtre"><span class=" fe fe-users font-size-lg text-primary"></span></a>
+                        </div>
+                    </div>
+                    <h2 class="font-weight-bold mb-1">
+                        @Model.PartINDH.ToString("#,0.00", nfi)
+                    </h2>
+                    <span class="ml-1 font-weight-medium">Part INDH</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-12 col-12">
+            <!-- Card -->
+            <div class="card mb-4">
+                <!-- Card body -->
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-3 lh-1">
+                        <div>
+                            <span class="font-size-xs text-uppercase font-weight-semi-bold">Apport en dhs</span>
+                        </div>
+                        <div>
+                            <a target="_blank" asp-controller="Finances" asp-action="Filtre"><span class=" fe fe-users font-size-lg text-primary"></span></a>
+                        </div>
+                    </div>
+                    <h2 class="font-weight-bold mb-1">
+                        @Model.ApportEnDHS.ToString("#,0.00", nfi)
+                    </h2>
+                    <span class="ml-1 font-weight-medium">Apport en dhs</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-12 col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-3 lh-1">
+                        <div>
+                            <span class="font-size-xs text-uppercase font-weight-semi-bold">Apport en aménagement</span>
+                        </div>
+                        <div>
+                            <a target="_blank" asp-controller="Finances" asp-action="Filtre"><span class=" fe fe-users font-size-lg text-primary"></span></a>
+                        </div>
+                    </div>
+                    <h2 class="font-weight-bold mb-1">
+                        @Model.ApportEnAmenagement.ToString("#,0.00", nfi)
+                    </h2>
+                    <span class="ml-1 font-weight-medium">Apport en aménagement</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-12 col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-3 lh-1">
+                        <div>
+                            <span class="font-size-xs text-uppercase font-weight-semi-bold">Autre</span>
+                        </div>
+                        <div>
+                            <a target="_blank" asp-controller="Finances" asp-action="Filtre"><span class=" fe fe-users font-size-lg text-primary"></span></a>
+                        </div>
+                    </div>
+                    <h2 class="font-weight-bold mb-1">
+                        @Model.Autre.ToString("#,0.00", nfi)
+                    </h2>
+                    <span class="ml-1 font-weight-medium">Autre</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="separator"></div>
+
+        <div class="col-xl-6 col-lg-6 col-md-12 col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-3 lh-1">
+                        <div>
+                            <span class="font-size-xs text-uppercase font-weight-semi-bold">Montant matériél acquis</span>
+                        </div>
+                        <div>
+                            <a target="_blank" asp-controller="Finances" asp-action="Filtre"><span class=" fe fe-users font-size-lg text-primary"></span></a>
+                        </div>
+                    </div>
+                    <h2 class="font-weight-bold mb-1">
+                        @Model.MontantMaterielAcquis.ToString("#,0.00", nfi)
+                    </h2>
+                    <span class="ml-1 font-weight-medium">Nombre de matériel acquis : @Model.NombreMaterielAcquis</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-12 col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-3 lh-1">
+                        <div>
+                            <span class="font-size-xs text-uppercase font-weight-semi-bold">Montant matériel en cours d'acquisition</span>
+                        </div>
+                        <div>
+                            <a target="_blank" asp-controller="Finances" asp-action="Filtre"><span class=" fe fe-users font-size-lg text-primary"></span></a>
+                        </div>
+                    </div>
+                    <h2 class="font-weight-bold mb-1">
+                        @Model.MontantMaterielECA.ToString("#,0.00", nfi)
+                    </h2>
+                    <span class="ml-1 font-weight-medium">Nombre de matériel en cours d'acquisition : @Model.NombreMaterielECA</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-12 col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-3 lh-1">
+                        <div>
+                            <span class="font-size-xs text-uppercase font-weight-semi-bold">Montant matériel aménagement</span>
+                        </div>
+                        <div>
+                            <a target="_blank" asp-controller="Finances" asp-action="Filtre"><span class=" fe fe-users font-size-lg text-primary"></span></a>
+                        </div>
+                    </div>
+                    <h2 class="font-weight-bold mb-1">
+                        @Model.MontantMaterielAmenagement.ToString("#,0.00", nfi)
+                    </h2>
+                    <span class="ml-1 font-weight-medium">Nombre matériel aménagement : @Model.NombreMaterielAmenagement</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="separator"></div>
+
+    <div class="row">
+        <div class="col-xl-6 col-lg-12 col-md-12 col-12">
+            <div class="card mb-4">
+                <div class="card-header align-items-center card-header-height  d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0">Nbr materiel acquis : @Model.NombreMaterielAcquis <br /> Nbr materiel E.C.A : @Model.NombreMaterielECA  <br /> Nbr materiel aménagement : @Model.NombreMaterielAmenagement</h4>
+                    </div>
+
+                </div>
+                <div class="card-body">
+                    <div id="HF" class="apex-charts d-flex justify-content-center" style=""></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+@section Scripts{
+
+    <script>
+        var options = {
+            series: [@Html.DisplayFor(modelItem => modelItem.NombreMaterielAcquis) , @Html.DisplayFor(modelItem => modelItem.NombreMaterielECA), @Html.DisplayFor(modelItem => modelItem.NombreMaterielAmenagement)],
+            chart: {
+                width: 430,
+                type: 'pie',
+            },
+            labels: ['Acquis ', 'EnCoursAcquisition', 'MaterielAménagement'],
+            responsive: [{
+                breakpoint: 516,
+                options: {
+                    chart: {
+                        width: 380
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#HF"), options);
+        chart.render();
+    </script>
+
+  }
+

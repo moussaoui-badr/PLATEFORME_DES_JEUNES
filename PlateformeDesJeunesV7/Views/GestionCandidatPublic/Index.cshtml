@@ -1,0 +1,283 @@
+﻿@model PaginatedList<Client>
+
+@{
+    Layout = "_LayoutDashboard";
+}
+<style>
+    .disabled {
+    }
+</style>
+<div class="card mb-4">
+    <div style="display:flex;justify-content:space-between;">
+        <div class="card-header">
+            <h3 class="mb-0">Validation candidat public</h3>
+            <span>
+                Utiliser les filtres pour rechercher vos candidats.
+            </span>
+        </div>
+        <div class="card-header">
+            @*<a type="button" class="btn btn-info" asp-action="Create">Ajouter un candidat</a>*@
+        </div>
+    </div>
+    <!-- Card header -->
+    <!-- Card body -->
+    <div class="card-body">
+        <!-- Form -->
+        <form class="form-row" asp-action="Index" asp-controller="GestionCandidatPublic" method="get">
+            <div class="col-lg-6 mb-2 col-md-6 col-12 ">
+                <input name="SearchNom" id="Nom" value="@ViewData["CurrentFilterN"]" type="search" class="form-control" placeholder="Nom" />
+            </div>
+
+            <div class="col-lg-6 mb-2 col-md-6 col-12  ">
+                <input name="SearchCIN" id="CIN" value="@ViewData["CINSortParm"]" type="search" class="form-control" placeholder="CIN" />
+            </div>
+            <div class="col-lg-6 mb-2 col-md-6 col-12 ">
+
+                <select name="OrientationFilter" value="@ViewData["OrientationSortParm"]" class="selectpicker" data-width="100%">
+                    <option disabled selected>--- Orientation ---</option>
+                    <option>Oui</option>
+                    <option>Non</option>
+                </select>
+
+            </div>
+            <div class="col-lg-6 mb-2 col-md-6 col-12 ">
+
+                @if (User.IsInRole("HeureJoyeuse"))
+                {
+                    <select name="SearchStatut" value="@ViewData["StatutSortParm"]" class="selectpicker" data-width="100%">
+                        <option disabled selected>--- Statut ---</option>
+                        <option value="0">Porteur de projet</option>
+                        @*<option value="1">Chercheur d'emploit</option>*@
+                    </select>
+                }
+                else if (User.IsInRole("Amideast"))
+                {
+                    <select name="SearchStatut" value="@ViewData["StatutSortParm"]" class="selectpicker" data-width="100%">
+                        <option disabled selected>--- Statut ---</option>
+                        @*<option value="0">Porteur de projet</option>*@
+                        <option value="1">Chercheur d'emploit</option>
+                    </select>
+                }
+                else
+                {
+                    <select name="SearchStatut" value="@ViewData["StatutSortParm"]" class="selectpicker" data-width="100%">
+                        <option disabled selected>--- Statut ---</option>
+                        <option value="0">Porteur de projet</option>
+                        <option value="1">Chercheur d'emploit</option>
+                    </select>
+                }
+
+
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-12 mb-2">
+                <div class="w-md-50">
+                    <input name="SearchDate" id="Date" value="@ViewData["CurrentFilterD"]" type="text" class="form-control flatpickr" placeholder="Date de départ">
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-12 mb-2">
+                <div class="w-md-50">
+                    <input name="SearchDateO" value="@ViewData["CurrentFilterDO"]" id="Date" type="text" class="form-control flatpickr" placeholder="Date de fin">
+                </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-12 mb-2" style="text-align:right!important;">
+                <button type="submit" class="btn btn-outline-info me-2">Rechercher</button>
+                <a asp-action="Index" type="button" class="btn btn-outline-primary">Initialiser</a>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+@if (Model != null)
+{
+    <!-- Table -->
+    <div class="table-responsive border-0 overflow-y-hidden card-body">
+        <table class="table mb-0 text-nowrap">
+            <thead>
+                <tr>
+                    <th scope="col" class="border-0">Profil</th>
+                    <th scope="col" class="border-0">Date d'adhèration</th>
+
+                    <th>
+                        Validation
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr id="ctn_@item.ClientID">
+                        <td class="border-top-0">
+                            <div class="d-lg-flex">
+                                <div>
+                                    <a href="#!">
+
+                                        <img src="~/uploads/@item.ImageUrl" alt="" class="rounded img-4by3-lg" style="width:70px;height:48px;" />
+                                        
+                                    </a>
+                                </div>
+                                <div class="ml-lg-3 mt-2 mt-lg-0">
+                                    <h4 class="mb-1 h5">
+                                        <a asp-controller="GestionCandidatPublic" asp-action="Details" asp-route-id="@item.ClientID" class="text-inherit">
+                                            <span style="margin-right:5px;">@item.Nom</span><span>@item.Prenom</span>
+                                        </a>
+                                    </h4>
+                                    <ul class="list-inline font-size-xs mb-0">
+                                        <li class="list-inline-item">
+                                            <i class="fas fa-address-card mr-1"></i>@item.CIN
+                                        </li>
+                                        <li class="list-inline-item">
+                                            <i class="fas fa-briefcase mr-1"></i>
+                                            @if (item.Statut == Statut.ChercheurEmploit)
+                                            {
+                                                <span>Chercheur d'emploit</span>
+                                            }
+                                            else
+                                            {
+                                                <span>Porteur de projet</span>
+                                            }
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="border-top-0">
+                            @if (item.DateAderation != null)
+                            {
+                                <span>@String.Format("{0:M/d/yyyy}", item.DateAderation)</span>
+                            }
+                            else
+                            {
+                                <span>___________</span>
+                            }
+                        </td>
+
+
+
+                        <td data-label="Orientation" style="display:flex;flex-direction:row;justify-content:space-around;">
+                            @if (User.IsInRole("Admin") || User.IsInRole("Gestionnaire"))
+                            {
+
+                                <div class="custom-control custom-checkbox" style="padding-left:10px;">
+                                    <input type="checkbox" class="custom-control-input" onclick="AffectationInscription(@item.ClientID);" id="@item.ClientID">
+                                    <label class="custom-control-label" for="@item.ClientID"></label>
+                                </div>
+                                <div>
+
+                                    <span class="dropdown">
+                                        <a class="text-muted text-decoration-none" href="#!" role="button" id="courseDropdown"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fe fe-more-vertical"></i>
+                                        </a>
+                                        <span class="dropdown-menu" aria-labelledby="courseDropdown">
+                                            <span class="dropdown-header">PARAMÈTRE </span>
+
+                                            <a style="cursor:pointer;" class="dropdown-item" id="@item.ClientID" onclick="confirm(this)"><i class="fe fe-trash dropdown-item-icon"></i>Supprimer</a>
+                                        </span>
+                                    </span>
+
+                                </div>
+
+                            }
+                            else
+                            {
+                                    <div class="custom-control custom-checkbox">
+                                        <input disabled type="checkbox" class="custom-control-input" onclick="AffectationInscription(this,  @item.ClientID);" id="@item.ClientID">
+                                        <label class="custom-control-label" for="@item.ClientID"></label>
+                                    </div>
+                            }
+
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+
+        @{
+            var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+
+                            <nav aria-label="Page navigation example" style="margin-right:30px!important;">
+                                <ul class="pagination justify-content-end ">
+                                    @if (prevDisabled == "disabled")
+                    {
+
+                    }
+                    else
+                    {
+                                        <li class="page-item">
+                                            <a class="page-link @prevDisabled" asp-controller="GestionCandidatPublic" asp-action="Index"
+                   asp-route-pageNumber="@(Model.PageIndex - 1)"
+                   asp-route-SearchNom="@ViewData["CurrentFilterN"]"
+                   asp-route-SearchPrenom="@ViewData["CurrentFilterP"]"
+                   asp-route-SearchDate="@ViewData["CurrentFilterD"]"
+                   asp-route-SearchCIN="@ViewData["CINSortParm"]"
+                   asp-route-SearchStatut="@ViewData["StatutSortParm"]"
+                   asp-route-OrientationFilter="@ViewData["OrientationSortParm"]" aria-label="Précédent">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+                    }
+
+       
+                                    @if (nextDisabled == "disabled")
+                    {
+
+                    }
+                    else
+                    {
+                                        <li class="page-item">
+                                            <a class="page-link @nextDisabled" asp-controller="GestionCandidatPublic" asp-action="Index"
+                   asp-route-pageNumber="@(Model.PageIndex + 1)"
+                   asp-route-SearchNom="@ViewData["CurrentFilterN"]"
+                   asp-route-SearchPrenom="@ViewData["CurrentFilterP"]"
+                   asp-route-SearchDate="@ViewData["CurrentFilterD"]"
+                   asp-route-SearchCIN="@ViewData["CINSortParm"]"
+                   asp-route-SearchStatut="@ViewData["StatutSortParm"]"
+                   asp-route-OrientationFilter="@ViewData["OrientationSortParm"]" aria-label="Suivant">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                    }
+
+                                </ul>
+                            </nav>
+        }
+    </div>
+
+}
+@section Scripts {
+
+    <script type="text/javascript">
+        function AffectationInscription(idCandidat) {
+            val1 = idCandidat;
+                $.ajax({
+            type: "POST",
+            url: "@Url.Action("Valider")",
+            data: {ID: idCandidat},
+            dataType: "text",
+            success: function (msg) {
+                $("#ctn_" + val1).remove();
+                alertify.success('Affectation enregistré');
+            },
+            error: function (req, status, error) {
+                alertify.error('Une erreur est survenu');
+            }
+        });
+
+        }
+        function confirm(idButton) {
+            var pageURL = $(location).attr("href");
+            alertify.confirm('Confirmation de suppression', 'Est-te vous sûr de vouloir supprimer cet candidat ainsi que les documents, diplomes qui lui sont relié ?', function() { window.location.replace("@(Url.Action("Delete"))" + "/" + idButton.id) }
+                , function() { /*alertify.error('Cancel')*/ });
+        }
+
+        $(document).ready(function() {
+
+        });
+    </script>
+}

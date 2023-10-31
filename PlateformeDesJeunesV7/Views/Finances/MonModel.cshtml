@@ -1,0 +1,176 @@
+﻿@model ClientFinance
+@{
+    Layout = "";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <title>@Model.Nom @Model.Prenom</title>
+    <style type="text/css">
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td:nth-of-type(odd) {
+            background: #eee;
+        }
+
+        th {
+            background: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+
+        td, th {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+            font-size: 15px;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        }
+        .email--inner-container {
+            padding-left: 20vh;
+            padding-right: 20vh;
+        }
+
+        .alert {
+            padding: 20px;
+            background-color: #f44336;
+            color: white;
+            opacity: 1;
+            transition: opacity 0.6s;
+            margin-bottom: 15px;
+        }
+
+            .alert.success {
+                background-color: #04AA6D;
+            }
+
+            .alert.info {
+                background-color: #2196F3;
+            }
+
+            .alert.warning {
+                background-color: #eee;
+            }
+
+        .badge {
+            /* Center the content */
+            align-items: center;
+            display: flex;
+            justify-content: center;
+            /* Colors */
+            color: #000080;
+            
+        }
+    </style>
+</head>
+<body class="body">
+    <header>
+        <h1 class="badge" style="text-align:center;font-style: italic;">@Model.Nom @Model.Prenom</h1>
+    </header>
+
+    <div class="email--background">
+        <div class="email--container">
+            <div class="email--inner-container" style="margin-bottom: 10vh;">
+                <div id="logo" style="text-align: center;">
+                    <img style="width: 150px; height: 150px;" src="~/Uploads/@(Model.ImageUrl)">
+                </div>
+                <table style="border-collapse: collapse; width: 100%;">
+                    <tbody>
+                        <tr>
+                            <td style="width: 50%;"><strong>Nom:</strong> @Model.Nom</td>
+                            <td style="width: 50%;"><strong>Prénom:</strong> @Model.Prenom</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 50%;"><strong>Date de naissance:</strong> @Model.DateNaissance.ToString("yyyy-MM-dd")</td>
+                            <td style="width: 50%;"><strong>CIN:</strong> @Model.CIN</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 50%;"><strong>Adresse:</strong> @Model.Adresse</td>
+                            <td style="width: 50%;"><strong>Date de reception:</strong> @(Model.DateAderation?.ToString("yyyy-MM-dd"))</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 50%;"><strong>Sexe:</strong> @Model.Sexe</td>
+                            <td style="width: 50%;"><strong>Email:</strong> @Model.Email</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 50%;"><strong>Plateforme gestionnaire:</strong> @Model.PlateformeGestionnaire</td>
+                            <td style="width: 50%;"><strong>Montant du projet:</strong> @Model.MontantProjet.ToString("#,0.00")</td>
+                        </tr>
+
+                        <tr>
+                            <td style="width: 50%;"><strong>Montant reste a réaliser:</strong> @Math.Abs(Model.MontantProjet - (Model.INDHS.Select(m => m.MontantAcquisition).Sum())).ToString("#,0.00")</td>
+                            <td style="width: 50%;"><strong>Montant apport personnel:</strong> @Model.MontantApportPersonnel</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 50%;"><strong>Montant INDH:</strong> @Model.MontantINDH.ToString("#,0.00")</td>
+                            <td style="width: 50%;"><strong>Apport personnel confimé:</strong> @(Model.ApportPersonnelConfirme ? "Oui" : "Non")</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <br />
+            <!--Partie 2-->
+
+            <div class="email--inner-container">
+                <div id="logo" style="text-align:center;">
+                    <h1 style="text-align:center;color:#000080;font-style: italic;">Matériels :</h1>
+                </div>
+                @if (Model.INDHS.Any())
+                {
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Materiel</th>
+                                <td>Part INDH</td>
+                                <th>Apport en DH</th>
+                                <th>Apport en amenagement</th>
+                                <th>Autre</th>
+                                <th>Montant acquisition</th>
+                                <th>Etat</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.INDHS)
+                            {
+                                <tr>
+                                    <td>@item.Materiel</td>
+                                    <td>@item.PartIndh.ToString("#,0.00")</td>
+                                    <td>@item.ApportEnDhs.ToString("#,0.00")</td>
+                                    <td>@item.ApportEnAmenagement.ToString("#,0.00")</td>
+                                    <td>@item.Autre.ToString("#,0.00")</td>
+                                    <td>@item.MontantAcquisition.ToString("#,0.00")</td>
+                                    <td>
+                                        @if (item.Etat == Etat.EnCoursAcquisition)
+                                        {
+                                            <span>En cours d'acquisition</span>
+                                        }
+                                        else
+                                        {
+                                            @Html.DisplayFor(modelItem => item.Etat)
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="alert warning" style="color:black">
+                        Aucun matériel trouvé...
+                    </div>
+                }
+            </div>
+
+
+            <br />
+
+        </div>
+    </div>
+</body>
+</html>

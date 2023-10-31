@@ -1,0 +1,262 @@
+﻿@using Domain.Models
+@model PaginatedList<Domain.Entities.Client>
+
+@{
+    Layout = "_LayoutDashboard";
+}
+<style>
+    .disabled {
+    }
+</style>
+<div class="card mb-4">
+    <div style="display:flex;justify-content:space-between; margin-top:80px;">
+        <div class="card-header">
+            <h3 class="mb-0">Affectation de la formation : @ViewData["Theme"]</h3>
+            <span>
+                Utiliser les filtres pour rechercher vos candidats.
+            </span>
+        </div>
+        <div class="card-header">
+            @*<a type="button" class="btn btn-info" asp-action="Create">Ajouter un candidat</a>*@
+        </div>
+    </div>
+    <!-- Card header -->
+    <!-- Card body -->
+    <div class="card-body">
+        <!-- Form -->
+        <form asp-route-Theme="@ViewData["Theme"]" asp-route-FormationID="@ViewData["FormationID"]"  class="form-row" asp-action="Candidats" asp-controller="Formations"  method="get">
+            <div class="col-lg-6 mb-2 col-md-6 col-12 ">
+                <input name="SearchNom" id="Nom" value="@ViewData["CurrentFilterN"]" type="search" class="form-control" placeholder="Nom" />
+            </div>
+
+            <div class="col-lg-6 mb-2 col-md-6 col-12  ">
+                <input name="SearchCIN" id="CIN" value="@ViewData["CINSortParm"]" type="search" class="form-control" placeholder="CIN" />
+            </div>
+            <div class="col-lg-6 mb-2 col-md-6 col-12 ">
+
+                <select name="OrientationFilter" value="@ViewData["OrientationSortParm"]" class="selectpicker" data-width="100%">
+                    <option disabled selected>--- Orientation ---</option>
+                    <option>Oui</option>
+                    <option>Non</option>
+                </select>
+
+            </div>
+            <div class="col-lg-6 mb-2 col-md-6 col-12 ">
+
+                @if (User.IsInRole("HeureJoyeuse"))
+                {
+                    <select name="SearchStatut" value="@ViewData["StatutSortParm"]" class="selectpicker" data-width="100%">
+                    <option disabled selected>--- Statut ---</option>
+                    <option value="0">Porteur de projet</option>
+                    @*<option value="1">Chercheur d'emploit</option>*@
+                </select>
+                }
+                else if (User.IsInRole("Amideast"))
+                {
+                    <select name="SearchStatut" value="@ViewData["StatutSortParm"]" class="selectpicker" data-width="100%">
+                    <option disabled selected>--- Statut ---</option>
+                    @*<option value="0">Porteur de projet</option>*@
+                    <option value="1">Chercheur d'emploit</option>
+                    </select>
+                }
+                else
+                {
+                    <select name="SearchStatut" value="@ViewData["StatutSortParm"]" class="selectpicker" data-width="100%">
+                    <option disabled selected>--- Statut ---</option>
+                    <option value="0">Porteur de projet</option>
+                    <option value="1">Chercheur d'emploit</option>
+                </select>
+                }
+
+
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-12 mb-2">
+                <div class="w-md-50">
+                    <input name="SearchDate" id="Date" value="@ViewData["CurrentFilterD"]" type="text" class="form-control flatpickr" placeholder="Date de départ">
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-12 mb-2">
+                <div class="w-md-50">
+                    <input name="SearchDateO" value="@ViewData["CurrentFilterDO"]" id="Date" type="text" class="form-control flatpickr" placeholder="Date de fin">
+                </div>
+            </div>
+            <input style="display:none;" name="FormationID" class="form-control" type="text" value="@ViewData["FormationID"]">
+            <input style="display:none;" name="Theme" class="form-control" type="text" value="@ViewData["Theme"]">
+            <div class="col-lg-12 col-md-12 col-12 mb-2" style="text-align:right!important;">
+                <button asp-route-Theme="@ViewData["Theme"]" asp-route-FormationID="@ViewData["FormationID"]" type="submit" class="btn btn-outline-info me-2">Rechercher</button>
+                <a asp-route-Theme="@ViewData["Theme"]" asp-route-FormationID="@ViewData["FormationID"]" asp-action="Candidats" asp-controller="Formations" type="button" class="btn btn-outline-primary">Initialiser</a>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+    <!-- Table -->
+    <div class="table-responsive border-0 overflow-y-hidden card-body">
+        <table class="table mb-0 text-nowrap">
+            <thead>
+                <tr>
+                    <tr>
+            <th>
+                Profil
+            </th>
+
+            <th>
+                Nom
+            </th>
+            <th>
+                Prénom
+            </th>
+            <th>
+                Date d'hadèration'
+            </th>
+            <th>
+                CIN
+            </th>
+            <th>
+                Statut
+            </th>
+
+
+            <th>Affectation</th>
+                </tr>
+            </thead>
+            <tbody>
+                        @foreach (var item in Model)
+        {
+                <tr>
+                    <td data-label="Profil">
+                        <img src="~/Uploads/@item.ImageUrl" class="rounded-circle" alt="100x100" style="width:50px; height:50px;">
+                    </td>
+                    <td data-label="Nom">
+                    @Html.DisplayFor(modelItem => item.Nom)
+                    </td>
+                    <td data-label="Prénom">
+                    @Html.DisplayFor(modelItem => item.Prenom)
+                    </td>
+                    <td data-label="Date d'adèration'">
+                    @Html.DisplayFor(modelItem => item.DateAderation)
+                    </td>
+                    <td data-label="CIN"> 
+                    @Html.DisplayFor(modelItem => item.CIN)
+                    </td>
+                    <td data-label="Statut"> 
+                    @if (item.Statut == Statut.ChercheurEmploit)
+                    {
+                                    <span>Chercheur d'emploit</span>
+                    }
+                    else
+                    {
+                                    <span>Porteur de projet</span>
+                    }
+                    </td>
+                @{
+                    var Insc = 0;
+                }
+                @if (!item.InscriptionFormation.Any())
+                {
+                            <td data-label="Affectation">
+                                <input class="form-check-input" id="affectation" type="checkbox" onclick="Affectation(this, @ViewData["FormationID"], @item.ClientID);" id="@item.ClientID"><label class="form-check-label" for="@item.ClientID">Affecter</label>
+                            </td>
+                }
+                else
+                {
+
+                    foreach (var inscris in item.InscriptionFormation)
+                    {
+                        @if (inscris.FormationID.ToString() == ViewData["FormationID"].ToString())
+                        {
+                                            <td data-label="Affectation">
+                                                <input class="form-check-input"  type="checkbox" checked onclick="Affectation(this, @ViewData["FormationID"], @item.ClientID);" id="@item.ClientID"><label class="form-check-label" for="@item.ClientID">Affecter</label>
+                                            </td>
+
+                            Insc = 1;
+                        }
+                    }
+                    @if (Insc != 1)
+                    {
+                                    <td data-label="Affectation">
+                                        <input class="form-check-input"  type="checkbox" onclick="Affectation(this, @ViewData["FormationID"], @item.ClientID);" id="@item.ClientID"><label class="form-check-label" for="@item.ClientID">Affecter</label>
+                                    </td>
+                    }
+                }
+
+                </tr>
+            Insc = 0;
+        }
+            </tbody>
+        </table>
+        </div>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="AffectationFormation"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-SearchNom="@ViewData["CurrentFilterN"]"
+   asp-route-SearchPrenom="@ViewData["CurrentFilterP"]"
+   asp-route-SearchDate="@ViewData["CurrentFilterD"]"
+   asp-route-FormationID="@ViewData["FormationID"]"
+   asp-route-SearchCIN="@ViewData["CINSortParm"]"
+   asp-route-SearchStatut="@ViewData["StatutSortParm"]"
+   asp-route-OrientationFilter="@ViewData["OrientationSortParm"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="AffectationFormation"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-SearchNom="@ViewData["CurrentFilterN"]"
+   asp-route-SearchPrenom="@ViewData["CurrentFilterP"]"
+   asp-route-SearchDate="@ViewData["CurrentFilterD"]"
+   asp-route-FormationID="@ViewData["FormationID"]"
+   asp-route-SearchCIN="@ViewData["CINSortParm"]"
+   asp-route-SearchStatut="@ViewData["StatutSortParm"]"
+   asp-route-OrientationFilter="@ViewData["OrientationSortParm"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
+
+@section Scripts {
+
+<script type="text/javascript">
+      function Affectation(cocher, idFormation, idCandidat){
+          val1 = idFormation;
+          val2 = idCandidat;
+      if(cocher.checked){
+          $.ajax({
+              type: "GET",
+              url: "@Url.Action("EditAffectation")",
+              data: {formationId: val1, clientId: val2, valide: true},
+              dataType: "text",
+              success: function (msg) {
+                  alertify.success('Affectation enregistré');
+              },
+              error: function (req, status, error) {
+                  alertify.error('Une erreur est survenu');
+              }
+          });
+      }
+      else{
+          $.ajax({
+              type: "GET",
+              url: "@Url.Action("EditAffectation")",
+              data: {formationId: val1, clientId: val2, valide: false},
+              dataType: "text",
+              success: function (msg) {
+                  alertify.success('Affectation retité');
+              },
+              error: function (req, status, error) {
+                  alertify.error('Une erreur est survenu');
+              }
+          });
+      }
+      }
+
+      $(document).ready(function () {
+
+      });
+</script>
+}

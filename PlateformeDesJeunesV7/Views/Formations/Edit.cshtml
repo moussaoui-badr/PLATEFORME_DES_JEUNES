@@ -1,0 +1,65 @@
+﻿@model Domain.Entities.Formation
+
+@{
+    Layout = "_LayoutDashboard";
+}
+
+<div class="card mb-4">
+    <div style="display:flex;justify-content:space-between;">
+        <div class="card-header">
+            <h3 class="mb-0">Modifier la formation @Model.Theme</h3>
+            <span>
+                Utiliser les filtres pour rechercher vos candidats.
+            </span>
+        </div>
+        <div class="card-header">
+            
+        </div>
+    </div>
+    <div class="card-body">
+
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="FormationID" />
+            <div class="form-group">
+                <div class="w-md-50">
+                    <label class="control-label"><strong>Date de la formation</strong></label>
+                    <input asp-for="DateFormation" id="Date" type="text" class="form-control flatpickr" placeholder="Date de formation">
+                </div>
+                
+                <span asp-validation-for="DateFormation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <strong><label asp-for="DureeFormation" class="control-label"></label></strong>
+                <input asp-for="DureeFormation" class="form-control" />
+                <span asp-validation-for="DureeFormation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <strong><label asp-for="Theme" class="control-label"></label></strong>
+                <input asp-for="Theme" class="form-control" />
+                <span asp-validation-for="Theme" class="text-danger"></span>
+            </div>
+             <div class="form-group">
+                <strong><label asp-for="Animateur" class="control-label"></label></strong>
+                <input asp-for="Animateur" class="form-control" />
+                <span asp-validation-for="Animateur" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Envoyer" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-controller="Formations" asp-action="Index">Retour</a>
+</div>
+
+</div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

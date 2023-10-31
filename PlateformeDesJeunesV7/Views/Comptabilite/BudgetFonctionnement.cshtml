@@ -1,0 +1,102 @@
+﻿@model List<Domain.Entities.BudgetFonctionnement>
+@using System.Globalization
+@{
+    Layout = "_LayoutDashboard";
+    var nfi = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
+    nfi.NumberGroupSeparator = " ";
+}
+
+<style>
+    .disabled {
+    }
+</style>
+
+<div class="card mb-4">
+    <div style="display:flex;justify-content:space-between;">
+        <div class="card-header">
+            <h3 class="mb-0">Budgets de Fonctionnement</h3>
+            <span>
+                Utilisez les filtres pour rechercher vos budgets de fonctionnement.
+            </span>
+        </div>
+        <div class="card-header">
+            <a type="button" class="btn btn-info" asp-action="AddBudgetFonctionnement">Ajouter un budget de fonctionnement</a>
+        </div>
+    </div>
+    <!-- Card header -->
+    <!-- Card body -->
+    <div class="card-body mt-3">
+        <!-- Form de recherche -->
+        <form class="form-row" asp-action="BudgetFonctionnement" asp-controller="Comptabilite" method="get">
+            <div class="col-lg-4 col-md-4 col-12 mb-2">
+                <input name="DateBudget" value="@ViewData["DateBudget"]" type="text" class="form-control flatpickr" placeholder="Date du Budget" />
+            </div>
+            <div class="col-lg-4 col-md-4 col-12 mb-2">
+                <input name="Emetteur" value="@ViewData["Emetteur"]" type="text" class="form-control" placeholder="Émetteur du Budget" />
+            </div>
+            <div class="col-lg-4 col-md-4 col-12 mb-2">
+                <input name="NumeroCheque" value="@ViewData["NumeroCheque"]" type="text" class="form-control" placeholder="Numéro de Chèque" />
+            </div>
+            <div class="col-lg-12 col-md-12 col-12 mb-2">
+                <button type="submit" class="btn btn-outline-info me-2">Rechercher</button>
+                <a asp-action="BudgetFonctionnement" asp-controller="Comptabilite" type="button" class="btn btn-outline-primary">Réinitialiser</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (Model != null && Model.Any())
+{
+    <!-- Tableau de données -->
+    <div class="table-responsive border-0 overflow-y-hidden card-body">
+        <table class="table mb-0 text-nowrap">
+            <thead>
+                <tr>
+                    <th scope="col" class="border-0">ID</th>
+                    <th scope="col" class="border-0">Date du Budget</th>
+                    <th scope="col" class="border-0">Montant du Budget</th>
+                    <th scope="col" class="border-0">Émetteur du Budget</th>
+                    <th scope="col" class="border-0">Numéro de Chèque</th>
+                    <th scope="col" class="border-0">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var budget in Model)
+                {
+                    <tr>
+                        <td class="border-top-0">@budget.BudgetFonctionnementID</td>
+                        <td class="border-top-0">@budget.DateBudget.ToString("MM/dd/yyyy")</td>
+                        <td class="border-top-0">@budget.MontantBudget.ToString("#,##0.00", nfi)</td>
+                        <td class="border-top-0">@budget.EmetteurBudget</td>
+                        <td class="border-top-0">@budget.NuméroCheque</td>
+                        <td class="border-top-0">
+                            <a asp-action="UpdateBudgetFonctionnement" asp-route-id="@budget.BudgetFonctionnementID">
+                                <i class="fe fe-edit dropdown-item-icon"></i>
+                            </a>
+                            <a style="cursor:pointer;" id="@budget.BudgetFonctionnementID" onclick="confirmDelete(this)">
+                                <i class="fe fe-trash dropdown-item-icon"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <p>Aucun budget de fonctionnement n'a été enregistré.</p>
+}
+
+@section Scripts {
+    <script>
+        function confirmDelete(button) {
+            var budgetID = button.id;
+            alertify.confirm('Confirmation de suppression', 'Êtes-vous sûr de vouloir supprimer ce budget de fonctionnement ?', function () {
+                window.location.href = '@Url.Action("RemoveBudgetFonctionnement", "Comptabilite")' + '/' + budgetID;
+            }, function () {
+                // Annuler la suppression
+            });
+        }
+    </script>
+}

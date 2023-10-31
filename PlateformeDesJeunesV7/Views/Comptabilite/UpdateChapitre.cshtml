@@ -1,0 +1,73 @@
+﻿@model Chapitre
+
+@{
+    ViewData["Title"] = "Chapitre";
+}
+
+@{
+    Layout = "_LayoutDashboard";
+}
+
+<div class="card mb-4">
+    <div style="display:flex;justify-content:space-between;">
+        <div class="card-header">
+            <h3 class="mb-0">Modification Chapitre</h3>
+            <span>
+                Saisir les informations ci dessous.
+            </span>
+        </div>
+        <div class="card-header">
+        </div>
+    </div>
+    <!-- Card header -->
+    <!-- Card body -->
+    <div class="card-body" style="margin-top:20px;">
+        <form id="FormChapitre" method="post" asp-action="UpdateChapitreAsync" class="col-xl-6 col-lg-6 col-md-6 col-12 mb-2" style="margin-top:20px;margin:auto;">
+            <input asp-for="ChapitreID" class="form-control" style="display:none;"/>
+            <div class="form-group">
+                <label class="control-label">Chapitre</label>
+                <input asp-for="ChapitreTitle" class="form-control" value="@Model.ChapitreTitle"/>
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Montant totale</label>
+                <input asp-for="MontantTotale" class="form-control" value="@Model.MontantTotale"/>
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Date</label>
+                <input required asp-for="DateCreation" type="date" id="selectDate" class="form-control text-dark"
+                       placeholder="Sélectionner la date" />
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Envoyer" class="btn btn-primary" onclick="SubmitFormChapitre()"/>
+                <a style="margin-left:15px;" asp-action="Chapitres">Retour</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <!-- recupérer la valeur du select list avec id ChoixComptabilite et si la valeur recupéré est Financement supprimer le style display:none; du formulaire avec id formFinancement-->
+    <script>
+        function SubmitFormChapitre(StatutSaisie) {
+            document.body.classList.add('show-spinner');
+            var myForm = document.getElementById("FormChapitre");
+
+            myForm.method = "POST";
+            var newAction = "/Comptabilite/UpdateChapitre";
+            // Modifier l'attribut "action" du formulaire
+            myForm.action = newAction;
+            // Envoyer le formulaire
+            myForm.submit();
+        }
+    </script>
+
+    }

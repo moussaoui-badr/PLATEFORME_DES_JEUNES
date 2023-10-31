@@ -1,0 +1,161 @@
+﻿@model Financement
+
+@{
+    ViewData["Title"] = "Financement";
+}
+
+@{
+    Layout = "_LayoutDashboard";
+}
+
+<div class="card mb-4">
+    <div style="display:flex;justify-content:space-between;">
+        <div class="card-header">
+            <h3 class="mb-0">Modification financement</h3>
+            <span>
+                Saisir les informations ci dessous.
+            </span>
+        </div>
+        <div class="card-header">
+        </div>
+    </div>
+    <!-- Card header -->
+    <!-- Card body -->
+    <div class="card-body" style="margin-top:20px;">
+        <form method="post" asp-action="UpdateFinancementAsync" class="col-xl-6 col-lg-6 col-md-6 col-12 mb-2" style="margin-top:20px;margin:auto;" id="FormFinancement">
+            <input asp-for="FinancementID" class="form-control" style="display:none;" />
+            <div class="form-group">
+                @if(Model.TypeFinancement == 1)
+                {
+                    <select asp-for="TypeFinancement" required class="selectpicker" data-width="100%" id="TypeFinancement">
+                        <option value="">-- Type de financement --</option>
+                        <option selected value="1">Debit</option>
+                        <option value="2">Crédit</option>
+                    </select>
+                }
+                else if(Model.TypeFinancement == 2)
+                {
+                    <select asp-for="TypeFinancement" required class="selectpicker" data-width="100%" id="TypeFinancement">
+                        <option value="">-- Type de financement --</option>
+                        <option value="1">Debit</option>
+                        <option selected value="2">Crédit</option>
+                    </select>
+                }
+                else
+                {
+                    <select asp-for="TypeFinancement" required class="selectpicker" data-width="100%" id="TypeFinancement">
+                        <option value="">-- Type de financement --</option>
+                        <option value="1">Debit</option>
+                        <option value="2">Crédit</option>
+                    </select>
+                }
+
+            </div>
+
+            <div class="form-group" id="FinancementDate">
+                <label class="control-label" id="DateLabel">Date</label>
+                <input required asp-for="Date" type="date" id="selectDate" class="form-control text-dark"
+                       placeholder="Sélectionner la date" />
+                <span class="text-danger"></span>
+            </div>
+
+            <div class="form-group" id="FinancementMontant">
+                <label class="control-label" id="MontantLabel">Montant</label>
+                <input required asp-for="Montant" class="form-control" />
+                <span class="text-danger"></span>
+            </div>
+
+            <div class="form-group" id="FinancementNumeroCheque" style="@(Model.TypeFinancement.GetValueOrDefault() == 2 ? "display:none;": "")">
+                <label class="control-label" id="NumeroChequeLabel">Numéro de chèque</label>
+                <input asp-for="NumeroCheque" class="form-control" value="@(Model.TypeFinancement == 2 ? null: Model.NumeroCheque)" />
+                <span class="text-danger"></span>
+            </div>
+
+            <div class="form-group" id="FinancementBeneficiaire" style="@(Model.TypeFinancement.GetValueOrDefault() == 2 ? "display:none;": "")>
+                <label class="control-label" id="BeneficiaireLabel">Bénéficiaire</label>
+                <input asp-for="Beneficiaire" class="form-control" value="@(Model.TypeFinancement == 2 ? null: Model.Beneficiaire)" />
+                <span class="text-danger"></span>
+            </div>
+
+            <div class="form-group" id="FinancementCandidat" >
+                <label class="control-label" id="CandidatLabel">Candidat</label>
+                <input asp-for="Candidat" class="form-control" />
+                <span class="text-danger"></span>
+            </div>
+
+
+            <div class="form-group">
+                <input type="submit" value="Envoyer" class="btn btn-primary" onclick="SubmitFormFinancement()" />
+                <a style="margin-left:15px;" asp-action="Financements">Retour</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Obtenir les éléments de formulaire que vous souhaitez masquer ou afficher
+            const dateInput = document.querySelector('#FinancementDate');
+            const montantInput = document.querySelector('#FinancementMontant');
+            const numeroChequeInput = document.querySelector('#FinancementNumeroCheque');
+            const beneficiaireInput = document.querySelector('#FinancementBeneficiaire');
+            const candidatInput = document.querySelector('#FinancementCandidat');
+
+            // Obtenir la liste déroulante
+            const typeFinancementSelect = document.getElementById("TypeFinancement");
+
+            // Gérer l'événement de changement de sélection
+            typeFinancementSelect.addEventListener("change", function () {
+                const selectedOption = typeFinancementSelect.value;
+
+                // Masquer tous les champs
+                dateInput.style.display = "none";
+                montantInput.style.display = "none";
+                numeroChequeInput.style.display = "none";
+                beneficiaireInput.style.display = "none";
+                candidatInput.style.display = "none";
+
+                // Afficher les champs en fonction de la sélection
+                if (selectedOption === "1") {
+                    dateInput.style.display = "block";
+                    montantInput.style.display = "block";
+                    numeroChequeInput.style.display = "block";
+                    beneficiaireInput.style.display = "block";
+                    candidatInput.style.display = "block";
+
+                } else if (selectedOption === "2") {
+                    dateInput.style.display = "block";
+                    montantInput.style.display = "block";
+                    candidatInput.style.display = "block";
+
+                    numeroChequeInput.value = null;
+                    beneficiaireInput.value = null;
+                }
+            });
+        });
+
+
+    </script>
+
+    <!-- recupérer la valeur du select list avec id ChoixComptabilite et si la valeur recupéré est Financement supprimer le style display:none; du formulaire avec id formFinancement-->
+    <script>
+        function SubmitFormFinancement(StatutSaisie) {
+            document.body.classList.add('show-spinner');
+            var myForm = document.getElementById("FormFinancement");
+
+            myForm.method = "POST";
+            var newAction = "/Comptabilite/UpdateFinancement";
+            // Modifier l'attribut "action" du formulaire
+            myForm.action = newAction;
+            // Envoyer le formulaire
+            myForm.submit();
+        }
+    </script>
+
+    }

@@ -1,0 +1,160 @@
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+a.navbar-brand {
+  white-space: normal;
+  text-align: center;
+  word-break: break-all;
+}
+
+/* Provide sufficient contrast against white background */
+a {
+  color: #0366d6;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  font-size: 14px;
+}
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.border-top {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px; /* Vertically center the text there */
+}
+
+div[style*="opacity: 0.9"] {
+    display: none !important;
+}
+
+#logo12 {
+    width: 70px;
+    height: 70px;
+    background-color: #EDEEED;
+}
+
+body , .header{
+    background: rgba(255, 255, 255, 0.2) url("../background/80911.jpg");
+}
+
+.item_menu_nav1 {
+    padding-right: 30px !important;
+}
+
+
+/*--------------------------------------------------------------*/
+a[href="http://somee.com"], div[style="S_ssac();"], center{
+    display: none !important;
+}
+
+
+tr {
+    background: #fff;
+}
+tr:nth-child(odd) {
+    background-color: #eee;
+}
+
+.navbar-collapse ul {
+    display: flex;
+    align-items: center;
+}
+
+
+
+
+@media only screen and (max-width: 700px) {
+    table, thead, tbody, tr, th, td {
+        display: block;
+    }
+
+    thead {
+        display: none;
+    }
+
+    td {
+        padding-left: 55% !important;
+        position: relative;
+        background: #fff;
+        margin-top: -1px;
+    }
+
+        td:nth-child(odd) {
+            background-color: #eee;
+        }
+
+        td::before {
+            content: attr(data-label);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            font-weight: bold;
+            background-color: black;
+            color: white;
+        }
+
+    tr {
+        margin-bottom: 1rem;
+    }
+
+    .form-check-input {
+        position: relative !important;
+        margin-left: 40%;
+    }
+    .navbar-collapse ul {
+        display: flex;
+        align-items: baseline;
+    }
+}

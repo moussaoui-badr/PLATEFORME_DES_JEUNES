@@ -1,0 +1,53 @@
+﻿@model Domain.Entities.BudgetFinancement
+
+@{
+    ViewData["Title"] = "Créer un Budget de Financement";
+}
+
+@{
+    Layout = "_LayoutDashboard";
+}
+
+<div class="card mb-4">
+    <div style="display:flex;justify-content:space-between;">
+        <div class="card-header">
+            <h3 class="mb-0">Saisie d'un Budget de Financement</h3>
+            <span>
+                Saisissez les informations ci-dessous.
+            </span>
+        </div>
+    </div>
+    <!-- Card body -->
+    <div class="card-body">
+        <form asp-action="AddBudgetFinancement" method="post" class="col-xl-6 col-lg-6 col-md-6 col-12 mb-2" style="margin: auto;margin-top:30px;" id="CreateBudgetForm">
+            <div class="form-group">
+                <label class="control-label">Date du Budget</label>
+                <input required class="form-control" asp-for="DateBudget" type="date" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Montant du Budget</label>
+                <input required class="form-control" asp-for="MontantBudget" type="number" step="0.01" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Émetteur du Budget</label>
+                <input required class="form-control" asp-for="EmetteurBudget" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Numéro de Chèque (optionnel)</label>
+                <input class="form-control" asp-for="NuméroCheque" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Créer le Budget" class="btn btn-primary" />
+                <a style="margin-left:15px;" asp-action="BudgetFinancement">Retour</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <!-- Ajoutez ici des scripts JavaScript personnalisés si nécessaire -->
+}

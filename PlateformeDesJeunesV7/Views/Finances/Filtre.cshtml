@@ -1,0 +1,224 @@
+﻿@model IEnumerable<INDH_FiltreModel>
+@using System.Globalization
+@{
+    Layout = "_LayoutDashboard";
+    var nfi = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
+    nfi.NumberGroupSeparator = " ";
+    double MontantDevus = 0;
+    double MontantAcqisition = 0;
+}
+<style>
+    .disabled {
+    }
+</style>
+<div class="card mb-4 mt-3">
+    <div class="card-header">
+        <h3 class="mb-0">Candidats</h3>
+        <span>
+            Utiliser les filtres pour rechercher.
+        </span>
+    </div>
+    <div class="card-body mt-3">
+        <!-- Form -->
+        <form class="form-row mt-3" asp-action="Filtre" asp-controller="Finances" method="get">
+            <div class="col-lg-6 mb-2 col-md-6 col-12 ">
+                <select name="EtatMateriel" value="@ViewData["EtatMateriel"]" class="selectpicker" data-width="100%">
+
+                    <option value="" selected>--- Etat ---</option>
+
+                    <option value="">All</option>
+                    <option value="0">Acquis</option>
+                    <option value="1">En cours d'acquisition</option>
+                    <option value="2">Aménagement</option>
+                </select>
+            </div>
+
+            <div class="col-lg-6 mb-2 col-md-6 col-12  ">
+                <select name="ApportPersonnel" value="@ViewData["ApportPersonnel"]" class="selectpicker" data-width="100%">
+                    <option value="" selected>--- Apport personnel ---</option>
+                    <option value="">All</option>
+                    <option value="1">Validé</option>
+                    <option value="0">En cours</option>
+                </select>
+            </div>
+            
+            <div class="col-lg-12 col-md-12 col-12 mb-2" style="text-align:right!important;">
+                <button type="submit" class="btn btn-outline-info me-2">Rechercher</button>
+                <a asp-action="index" type="button" class="btn btn-outline-primary">Initialiser</a>
+            </div>
+        </form>
+    </div>
+    
+</div>
+<br /><br />
+@if (Model != null)
+{
+    <div style="display:flex;justify-content:space-between;width:100%;">
+
+        <div class="card-header" style="width:100%;">
+            <h3 class="mb-3 ml-4 mt-5">Matériel INDH</h3>
+        </div>
+    </div>
+    
+    @foreach(var item in Model)
+    {
+        <div class="table-responsive border-0 overflow-y-hidden card-body">
+            <table class="table mb-0 text-nowrap">
+                <thead>
+                    <tr>
+                        <th scope="col" class="border-0">Profile</th>
+                        <th scope="col" class="border-0">Montant du projet</th>
+                        <th scope="col" class="border-0">Apport personnel</th>
+                        <th scope="col" class="border-0">INDH</th>
+                        <th scope="col" class="border-0">A.P.C</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                        <td class="border-top-0">
+                            <div class="d-lg-flex">
+                                <div>
+                                    <a href="#!">
+                                        <img src="~/Uploads/@item.ImageURL" style="width:70px;height:70px;" alt="" class="rounded img-4by3-lg rounded-circle" />
+
+                                    </a>
+                                </div>
+                                <div class="ml-lg-2 mt-2 mt-lg-0">
+                                    <h4 class="mb-1 h5">
+                                        <a asp-action="Details" asp-controller="Finances" asp-route-id="@item.ClientFinanceID" class="text-inherit">
+                                            <span style="margin-right:5px;">@item.Nom</span><span>@item.Prenom</span>
+                                            @if (Math.Abs(item.MontantProjet - (item.INDHS.Where(e => e.Etat == Etat.Acquis || e.Etat == Etat.Amenagement).Select(m => m.MontantAcquisition).Sum())) == 0)
+                                            {
+                                                <span class=""> (Dossier cloturé)</span>
+                                            }
+                                            else
+                                            {
+                                                <span class=""> (Dossier en cours)</span>
+                                            }
+                                        </a>
+                                    </h4>
+                                    <ul class="list-inline font-size-xs mb-0">
+                                        <li class="list-inline-item">
+                                            <i class="fas fa-address-card mr-1"></i>@item.CIN
+                                        </li>
+                                        <li class="list-inline-item">
+                                            <i class="fas fa-briefcase mr-1"></i>
+
+                                            @{
+                                                try
+                                                {
+                                                    if (item.PlateformeGestionnaire.ToString() == "AinSebaa")
+                                                    {
+                                                        <span>Ain sebaa</span>
+                                                    }
+                                                    else if (item.PlateformeGestionnaire.ToString() == "RocheNoir")
+                                                    {
+                                                        <span>Roche Noir</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>Hay mohammadi</span>
+                                                    }
+                                                }
+                                                catch (Exception)
+                                                {
+                                                    <i class="nav-icon fe fe-loader text-secondary"></i>
+                                                }
+                                            }
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </td>
+                        <td>@item.MontantProjet.ToString("#,0.00", nfi)</td>
+                        <td>@item.MontantApportPersonnel.ToString("#,0.00", nfi)</td>
+                        <td>@item.MontantINDH.ToString("#,0.00", nfi)</td>
+                        <td class="border-top-0" style="text-overflow: ellipsis;overflow: hidden;max-width: 300px;">
+                            @if (item.ApportPersonnel)
+                            {
+                                <span class="badge-dot bg-success mr-1 d-inline-block align-middle"></span>
+                            }
+                            else
+                            {
+                                <span class="badge-dot bg-danger mr-1 d-inline-block align-middle"></span>
+                            }
+                        </td>
+                        </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+
+        <!-- Table 2 ------------------------------------------------------------------------------------------------- -->
+        <div class="table-responsive border-0 overflow-y-hidden card-body mb-5">
+            <table class="table mb-0 text-nowrap">
+                <thead>
+                    <tr>
+                        <th scope="col" class="border-0">MATÉRIEL</th>
+                        <th scope="col" class="border-0">Part INDH</th>
+                        <th scope="col" class="border-0">Apport EN DHS</th>
+                        <th scope="col" class="border-0">Apport en amenagement</th>
+                        <th scope="col" class="border-0">Autre</th>
+
+                        <th scope="col" class="border-0">MONTANT ACQUISITION</th>
+                        <th scope="col" class="border-0">ETAT</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var indh in item.INDHS)
+                    {
+                        <tr>
+                            <td class="border-top-0">
+                                @indh.Materiel
+                            </td>
+                            <td class="border-top-0">
+                                @indh.PartIndh.ToString("#,0.00", nfi)
+                            </td>
+                            <td class="border-top-0">
+                                @indh.ApportEnDhs.ToString("#,0.00", nfi)
+                            </td>
+                            <td class="border-top-0">
+                                @indh.ApportEnAmenagement.ToString("#,0.00", nfi)
+                            </td>
+                            <td class="border-top-0">
+                                @indh.Autre.ToString("#,0.00", nfi)
+                            </td>
+
+                            <td class="border-top-0">
+                                @indh.MontantAcquisition.ToString("#,0.00", nfi)
+                            </td>
+                            <td class="border-top-0" style="text-overflow: ellipsis;overflow: hidden;max-width: 300px;">
+                                @if (indh.Etat == Etat.Acquis)
+                                {
+                                    <span>Acquis</span>
+                                }
+                                else if(indh.Etat == Etat.EnCoursAcquisition)
+                                {
+                                    <span>En cours d'acquisition</span>
+                                }
+                                else
+                                {
+                                    <span>Aménagement</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>    
+        </div>
+    }
+
+    
+
+}
+
+@section Scripts {
+    <script>
+
+
+
+    </script>
+
+}

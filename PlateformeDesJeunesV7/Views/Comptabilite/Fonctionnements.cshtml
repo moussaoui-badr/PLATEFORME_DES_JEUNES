@@ -1,0 +1,170 @@
+﻿@model List<Fonctionnement>
+@using System.Globalization
+@{
+    Layout = "_LayoutDashboard";
+    var nfi = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
+    nfi.NumberGroupSeparator = " ";
+}
+
+<div class="card mb-4">
+    <div style="display:flex;justify-content:space-between;">
+        <div class="card-header">
+            <h3 class="mb-0">Fonctionnements</h3>
+            <span>
+                Utiliser les filtres pour rechercher.
+            </span>
+        </div>
+        <div class="card-header">
+            <a type="button" class="btn btn-primary" asp-controller="Comptabilite" asp-action="Add">Nouvelle saisie</a>
+        </div>
+    </div>
+    <!-- Card header -->
+    <!-- Card body -->
+    <div class="card-body">
+        <!-- Form -->
+        <form class="form-row mt-3" asp-action="Fonctionnements" asp-controller="Comptabilite" method="get">
+            <div class="col-lg-6 mb-2 col-md-6 col-12 ">
+
+                <select name="ChapitreId" value="@ViewData["ChapitreId"]" class="selectpicker" data-width="100%" asp-items="ViewBag.Chapitres">
+                    <option value="" selected>--- Chapitres ---</option>
+                </select>
+
+            </div>
+            <div class="col-lg-6 mb-2 col-md-6 col-12 ">
+                <input name="NuméroCheque" id="NuméroCheque" value="@ViewData["NuméroCheque"]" type="search" class="form-control" placeholder="Numéro de chèque" />
+            </div>
+
+            <div class="col-lg-6 mb-2 col-md-6 col-12  ">
+                <input name="Beneficiaire" id="Beneficiaire" value="@ViewData["Beneficiaire"]" type="search" class="form-control" placeholder="Bénéficiaire" />
+            </div>
+
+            <div class="col-lg-6 mb-2 col-md-6 col-12  ">
+                <input name="Montant" id="Montant" type="number" class="form-control" placeholder="Montant" />
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-12 mb-2">
+                <div class="w-md-50">
+                    <input name="SearchDate" id="Date" value="@ViewData["CurrentFilterD"]" type="text" class="form-control flatpickr" placeholder="Date de départ">
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-12 mb-2">
+                <div class="w-md-50">
+                    <input name="SearchDateO" value="@ViewData["CurrentFilterDO"]" id="Date" type="text" class="form-control flatpickr" placeholder="Date de fin">
+                </div>
+            </div>
+
+            <div class="col-lg-12 col-md-12 col-12 mb-2" style="text-align:right!important;">
+                <button type="submit" class="btn btn-outline-info me-2">Rechercher</button>
+                <a asp-action="Fonctionnements" type="button" class="btn btn-outline-primary">Initialiser</a>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<div class="text-center">
+
+    @if (Model != null)
+    {
+        var fonctionnementGroupBY = Model.GroupBy(x => x.ChapitreId).ToList();
+        @foreach (var item in fonctionnementGroupBY)
+        {
+            //Index de la liste
+            var index = fonctionnementGroupBY.IndexOf(item);
+            <!-- Table -->
+            <div class="row mt-0 mt-md-4">
+                <div class="col-12">
+                    <div class="card mb-4">
+                        <div class="table-responsive">
+                            <table class="table mb-0 text-nowrap table-hover table-centered table-expanded">
+                                <thead class="table-light">
+                                    <tr class="table-header-row">
+                                        <th>Chapitre</th>
+                                        <th>Montant totale</th>
+                                        <th>Utilisation</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr id="tableChapitres">
+                                        <td>
+                                            @item.FirstOrDefault().Chapitre.ChapitreTitle
+                                        </td>
+                                        <td class="border-top-0" style="text-overflow: ellipsis;overflow: hidden;max-width: 300px;">
+                                            @item.FirstOrDefault().Chapitre.MontantTotale.ToString("#,##0.00", nfi)
+                                        </td>
+                                        <td>
+                                            <!--Montant restant-->
+                                            @if (item.FirstOrDefault().Chapitre.MontantTotale - item.Sum(x => x.Montant) > 0)
+                                            {
+                                                <span class="badge badge-success">Montant restant : @((item.FirstOrDefault().Chapitre.MontantTotale - item.Sum(x => x.Montant)).GetValueOrDefault().ToString("#,##0", nfi))</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge badge-danger">Montant restant : @((item.FirstOrDefault().Chapitre.MontantTotale - item.Sum(x => x.Montant)).GetValueOrDefault().ToString("#,##0", nfi))</span>
+                                            }
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Table -->
+            <div class="row mt-0 mt-md-4">
+                <div class="col-12">
+                    <div class="card mb-4">
+                    <div class="table-responsive">
+                        <table class="table mb-0 text-nowrap table-hover table-centered table-expanded">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col" class="border-0 font-weight-bold">Numéro de chèque</th>
+                                    <th scope="col" class="border-0 font-weight-bold">Bénéficiaire</th>
+                                    <th scope="col" class="border-0 font-weight-bold">Montant</th>
+                                    <th scope="col" class="border-0 font-weight-bold">Date</th>
+                                    <th scope="col" class="border-0 font-weight-bold">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item2 in item)
+                                {
+                                    <tr>
+                                        <td class="border-top-0" style="text-overflow: ellipsis;overflow: hidden;max-width: 300px;">
+                                            @item2.NuméroCheque
+                                        </td>
+                                        <td class="border-top-0" style="text-overflow: ellipsis;overflow: hidden;max-width: 300px;">
+                                            @item2.Beneficiaire
+                                        </td>
+                                        <td class="border-top-0" style="text-overflow: ellipsis;overflow: hidden;max-width: 300px;">
+                                            @item2.Montant.GetValueOrDefault().ToString("#,##0.00", nfi)
+                                        </td>
+                                        <td class="border-top-0" style="text-overflow: ellipsis;overflow: hidden;max-width: 300px;">
+                                            @(item2.Date == null ? "__" : item2.Date.GetValueOrDefault().ToString("dd/MM/yyyy"))
+                                        </td>
+                                        <td class="text-muted border-top-0">
+                                            <a style="cursor:pointer;" asp-action="UpdateFonctionnement" asp-controller="Comptabilite" asp-route-id="@item2.FonctionnementID"><i class="fe fe-edit dropdown-item-icon"></i></a>
+                                            <a style="cursor:pointer;" id="@item2.FonctionnementID" onclick="confirm(this)"><i class="fe fe-trash dropdown-item-icon"></i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+</div>
+@section Scripts {
+    <script>
+        function confirm(idButton) {
+            var pageURL = $(location).attr("href");
+            alertify.confirm('Confirmation de suppression', 'Est-te vous sûr de vouloir supprimer cet élément ?', function () { window.location.replace("@(Url.Action("RemoveFonctionnement"))" + "/" + idButton.id) }
+                , function () { /*alertify.error('Cancel')*/ });
+        }
+    </script>
+
+}

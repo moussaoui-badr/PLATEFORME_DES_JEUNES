@@ -1,0 +1,331 @@
+﻿@model Domain.Models.PaginatedList<Domain.Entities.ClientFinance>
+@using System.Globalization
+@{
+Layout = "_LayoutDashboard";
+var nfi = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
+nfi.NumberGroupSeparator = " ";                  
+}
+<style>
+    .disabled {
+    }
+</style>
+<div class="card mb-4">
+    <div style="display:flex;justify-content:space-between;">
+        <div class="card-header">
+            <h3 class="mb-0">Candidats</h3>
+            <span>
+                Utiliser les filtres pour rechercher vos candidats.
+            </span>
+        </div>
+        <div class="card-header">
+            
+            <a type="button" class="btn btn-info" asp-controller="Finances" asp-action="Add">Ajouter un candidat</a>
+            
+            <a type="button" class="btn btn-primary" asp-controller="Finances" asp-action="SaisieBGExcel">Impression candidat</a>
+        </div>
+    </div>
+    <!-- Card header -->
+    <!-- Card body -->
+    <div class="card-body">
+        <!-- Form -->
+        <form class="form-row mt-3" asp-action="Index" asp-controller="Finances" method="get">
+            <div class="col-lg-6 mb-2 col-md-6 col-12 ">
+                <input name="SearchNom" id="Nom" value="@ViewData["CurrentFilterN"]" type="search" class="form-control" placeholder="Nom" />
+            </div>
+
+            <div class="col-lg-6 mb-2 col-md-6 col-12  ">
+                <input name="SearchCIN" id="CIN" value="@ViewData["CINSortParm"]" type="search" class="form-control" placeholder="CIN" />
+            </div>
+            <div class="col-lg-6 mb-2 col-md-6 col-12 ">
+
+                <select name="PGFilter" value="@ViewData["PlateformeGestionnaireSortParm"]" class="selectpicker" data-width="100%">
+                    
+                        <option value="" selected>--- Plateforme gestionnaire ---</option>
+                    
+                    <option value="">All</option>
+                    <option value="@PlateformeGestionnaire.AinSebaa">Ain sebaa</option>
+                    <option value="@PlateformeGestionnaire.RocheNoir">Roche noir</option>
+                    <option value="@PlateformeGestionnaire.HayMohammadi">Hay Mohammadi</option>
+                </select>
+
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-12 mb-2">
+                <div class="w-md-50">
+                    <input name="SearchDate" id="Date" value="@ViewData["CurrentFilterD"]" type="text" class="form-control flatpickr" placeholder="Date de départ">
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-12 mb-2">
+                <div class="w-md-50">
+                    <input name="SearchDateO" value="@ViewData["CurrentFilterDO"]" id="Date" type="text" class="form-control flatpickr" placeholder="Date de fin">
+                </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-12 mb-2" style="text-align:right!important;">
+                <button type="submit" class="btn btn-outline-info me-2">Rechercher</button>
+                <a asp-action="index" type="button" class="btn btn-outline-primary">Initialiser</a>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+@if (Model != null)
+{
+    <!-- Table -->
+    <div class="table-responsive border-0 overflow-y-hidden card-body">
+        <table class="table mb-0 text-nowrap">
+            <thead>
+                <tr>
+                    <th scope="col" class="border-0">Profil</th>
+                    <th scope="col" class="border-0">Date de reception</th>
+                    <th scope="col" class="border-0">Status acquisition</th>
+                    <th scope="col" class="border-0">Montant R.A.R</th>
+                    <th scope="col" class="border-0">A.P</th>
+                    <th scope="col" class="border-0">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="border-top-0">
+                            <div class="d-lg-flex">
+                                <div>
+                                    <a href="#!">
+                                        <img src="~/Uploads/@item.ImageUrl" alt="" class="rounded img-4by3-lg rounded-circle" style="width:70px;height:48px;" />
+
+                                    </a>
+                                </div>
+                                <div class="ml-lg-2 mt-2 mt-lg-0">
+                                    <h4 class="mb-1 h5">
+                                        <a asp-action="Details" asp-controller="Finances" asp-route-id="@item.ClientFinanceID" class="text-inherit">
+                                            <span style="margin-right:5px;">@item.Nom</span><span>@item.Prenom</span>
+                                            @if (Math.Abs(item.MontantProjet - (item.INDHS.Where(e => e.Etat == Etat.Acquis || e.Etat == Etat.Amenagement).Select(m => m.MontantAcquisition).Sum())) == 0)
+                                            {
+                                                <span class=""> (Dossier cloturé)</span>
+                                            }
+                                            else
+                                            {
+                                                <span class=""> (Dossier en cours)</span>
+                                            }
+                                        </a>
+                                    </h4>
+                                    <ul class="list-inline font-size-xs mb-0">
+                                        <li class="list-inline-item">
+                                            <i class="fas fa-address-card mr-1"></i>@item.CIN
+                                        </li>
+                                        <li class="list-inline-item">
+                                            <i class="fas fa-briefcase mr-1"></i>
+
+                                            @{
+                                                try
+                                                {
+                                                    if (item.PlateformeGestionnaire.ToString() == "AinSebaa")
+                                                    {
+                                                        <span>Ain sebaa</span>
+                                                    }
+                                                    else if (item.PlateformeGestionnaire.ToString() == "RocheNoir")
+                                                    {
+                                                        <span>Roche Noir</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>Hay mohammadi</span>
+                                                    }
+                                                }
+                                                catch (Exception)
+                                                {
+                                                    <i class="nav-icon fe fe-loader text-secondary"></i>
+                                                }
+                                            }
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="border-top-0">
+                            @if (item.DateAderation != null)
+                            {
+                                <span>@item.DateAderation.GetValueOrDefault().ToString("dd/MM/yyyy", nfi)</span>
+                            }
+                            else
+                            {
+                                <i class="nav-icon fe fe-loader text-secondary"></i>
+                            }
+                        </td>
+                         
+                        <td class="border-top-0 text-center border-top-0">
+                            @{
+                                var acquisCount = item.INDHS.Count(e => e.Etat == Etat.Acquis);
+                                var amenagementCount = item.INDHS.Count(e => e.Etat == Etat.Amenagement);
+                                var enCoursAcquisitionCount = item.INDHS.Count(e => e.Etat == Etat.EnCoursAcquisition);
+                            }
+
+                            @if (!item.INDHS.Any())
+                            {
+                                <i class="nav-icon fe fe-loader text-secondary"></i>
+                            }
+                            else if (acquisCount > 0 || amenagementCount > 0)
+                            {
+                                if (enCoursAcquisitionCount == 0)
+                                {
+                                    @if (acquisCount > 0)
+                                    {
+                                        <span class="badge-dot bg-success mr-1 d-inline-block align-middle"></span>
+                                        <span>@acquisCount.ToString()</span>
+                                        <span>A</span>
+                                    }
+                                    @if (amenagementCount > 0)
+                                    {
+                                        <span class="badge-dot bg-success mr-1 d-inline-block align-middle"></span>
+                                        <span>@amenagementCount.ToString()</span>
+                                        <span>AMN</span>
+                                    }
+                                }
+                                else
+                                {
+                                    @if (acquisCount > 0)
+                                    {
+                                        <span class="badge-dot bg-success mr-1 d-inline-block align-middle"></span>
+                                        <span>@acquisCount.ToString()</span>
+                                        <span>A / </span>
+                                    }
+                                    @if (amenagementCount > 0)
+                                    {
+                                        <span class="badge-dot bg-success mr-1 d-inline-block align-middle"></span>
+                                        <span>@amenagementCount.ToString()</span>
+                                        <span>AMN</span>
+                                    }
+                                    @if (enCoursAcquisitionCount > 0)
+                                    {
+                                        <span class="badge-dot bg-warning mr-1 d-inline-block align-middle"></span>
+                                        <span>@enCoursAcquisitionCount.ToString()</span>
+                                        <span>E.C.A</span>
+                                    }
+                                }
+                            }
+                            else if (enCoursAcquisitionCount > 0)
+                            {
+                                <span class="badge-dot bg-danger mr-1 d-inline-block align-middle"></span>
+                                <span>@enCoursAcquisitionCount.ToString()</span>
+                                <span>E.C.A</span>
+                            }
+
+
+                        </td>
+                        <td class="border-top-0" style="text-overflow: ellipsis;overflow: hidden;max-width: 300px;">
+
+                            <span>@Math.Abs(item.MontantProjet - (item.INDHS.Select(m => m.PartIndh).Sum() + item.INDHS.Select(m => m.ApportEnDhs).Sum() + item.INDHS.Select(m => m.ApportEnAmenagement).Sum() + item.INDHS.Select(m => m.Autre).Sum())).ToString("#,0.00", nfi)</span>
+                            
+                        </td>
+                        <td class="border-top-0" style="text-overflow: ellipsis;overflow: hidden;max-width: 300px;">
+                            @if (item.ApportPersonnelConfirme)
+                            {
+                                <span class="badge-dot bg-success mr-1 d-inline-block align-middle"></span>
+                            }
+                            else
+                            {
+                                <span class="badge-dot bg-danger mr-1 d-inline-block align-middle"></span>
+                            }
+                        </td>
+                       
+                        <td class="text-muted border-top-0">
+                            <span class="dropdown">
+                                <a class="text-muted text-decoration-none" href="#!" role="button" id="courseDropdown"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fe fe-more-vertical"></i>
+                                </a>
+                                <span class="dropdown-menu" aria-labelledby="courseDropdown">
+                                    <span class="dropdown-header">PARAMÈTRE </span>
+                                    <a class="dropdown-item" asp-action="Details" asp-controller="Finances" asp-route-id="@item.ClientFinanceID"><i class="fe fe-info dropdown-item-icon"></i>Detail</a>
+                                    <a class="dropdown-item" asp-action="Edit" asp-controller="Finances" asp-route-id="@item.ClientFinanceID"><i class="fe fe-edit dropdown-item-icon"></i>Modifier</a>
+                                    <a style="cursor:pointer;" class="dropdown-item" id="@item.ClientFinanceID" onclick="confirm(this)"><i class="fe fe-trash dropdown-item-icon"></i>Supprimer</a>
+                                </span>
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+
+        @{
+            var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+
+            <nav aria-label="Page navigation example" style="margin-right:30px!important;">
+                <ul class="pagination justify-content-end ">
+                    @if (prevDisabled == "disabled")
+                    {
+
+                    }
+                    else
+                    {
+                        <li class="page-item">
+                            <a class="page-link @prevDisabled" asp-controller="Finances" asp-action="Index"
+                   asp-route-pageNumber="@(Model.PageIndex - 1)"
+                   asp-route-SearchNom="@ViewData["CurrentFilterN"]"
+                   asp-route-SearchPrenom="@ViewData["CurrentFilterP"]"
+                   asp-route-SearchDate="@ViewData["CurrentFilterD"]"
+                   asp-route-SearchCIN="@ViewData["CINSortParm"]"
+                   asp-route-PGFilter="@ViewData["PlateformeGestionnaireSortParm"]"
+                   aria-label="Précédent">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    }
+
+                    @foreach (var pageNumber in Model.DisplayPages)
+                    {
+                        <li class="page-item @(Model.PageIndex == pageNumber ? "active" : "")">
+                            <a class="page-link" asp-controller="Finances" asp-action="Index"
+                               asp-route-pageNumber="@pageNumber"
+                               asp-route-SearchNom="@ViewData["CurrentFilterN"]"
+                               asp-route-SearchPrenom="@ViewData["CurrentFilterP"]"
+                               asp-route-SearchDate="@ViewData["CurrentFilterD"]"
+                               asp-route-SearchCIN="@ViewData["CINSortParm"]"
+                               asp-route-SearchStatut="@ViewData["StatutSortParm"]"
+                               asp-route-OrientationFilter="@ViewData["OrientationSortParm"]">@pageNumber</a>
+                        </li>
+                    }
+                    @if (nextDisabled == "disabled")
+                    {
+
+                    }
+                    else
+                    {
+                        <li class="page-item">
+                            <a class="page-link @nextDisabled" asp-controller="Finances" asp-action="Index"
+                   asp-route-pageNumber="@(Model.PageIndex + 1)"
+                   asp-route-SearchNom="@ViewData["CurrentFilterN"]"
+                   asp-route-SearchPrenom="@ViewData["CurrentFilterP"]"
+                   asp-route-SearchDate="@ViewData["CurrentFilterD"]"
+                   asp-route-SearchCIN="@ViewData["CINSortParm"]"
+                   asp-route-PGFilter="@ViewData["PlateformeGestionnaireSortParm"]"
+                   aria-label="Suivant">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    }
+
+                </ul>
+            </nav>
+        }
+    </div>
+
+}
+
+@section Scripts {
+    <script>
+        function confirm(idButton) {
+            var pageURL = $(location).attr("href");
+            alertify.confirm('Confirmation de suppression', 'Est-te vous sûr de vouloir supprimer cet candidat ?', function () { window.location.replace("@(Url.Action("Delete"))" + "/" + idButton.id + "?SearchNom=@ViewData["CurrentFilterN"]&SearchNom=@ViewData["CurrentFilterN"]&SearchPrenom=@ViewData["CurrentFilterP"]&SearchDate=@ViewData["CurrentFilterD"]&SearchCIN=@ViewData["CINSortParm"]&PGFilter=@ViewData["PlateformeGestionnaireSortParm"]") }
+                , function () { /*alertify.error('Cancel')*/ });
+        }
+        
+
+
+    </script>
+
+}

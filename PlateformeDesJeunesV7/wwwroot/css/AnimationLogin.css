@@ -1,0 +1,39 @@
+﻿@keyframes attention {
+    0% {
+        transform: scale(1); /* État initial */
+    }
+
+    50% {
+        transform: scale(1.2); /* L'élément grossit à 120% de sa taille normale */
+    }
+
+    100% {
+        transform: scale(1); /* Revenir à l'état initial */
+    }
+}
+
+/* Appliquez l'animation à votre bouton */
+.btn.btn-block.attention {
+    animation: attention 2s ease infinite; /* La durée de l'animation est de 2 secondes, elle se répète indéfiniment */
+}
+
+@media screen and (max-width: 400px) {
+    #recaptcha_div {
+        position: absolute;
+        left: 10px;
+    }
+
+    #mesBoutons {
+        margin-top: 70px;
+    }
+}
+
+/* Lorsque vous survolez le bouton "S'authentifier" */
+.btn.btn-block:hover {
+    filter: brightness(1.2); /* Augmente l'intensité de la couleur de base au survol */
+}
+
+/* Lorsque vous survolez le bouton "Poster ma candidature" */
+.btn.btn-block.attention:hover {
+    filter: brightness(1.2); /* Augmente l'intensité de la couleur de base au survol */
+}

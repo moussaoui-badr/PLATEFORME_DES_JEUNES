@@ -1,0 +1,81 @@
+﻿@using Domain.Models
+@model IEnumerable<UserViewModel>
+
+
+@{
+    Layout = "_LayoutDashboard";
+}
+<div style="display:none;">@ViewData["Error"]</div>
+<div class="container p-4 card" >
+            <div class="row">
+              <div class="col-lg-12 col-md-12 col-12">
+                  <div class="tab-content" id="tabContent">
+											<!--Tab pane -->
+                      <div class="tab-pane fade show active" id="courses" role="tabpanel" aria-labelledby="courses-tab">
+                        <div class="table-responsive border-0 overflow-y-hidden">
+<table class="table  table-hover">
+    <thead>
+        <tr class="table-Info" style="padding:15px!important;">
+            <th>
+                <strong>Nom d'utilisateur'</strong>
+            </th>
+
+            <th>
+                <strong>Email</strong>
+            </th>
+            <th>
+                <strong>Actions</strong>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            @if (Model != null)
+            {
+                @foreach (var user in Model)
+                {
+                <tr>
+
+                    <td data-label="UserName">
+                            @user.UserName
+                    </td>
+                    <td data-label="Email">
+                            @user.Email
+                    </td>
+                        @*<td data-label="Roles">
+            @string.Join(" , ", user.Roles.ToList())
+            </td>*@
+                    <td data-label="Actions">
+                        <a class="btn btn-primary" asp-action="AffectationRoles" asp-route-userId="@user.ID">Gestion des roles</a>
+                        <a class="btn btn-secondary" onclick="confirm(this)"  id="@user.ID">Supprimer l'utilisateur</a>
+                    </td>
+                    
+                </tr>
+                }
+            }
+            else
+            {
+            <tr><td colspan="4">Aucune donnée trouvée</td></tr>
+            }
+        </tr>
+    </tbody>
+</table>
+<span style="display:none">Un probléme est survenu</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+                    @section Scripts {
+    <script>
+        function confirm(idButton) {
+            var pageURL = $(location).attr("href");
+            alertify.confirm('Confirmation de suppression', 'Est-te vous sûr de vouloir supprimer cet utilisateur ?', function() { window.location.replace("@(Url.Action("DeleteUser"))" + "/" + idButton.id ) }
+                , function() { /*alertify.error('Cancel')*/ });
+        }
+    </script>
+
+}

@@ -1,0 +1,605 @@
+﻿@model Domain.Models.CreateClientINDH
+
+
+@{
+    Layout = "_LayoutDashboard";
+}
+@if (ViewData["Success"] == null)
+{
+
+    <!-- Page header-->
+    <div class="py-4 py-lg-6 bg-primary" style="
+    background-color: #557482!important;">
+        <div class="container">
+            <div class="row">
+                <div class="offset-lg-1 col-lg-10 col-md-12 col-12">
+                    <div class="d-lg-flex align-items-center justify-content-between">
+                        <!-- Content -->
+                        <div class="mb-4 mb-lg-0">
+                            <h1 class="text-white mb-1">Enregistrer un candidat (Phase 2)</h1>
+                            <p class="mb-0 text-white lead">
+                                Remplissez simplement le formulaire ci dessous.
+                            </p>
+                        </div>
+                        <div>
+                            @*<a href="instructor-courses.html" class="btn btn-white ">Back to Course</a>
+                        <a href="instructor-courses.html" class="btn btn-success ">Save</a>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Page Content -->
+    <div class="pb-12">
+        <div class="container">
+            <div id="courseForm" class="bs-stepper">
+                <div class="row">
+                    <div class="offset-lg-1 col-lg-10 col-md-12 col-12">
+                        <!-- Stepper Button -->
+                        <div class="bs-stepper-header shadow-sm" role="tablist">
+                            <div class="step" data-target="#test-l-1">
+                                <button type="button" class="step-trigger" role="tab" id="courseFormtrigger1" aria-controls="test-l-1">
+                                    <span class="bs-stepper-circle">1</span>
+                                    <span class="bs-stepper-label">Informations basique</span>
+                                </button>
+                            </div>
+                            <div class="bs-stepper-line"></div>
+                            <div class="step" data-target="#test-l-2">
+                                <button type="button" class="step-trigger" role="tab" id="courseFormtrigger2" aria-controls="test-l-2">
+                                    <span class="bs-stepper-circle">2</span>
+                                    <span class="bs-stepper-label">Photo de profil</span>
+                                </button>
+                            </div>
+                            <div class="bs-stepper-line"></div>
+                            <div class="step" data-target="#test-l-3">
+                                <button type="button" class="step-trigger" role="tab" id="courseFormtrigger3" aria-controls="test-l-3">
+                                    <span class="bs-stepper-circle">3</span>
+                                    <span class="bs-stepper-label">INDH</span>
+                                </button>
+                            </div>
+                            <div class="bs-stepper-line"></div>
+                            <div class="step" data-target="#test-l-4">
+                                <button type="button" class="step-trigger" role="tab" id="courseFormtrigger4" aria-controls="test-l-4">
+                                    <span class="bs-stepper-circle">4</span>
+                                    <span class="bs-stepper-label">Documents</span>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Stepper content -->
+                        <div class="bs-stepper-content mt-5">
+                            <form asp-action="Add" method="post" enctype="multipart/form-data">
+                                <!-- Content one -->
+                                <div id="test-l-1" role="tabpanel" class="bs-stepper-pane fade" aria-labelledby="courseFormtrigger1">
+                                    <!-- Card -->
+                                    <div class="card mb-3">
+                                        <div class="card-header border-bottom px-4 py-3">
+                                            <h4 class="mb-0">Information basique</h4>
+                                        </div>
+                                        <!-- Card body -->
+                                        <div class="card-body">
+                                            <h5 style="color:#ff0000b3;text-decoration: underline;">@ViewData["INDHError"]</h5>
+                                            <h5 style="color:#ff0000b3;text-decoration: underline;">@ViewData["Message"]</h5>
+                                            <div class="row">
+                                                <div class="col-md-4 col-6">
+                                                    <div class="form-group">
+                                                        <label for="Nom" class="form-label">Nom</label>
+                                                        <input id="Nom" class="form-control" type="text" placeholder="Nom" required asp-for="Candidat.Nom" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-6">
+                                                    <div class="form-group">
+                                                        <label for="Prenom" class="form-label">Prénom</label>
+                                                        <input id="Prenom" class="form-control" type="text" placeholder="Prénom" required asp-for="Candidat.Prenom" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-6">
+                                                    <div class="form-group">
+                                                        <label for="selectDate" class="form-label">Date de naissance</label>
+                                                        <input required asp-for="Candidat.DateNaissance" type="text" id="selectDate" class="form-control text-dark flatpickr" placeholder="Sélectionner la date de naissance" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-6">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Sexe</label>
+                                                        <select required asp-for="Candidat.Sexe" class="selectpicker" data-width="100%">
+                                                            <option value="@Sexe.Homme">Homme</option>
+                                                            <option value="@Sexe.Femme">Femme</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-6">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Plateforme gestionnaire</label>
+                                                        <select required asp-for="Candidat.PlateformeGestionnaire" class="selectpicker" data-width="100%">
+                                                            <option value="@PlateformeGestionnaire.AinSebaa">Ain sebaa</option>
+                                                            <option value="@PlateformeGestionnaire.RocheNoir">Roche noir</option>
+                                                            <option value="@PlateformeGestionnaire.HayMohammadi">Hay Mohammadi</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-6">
+                                                    <div class="form-group">
+                                                        <label for="postTitle" class="form-label">Adresse</label>
+                                                        <input asp-for="Candidat.Adresse" type="text" id="postTitle" class="form-control text-dark" placeholder="Adresse" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-6">
+                                                    <div class="form-group">
+                                                        <label for="postTitle" class="form-label">Email</label>
+                                                        <input required asp-for="Candidat.Email" type="email" id="postTitle" class="form-control text-dark" placeholder="Email" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-6">
+                                                    <div class="form-group">
+                                                        <label for="postTitle" class="form-label">Téléphone</label>
+                                                        <input required asp-for="Candidat.Telephone" type="tel" id="postTitle" class="form-control text-dark" placeholder="Téléphone" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-6">
+                                                    <div class="form-group">
+                                                        <label for="postTitle" class="form-label">CIN</label>
+                                                        <input required asp-for="Candidat.CIN" type="text" id="postTitle" class="form-control text-dark" placeholder="Carte d'identité nationale" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-6">
+                                                    <div class="form-group">
+                                                        <label for="selectDate" class="form-label">Date de reception</label>
+                                                        <input required asp-for="Candidat.DateAderation" type="text" id="selectDate" class="form-control text-dark flatpickr" placeholder="Sélectionner la date de reception" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4 col-6">
+                                                    <div class="form-group">
+                                                        <label for="postTitle" class="form-label">Commentaire</label>
+                                                        <input asp-for="Candidat.Commentaire" type="text" id="postTitle" class="form-control text-dark" placeholder="Commentaire" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                    <!-- Button -->
+                                    <button class="btn btn-primary" onclick="courseForm.next()">
+                                        Suivant
+                                    </button>
+                                </div>
+                                <!-- Content two -->
+                                <div id="test-l-2" role="tabpanel" class="bs-stepper-pane fade" aria-labelledby="courseFormtrigger2">
+                                    <!-- Card -->
+                                    <div class="card mb-3  border-0">
+                                        <div class="card-header border-bottom px-4 py-3">
+                                            <h4 class="mb-0">Media</h4>
+                                        </div>
+                                        <!-- Card body -->
+                                        <div class="card-body">
+                                            <div class="custom-file-container" data-upload-id="courseCoverImg" id="courseCoverImg">
+                                                <label class="form-label">
+                                                    Photo de profil
+                                                    <a href="javascript:void(0)" class="custom-file-container__image-clear"
+                                                       title="Clear Image"></a>
+                                                </label>
+                                                <label class="custom-file-container__custom-file">
+                                                    <input asp-for="Candidat.ImageUrl" type="file" class="custom-file-container__custom-file__custom-file-input"
+                                                           accept="image/*" />
+                                                    <input type="hidden" name="MAX_FILE_SIZE" value="10485760" />
+                                                    <span class="custom-file-container__custom-file__custom-file-control"></span>
+                                                </label>
+                                                <small class="mt-3 d-block">
+                                                    Upload your course image here. It must meet
+                                                    our
+                                                    course image quality standards to be accepted.
+                                                    Important guidelines: 750x440 pixels; .jpg, .jpeg,.
+                                                    gif, or .png. no text on the image.
+                                                </small>
+                                                <div class="custom-file-container__image-preview"></div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <h5 style="color:#ff0000b3;text-decoration: underline;">@ViewData["MessageDocument"]</h5>
+                                    <!-- Button -->
+                                    <div class="d-flex justify-content-between">
+                                        <button class="btn btn-secondary" onclick="courseForm.previous()">
+                                            Précedent
+                                        </button>
+                                        <button class="btn btn-primary" onclick="courseForm.next()">
+                                            Suivant
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- Content three -->
+                                <div id="test-l-3" role="tabpanel" class="bs-stepper-pane fade" aria-labelledby="courseFormtrigger3">
+                                    <!-- Card -->
+                                    <div class="card mb-3 border-0">
+                                        <div class="card-header border-bottom px-4 py-3">
+                                            <h4 class="mb-0">Financement</h4>
+                                        </div>
+                                        <!-- Card body -->
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <!-- Colonne 1 -->
+                                                <div class="col-md-4 col-6">
+                                                    <div class="form-group">
+                                                        <label for="postTitle" class="form-label">Montant du projet</label>
+                                                        <input required asp-for="Candidat.MontantProjet" type="number" step="any" id="montantduprojet" class="form-control text-dark" placeholder="Montant du projet" />
+                                                        <span id="RARMontantProjet"></span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Colonne 2 -->
+                                                <div class="col-md-4 col-6">
+                                                    <div class="form-group">
+                                                        <label for="postTitle" class="form-label">Montant apport personnel</label>
+                                                        <input required asp-for="Candidat.MontantApportPersonnel" type="number" step="any" id="montantapportpersonnel" class="form-control text-dark" placeholder="Montant apport personnel" />
+                                                        <span id="ecartAP"></span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Colonne 3 -->
+                                                <div class="col-md-4 col-6">
+                                                    <div class="form-group">
+                                                        <label for="postTitle" class="form-label">Montant INDH</label>
+                                                        <input asp-for="Candidat.MontantINDH" type="number" step="any" id="montantindh" class="form-control text-dark" placeholder="Montant INDH" />
+                                                        <span id="ecartINDH"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Confirmation apport personnel -->
+                                            <div class="form-group">
+                                                <label for="postTitle" class="form-label">Confirmation apport personnel</label>
+                                                <div class="alert alert-dark" role="alert">
+                                                    <div class="form-check form-switch">
+                                                        <input asp-for="Candidat.ApportPersonnelConfirme" class="form-check-input" type="checkbox" role="checkbox" id="flexSwitchCheckChecked">
+                                                        <label class="form-check-label fw-bold fs-5" for="flexSwitchCheckChecked">Validation apport personnel</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Devis -->
+                                            <div class="form-group">
+                                                <h4>Devis</h4>
+                                                <div class="form-group col-md-12">
+                                                    <div class="DiplomeCtn">
+                                                    </div>
+                                                    <button class="btn btn-primary" style="" onclick="AddDiplome()"><i class="bi bi-plus-circle" style=""></i> Ajouter</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Reste à réaliser -->
+                                        <div class="form-group">
+                                            <span id="restearealiser"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Button -->
+                                    <div class="d-flex justify-content-between">
+                                        <button class="btn btn-secondary" onclick="courseForm.previous()">
+                                            Précedent
+                                        </button>
+                                        <button class="btn btn-primary" onclick="courseForm.next()">
+                                            Suivant
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- Content four -->
+                                <div id="test-l-4" role="tabpanel" class="bs-stepper-pane fade" aria-labelledby="courseFormtrigger4">
+                                    <!-- Card -->
+                                    <div class="card mb-3  border-0">
+                                        <div class="card-header border-bottom px-4 py-3">
+                                            <h4 class="mb-0">Documents</h4>
+                                        </div>
+                                        <!-- Card body -->
+                                        <div class="card-body">
+                                            <div class="form-group col-md-12">
+                                                <div class="DocumentCtn">
+                                                </div>
+                                                <div class="btn btn-primary" style="" onclick="AddDocument()"><i class="bi bi-plus-circle" style="cursor:pointer; ">   Ajouter un document</i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-22">
+                                        <!-- Button -->
+                                        <button class="btn btn-secondary mt-5" onclick="courseForm.previous()">
+                                            Précedent
+                                        </button>
+                                        <div class="custom-control custom-checkbox">
+                                            <input required type="checkbox" class="custom-control-input" id="customCheck1">
+                                            <label class="custom-control-label" for="customCheck1">Cocher la case pour confirmer l'envoi</label>
+                                        </div>
+                                        <button type="submit" class="btn btn-danger mt-5">
+                                            Envoyer
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+}
+else
+{
+    <div class="alert alert-success" role="alert" style="margin-top: 20%;text-align: center;">
+        <strong>Felicitation, vous serez contactez dans les plus bref délais</strong>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        function Ecart() {
+            // Nombre de matériél
+            var elements = document.getElementsByClassName('materielNumber');
+            var nombreElements = elements.length;
+            //------------------------RAR montant projet------------------------------------------------------------
+            // Montant du projet
+            var montantProjet = parseFloat(document.getElementById("montantduprojet").value) || 0;
+
+            // Variable pour stocker le montant après soustractions
+            var rarMontantProjet = montantProjet;
+
+            // Montants acquisition
+            var montantsAcquisitions = document.getElementsByClassName("montantacquisition");
+
+            for (var i = 0; i < nombreElements; i++) {
+
+                // Conversion du montant en float et soustraction du rarMontantProjet
+                rarMontantProjet = rarMontantProjet.toFixed(2) - parseFloat(montantsAcquisitions[i].value.replace(',', '.')).toFixed(2) || 0;
+            }
+
+            // Obtenez l'élément où vous afficherez l'écart
+            var labelRARMontantProjet = document.getElementById("RARMontantProjet");
+
+            // Supprimez toutes les classes de couleur existantes
+            labelRARMontantProjet.classList.remove("text-warning", "text-danger");
+
+            // Ajoutez la classe appropriée en fonction de l'écart
+            if (rarMontantProjet == 0) {
+                // Affichez l'écart en rouge (text-success)
+                labelRARMontantProjet.classList.add("text-success");
+            } else if (rarMontantProjet != 0) {
+                // Affichez l'écart en jaune (text-warning)
+                labelRARMontantProjet.classList.add("text-warning");
+            }
+            // Affichez l'écart dans l'élément HTML
+            labelRARMontantProjet.textContent = "RAR Montant du projet : " + rarMontantProjet.toFixed(2);
+
+
+            //-----------------------------------Apport INDH------------------------------------------------
+            var montantapportpersonnel = parseFloat(document.getElementById("montantapportpersonnel").value) || 0;
+
+            var apportindh = document.getElementById("montantindh");
+
+            apportindh.value = montantProjet - montantapportpersonnel
+
+            //-------------------------------------RARIndh------------------------------------------------------
+            var RARINDH = parseFloat(apportindh.value) || 0;
+            var partindh = document.getElementsByClassName("partindh");
+            for (var i = 0; i < nombreElements; i++) {
+                RARINDH = RARINDH.toFixed(2) - parseFloat(partindh[i].value.replace(',', '.')).toFixed(2) || 0;
+            }
+
+            // Obtenez l'élément où vous afficherez l'écart
+            var ecartINDHLabel = document.getElementById("ecartINDH");
+
+            // Supprimez toutes les classes de couleur existantes
+            ecartINDHLabel.classList.remove("text-warning", "text-danger");
+
+            // Ajoutez la classe appropriée en fonction de l'écart
+            if (RARINDH == 0) {
+                // Affichez l'écart en rouge (text-success)
+                ecartINDHLabel.classList.add("text-success");
+            } else if (RARINDH != 0) {
+                // Affichez l'écart en jaune (text-warning)
+                ecartINDHLabel.classList.add("text-warning");
+            }
+            // Affichez l'écart dans l'élément HTML
+            ecartINDHLabel.textContent = "RAR INDH : " + RARINDH.toFixed(2);
+
+
+            //-------------------------------------RARApport------------------------------------------------------
+            var apportspersonnels = document.getElementsByClassName("apportendh");
+            var apportenamenagement = document.getElementsByClassName("apportenamenagement");
+
+            var RARAport = montantapportpersonnel; // Vous devez définir montantapportpersonnel ailleurs
+
+            var nombreElements = apportspersonnels.length; // Ajoutez ceci pour obtenir la longueur de l'élément
+
+            for (var i = 0; i < nombreElements; i++) {
+                // Conversion du montant en float et soustraction du rarMontantProjet
+                RARAport = (RARAport.toFixed(2) - parseFloat(apportspersonnels[i].value.replace(',', '.')).toFixed(2) || 0) - (parseFloat(apportenamenagement[i].value.replace(',', '.')).toFixed(2) || 0);
+            }
+
+            // Obtenez l'élément où vous afficherez l'écart
+            var ecartAP = document.getElementById("ecartAP");
+
+            // Supprimez toutes les classes de couleur existantes
+            ecartAP.classList.remove("text-success", "text-warning");
+
+            // Ajoutez la classe appropriée en fonction de l'écart
+            if (RARAport === 0) {
+                // Affichez l'écart en vert (text-success)
+                ecartAP.classList.add("text-success");
+            } else {
+                // Affichez l'écart en jaune (text-warning)
+                ecartAP.classList.add("text-warning");
+            }
+            // Affichez l'écart dans l'élément HTML
+            ecartAP.textContent = "RAR Apport : " + RARAport.toFixed(2);
+
+
+        }
+        function CalculDevis(index) {
+            var MontantAcquisition = parseFloatWithDefault(document.getElementById("MontantAcquisition" + index).value);
+            var ApportEnDhs = parseFloatWithDefault(document.getElementById("ApportEnDhs" + index).value);
+            var PartIndh = parseFloatWithDefault(document.getElementById("PartIndh" + index).value);
+            var Apportenamenagement = parseFloatWithDefault(document.getElementById("Apportenamenagement" + index).value);
+            var Autre = parseFloatWithDefault(document.getElementById("Autre" + index).value);
+
+            var devisRARresult = MontantAcquisition - ApportEnDhs - PartIndh - Autre - Apportenamenagement;
+            // Obtenez l'élément où vous afficherez l'écart
+            var RARDevis = document.getElementById("RARDevis" + index);
+
+            // Supprimez toutes les classes de couleur existantes
+            RARDevis.classList.remove("text-warning", "text-danger");
+
+            // Ajoutez la classe appropriée en fonction de l'écart
+            if (devisRARresult.toFixed(2) == 0) {
+                // Affichez l'écart en rouge (text-success)
+                RARDevis.classList.add("text-success");
+            } else if (devisRARresult != 0) {
+                // Affichez l'écart en jaune (text-warning)
+                RARDevis.classList.add("text-warning");
+            }
+            // Affichez l'écart dans l'élément HTML
+            RARDevis.textContent = "RAR devis : " + devisRARresult.toFixed(2);
+
+            Ecart();
+        }
+
+        // function MontantProjetEcart() {
+        //     // Obtenez les valeurs des champs et remplacez NaN par 0
+        //     var montantProjet = parseFloat(document.getElementById("montantduprojet").value) || 0;
+        //     var montantApportPersonnel = parseFloat(document.getElementById("montantapportpersonnel").value) || 0;
+        //     var montantINDH = parseFloat(document.getElementById("montantindh").value) || 0;
+
+        //     // Calculez la différence entre montantProjet et la somme de montantApportPersonnel et montantINDH
+        //     var ecart = montantProjet - (montantApportPersonnel + montantINDH);
+
+        //     // Obtenez l'élément où vous afficherez l'écart
+        //     var ecartElement = document.getElementById("ecart");
+
+        //     // Supprimez toutes les classes de couleur existantes
+        //     ecartElement.classList.remove("text-warning", "text-danger");
+
+        //     // Ajoutez la classe appropriée en fonction de l'écart
+        //     if (ecart == 0) {
+        //         // Affichez l'écart en rouge (text-success)
+        //         ecartElement.classList.add("text-success");
+        //     } else if (ecart != 0) {
+        //         // Affichez l'écart en jaune (text-warning)
+        //         ecartElement.classList.add("text-warning");
+        //     }
+        //     // Affichez l'écart dans l'élément HTML
+        //     ecartElement.textContent = "Écart : " + ecart;
+        // }
+
+        // function MontantAcquisitionCalcul(index) {
+        //     var PartIndh = parseFloat(document.getElementById("PartIndh" + index).value) || 0;
+        //     var ApportEnDhs = parseFloat(document.getElementById("ApportEnDhs" + index).value) || 0;
+        //     var Autre = parseFloat(document.getElementById("Autre" + index).value) || 0;
+
+        //     var somme = PartIndh + ApportEnDhs + Autre;
+
+        //     var MontantAcquisition = document.getElementById("MontantAcquisition" + index);
+
+        //     MontantAcquisition.value = somme;
+        // }
+
+
+
+        $(document).ready(function () {
+            // Change le texte du bouton
+            $(".dz-button").text('Saisir l\'image du candidat');
+
+            // Pour les éléments statiques
+            var inputIds = ["montantduprojet", "montantapportpersonnel", "montantindh"];
+            for (var id of inputIds) {
+                var element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('input', Ecart);
+                }
+            }
+
+            // Pour les éléments dynamiques avec délégation d'événements
+            // $("body").on('input', '.partindh, .apportendh', '.montantacquisitionn', '', Ecart);
+        });
+
+
+        var index = 0;
+        var indexDoc = 0;
+
+        function AddDiplome() {
+            $('.DiplomeCtn').append(`
+
+                    <div id="${index + 1}">
+                   <div class="alert alert-warning" role="alert" style="display:flex;justify-content:space-between">
+                      Devis
+                      <button onclick="DeleteINDHNew(${index})" type="button" class="btn btn-light"><i class="nav-icon fe fe-solid fe-trash"></i></button>
+                   </div>
+                           <div class="row">
+                                   <div class="col-md-4 col-6"><div class="form-group"><label class="control-label">Materiel</label><input name="INDHs[${index}].Materiel" class="form-control materielNumber" /></div></div>
+                                   <div class="col-md-4 col-6"><div class="form-group"><label class="control-label">Part INDH</label><input name="INDHs[${index}].PartIndh" id="PartIndh${index}" onchange="CalculDevis(${index})" class="form-control partindh" /></div></div>
+                                           <div class="col-md-4 col-6"><div class="form-group"><label class="control-label">Apport EN DHS</label><input name="INDHs[${index}].ApportEnDhs" id="ApportEnDhs${index}" onchange="CalculDevis(${index})" class="form-control apportendh" /></div></div>
+                                                                           <div class="col-md-4 col-6"><div class="form-group"><label class="control-label">Apport en aménagement</label><input name="INDHs[${index}].ApportEnAmenagement" id="Apportenamenagement${index}" class="form-control apportenamenagement" onchange="CalculDevis(${index})"/></div></div>
+                                           <div class="col-md-4 col-6"><div class="form-group"><label class="control-label">Autre</label><input name="INDHs[${index}].Autre" id="Autre${index}" class="form-control autre" onchange="CalculDevis(${index})"/></div></div>
+                                           <div class="col-md-4 col-6"><div class="form-group"><label class="control-label">Montant acquisition</label><input name="INDHs[${index}].MontantAcquisition" onchange="CalculDevis(${index})" id="MontantAcquisition${index}" class="form-control montantacquisition" /></div></div>
+                           <div class="col-md-4 col-6"><div class="form-group">
+                      <label class="control-label">Etat</label>
+                      <select name="INDHs[${index}].Etat" class="form-control" data-width="100%">
+                         <option value="@Etat.Acquis">Acquis</option>
+                         <option value="@Etat.EnCoursAcquisition">En cours d'acquisition</option>
+                         <option value="@Etat.Amenagement">Aménagement</option>
+                      </select>
+                   </div>
+                    <span style="margin-bottom:15px;" id="RARDevis${index}"></span>
+                    <br><br>
+                            </div>
+                </div>
+
+                `);
+            index++;
+        }
+        function AddDocument() {
+            $('.DocumentCtn').append(`
+                                            <div id="${indexDoc}">
+                                                    <div class="alert alert-warning" role="alert" style="display:flex;justify-content:space-between">
+                                                            Mon document
+                                                                                <button onclick="DeleteDocNew(${indexDoc})" type="button" class="btn btn-light"><i class="nav-icon fe fe-solid fe-trash"></i></button>
+                                                        </div>
+                                                                                                    <div class="form-group"><label class="control-label">Nom du fichier</label><input name="DocumentModel[${indexDoc}].Designation" class="form-control" /></div>
+                                                                                                    <div class="form-group"><label for="validationValidFileInput1">Fichier</label>
+                                                                                                    <div class="custom-file">
+                                                                  <input name="DocumentModel[${indexDoc}].File" type="file"
+                                                               id="file"
+                                                               >
+                                                                </div>
+
+                                                                                               </div> `);
+            indexDoc++;
+        }
+        function DeleteINDHNew(ID) {
+
+            alertify.confirm('Confirmation de suppression', 'Est-te vous sûr de vouloir supprimer cet element ?', function () {
+                index--;
+                $("#" + ID).remove();
+                alertify.success('Element supprimé avec succée.');
+            }
+                , function () { /*alertify.error('Cancel')*/ });
+        }
+
+        function DeleteDocNew(ID) {
+
+            alertify.confirm('Confirmation de suppression', 'Est-te vous sûr de vouloir supprimer cet element ?', function () {
+                indexDoc--;
+                $("#" + ID).remove();
+                alertify.success('Element supprimé avec succée.');
+            }
+                , function () { /*alertify.error('Cancel')*/ });
+        }
+        function parseFloatWithDefault(value) {
+            const numericValue = parseFloat(value.replace(',', '.'));
+            return !isNaN(numericValue) ? numericValue.toFixed(2) : 0;
+        }
+    </script>
+
+
+
+}

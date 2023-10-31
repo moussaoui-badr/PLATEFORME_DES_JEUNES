@@ -1,0 +1,115 @@
+﻿@model Fonctionnement
+
+@{
+    ViewData["Title"] = "Fonctionnement";
+}
+
+@{
+    Layout = "_LayoutDashboard";
+}
+
+<div class="card mb-4">
+    <div style="display:flex;justify-content:space-between;">
+        <div class="card-header">
+            <h3 class="mb-0">Modification fonctionnement</h3>
+            <span>
+                Saisir les informations ci dessous.
+            </span>
+        </div>
+        <div class="card-header">
+        </div>
+    </div>
+    <!-- Card header -->
+    <!-- Card body -->
+    <div class="card-body" style="margin-top:20px;">
+
+        <!-- Form -->
+        <form method="post" class="col-xl-6 col-lg-6 col-md-6 col-12 mb-2" id="FormFonctionnement" style="margin-top:30px;margin:auto;">
+            <input asp-for="FonctionnementID" class="form-control" style="display:none;" />
+            <div class="form-group">
+                <select asp-for="ChapitreId" class="selectpicker" data-width="100%" asp-items="ViewBag.Chapitres" value="@Model.ChapitreId">
+                    <option value="">--- Chapitres ---</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Numéro de chèque</label>
+                <input asp-for="NuméroCheque" class="form-control" value="@Model.NuméroCheque"/>
+                <span class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Bénficiaire</label>
+                <input asp-for="Beneficiaire" class="form-control" value="@Model.Beneficiaire"/>
+                <span class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Montant</label>
+                <input asp-for="Montant" class="form-control" value="@Model.Montant"/>
+                <span class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Date</label>
+                <input required name="Date" type="date" id="selectDate" class="form-control text-dark" placeholder="Sélectionner la date" />
+                <span class="text-danger"></span>
+            </div>
+
+            @* <h3 class="control-label">Budget : </h3>
+            <div class="form-group">
+                <label class="control-label">Date</label>
+                <input required asp-for="DateBudget" type="text" id="selectDate" class="form-control text-dark flatpickr"
+                       placeholder="Sélectionner la date" />
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Montant</label>
+                <input asp-for="MontantBudget" class="form-control" />
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Emetteur</label>
+                <input asp-for="EmetteurBudget" class="form-control" />
+                <span class="text-danger"></span>
+            </div> *@
+
+            <div class="form-group">
+                <input type="submit" value="Envoyer" class="btn btn-primary" onclick="SubmitFormFonctionnement()" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <!-- recupérer la valeur du select list avec id ChoixComptabilite et si la valeur recupéré est Financement supprimer le style display:none; du formulaire avec id formFinancement-->
+    <script>
+        function SubmitFormFonctionnement(StatutSaisie) {
+            document.body.classList.add('show-spinner');
+            var myForm = document.getElementById("FormFonctionnement");
+
+            myForm.method = "POST";
+            var newAction = "/Comptabilite/UpdateFonctionnement";
+            // Modifier l'attribut "action" du formulaire
+            myForm.action = newAction;
+            // Envoyer le formulaire
+            myForm.submit();
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            // Récupérer la date au format "YYYY-MM-DD" de votre modèle C#
+            var dateFromModel = "@Model.Date.GetValueOrDefault().ToString("yyyy-MM-dd")";
+
+            // Sélectionner l'élément input
+            var selectDateInput = document.getElementById("selectDate");
+
+            // Définir la valeur du champ de date avec la date formatée
+            selectDateInput.value = dateFromModel;
+        });
+    </script>
+
+    }

@@ -1,0 +1,189 @@
+﻿@using Domain.Models
+@model PaginatedList<Domain.Entities.Formation>
+
+@{
+    Layout = "_LayoutDashboard";
+}
+<div class="card mb-4">
+    <div style="display:flex;justify-content:space-between;">
+        <div class="card-header">
+            <h3 class="mb-0">Formations</h3>
+            <span>
+                Utiliser les filtres pour rechercher vos candidats.
+            </span>
+        </div>
+        <div class="card-header">
+            
+                <a class="btn btn-info" asp-action="Add">Ajouter une nouvelle formation</a>
+            
+        </div>
+    </div>
+        <div class="card-body mt-3">
+            <!-- Form -->
+            <form class="form-row" asp-action="Index" asp-controller="Formations" method="get">
+                <div class="col-lg-6 mb-2 col-md-6 col-12 ">
+                <input name="Theme" id="Theme" value="@ViewData["Theme"]" type="search" class="form-control" placeholder="Theme" />
+                </div>
+                @if (User.IsInRole("Admin"))
+                {
+                    <div class="col-lg-6 mb-2 col-md-6 col-12  ">
+                        <input name="Animateur" id="Animateur" value="@ViewData["Animateur"]" type="search" class="form-control" placeholder="Animateur" />
+                    </div>
+                }
+                <div class="col-lg-6 mb-2 col-md-6 col-12 ">
+                <input name="Duree" id="Duree" value="@ViewData["Duree"]" type="number" class="form-control" placeholder="Durée de la formation" />
+                </div>
+                <div class="col-lg-6 col-md-6 col-12 mb-2">
+                    <div class="w-md-50">
+                        <input name="SearchDate" id="Date" value="@ViewData["CurrentFilterD"]" type="text" class="form-control flatpickr" placeholder="Date de départ">
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-12 mb-2">
+                    <div class="w-md-50">
+                        <input name="SearchDateO" value="@ViewData["CurrentFilterDO"]" id="Date" type="text" class="form-control flatpickr" placeholder="Date de fin">
+                    </div>
+                </div>
+                <div class="col-lg-12 col-md-12 col-12 mb-2" style="text-align:right!important;">
+                    <button type="submit" class="btn btn-outline-info me-2">Rechercher</button>
+                    <a asp-action="index" type="button" class="btn btn-outline-primary">Initialiser</a>
+                </div>
+            </form>
+        </div>
+
+    <div class="table-responsive border-0 overflow-y-hidden card-body mt-4">
+        <table class="table mb-0 text-nowrap">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col" class="border-0">
+                        Date de formation
+                    </th>
+                    <th scope="col" class="border-0">
+                        Durée de formation
+                    </th>
+                    <th scope="col" class="border-0">
+                        Theme
+                    </th>
+                    <th scope="col" class="border-0">
+                        Animateur
+                    </th>
+                    <th scope="col" class="border-0">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="border-top-0" data-label="Date de formation">
+                            @Html.DisplayFor(modelItem => item.DateFormation)
+                        </td>
+                        <td class="border-top-0" data-label="Durée de formation">
+                            @Html.DisplayFor(modelItem => item.DureeFormation)
+                        </td>
+                        <td class="border-top-0" data-label="Thème">
+                            @Html.DisplayFor(modelItem => item.Theme)
+                        </td>
+                        <td class="border-top-0" data-label="Thème">
+                            @Html.DisplayFor(modelItem => item.Animateur)
+                        </td>
+                        <td class="border-top-0" class="text-muted border-top-0">
+                            <span class="dropdown">
+                                <a class="text-muted text-decoration-none" href="#!" role="button" id="courseDropdown"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fe fe-more-vertical"></i>
+                                </a>
+                                <span class="dropdown-menu" aria-labelledby="courseDropdown">
+                                    <span class="dropdown-header">PARAMÈTRE </span>
+
+                                    <a class="dropdown-item" asp-action="Details" asp-route-id="@item.FormationID"><i class="fe fe-info dropdown-item-icon"></i>Detail</a>
+                                    @if (User.IsInRole("Admin") || User.IsInRole("Gestionnaire"))
+                                    {
+                                        <a class="dropdown-item" asp-action="Edit" asp-route-id="@item.FormationID"><i class="fe fe-edit dropdown-item-icon"></i>Modifier</a>
+                                        <a class="dropdown-item" asp-action="Candidats" asp-route-FormationID="@item.FormationID" asp-route-Theme="@item.Theme"><i class="fe fe-edit dropdown-item-icon"></i>Affecter</a>
+                                    }
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <a style="cursor:pointer;" class="dropdown-item" id="@item.FormationID" onclick="confirm(this)"><i class="fe fe-trash dropdown-item-icon"></i>Supprimer</a>
+
+                                    }
+                                </span>
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@{
+            var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+
+            <nav aria-label="Page navigation example" style="margin-right:30px!important;">
+                <ul class="pagination justify-content-end ">
+                    @if (prevDisabled == "disabled")
+                    {
+
+                    }
+                    else
+                    {
+                        <li class="page-item">
+                            <a class="page-link @prevDisabled" asp-action="Index" asp-controller="Formations"
+                   asp-route-pageNumber="@(Model.PageIndex - 1)"
+                   asp-route-SearchNom="@ViewData["CurrentFilterN"]"
+                   asp-route-SearchPrenom="@ViewData["CurrentFilterP"]"
+                   asp-route-SearchDate="@ViewData["CurrentFilterD"]"
+                   asp-route-SearchCIN="@ViewData["CINSortParm"]"
+                   asp-route-SearchStatut="@ViewData["StatutSortParm"]"
+                   asp-route-OrientationFilter="@ViewData["OrientationSortParm"]" aria-label="Précédent">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    }
+
+            @foreach (var pageNumber in Model.DisplayPages)
+            {
+                <li class="page-item @(Model.PageIndex == pageNumber ? "active" : "")">
+                    <a class="page-link" asp-controller="Formations" asp-action="Index"
+                       asp-route-pageNumber="@pageNumber"
+                       asp-route-SearchNom="@ViewData["CurrentFilterN"]"
+                       asp-route-SearchPrenom="@ViewData["CurrentFilterP"]"
+                       asp-route-SearchDate="@ViewData["CurrentFilterD"]"
+                       asp-route-SearchCIN="@ViewData["CINSortParm"]"
+                       asp-route-SearchStatut="@ViewData["StatutSortParm"]"
+                       asp-route-OrientationFilter="@ViewData["OrientationSortParm"]">@pageNumber</a>
+                </li>
+            }
+                    @if (nextDisabled == "disabled")
+                    {
+
+                    }
+                    else
+                    {
+                        <li class="page-item">
+                            <a class="page-link @nextDisabled" asp-action="Index" asp-controller="Formations"
+                   asp-route-pageNumber="@(Model.PageIndex + 1)"
+                   asp-route-SearchNom="@ViewData["CurrentFilterN"]"
+                   asp-route-SearchPrenom="@ViewData["CurrentFilterP"]"
+                   asp-route-SearchDate="@ViewData["CurrentFilterD"]"
+                   asp-route-SearchCIN="@ViewData["CINSortParm"]"
+                   asp-route-SearchStatut="@ViewData["StatutSortParm"]"
+                   asp-route-OrientationFilter="@ViewData["OrientationSortParm"]" aria-label="Suivant">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    }
+
+                </ul>
+            </nav>
+        }
+
+
+@section Scripts {
+    <script>
+        function confirm(idButton) {
+            alertify.confirm('Confirmation de suppression', 'Est-te vous sûr de vouloir supprimer cet formation ?', function() { window.location.replace("@(Url.Action("Delete"))" + "/" + idButton.id) }
+                , function() { /*alertify.error('Cancel')*/ });
+        }
+    </script>
+
+}

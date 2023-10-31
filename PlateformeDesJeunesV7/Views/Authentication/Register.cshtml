@@ -1,0 +1,198 @@
+﻿@model Domain.Models.Authentication.RegisterModel
+@{
+	Layout = "";
+}
+
+<style type="text/css" media="screen">
+    @@media screen and (max-width: 400px) {
+        #recaptcha_div{
+            position: absolute;
+            left: 10px;
+        }
+        #mesBoutons{
+            margin-top: 70px;
+        }
+}
+</style>
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!-- Mirrored from www.kodlama.org/pages/sign-in.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 30 Jun 2022 12:30:51 GMT -->
+<!-- Added by HTTrack -->
+<!-- /Added by HTTrack -->
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+
+    <!-- Favicon icon-->
+    <link rel="shortcut icon" type="image/x-icon" href="~/assets/images/logo143.jpeg">
+    <script type="text/javascript">
+        var onloadCallback = function () {
+            grecaptcha.render('recaptcha_div', {
+                'sitekey': '@ViewData["ClientKey"]'
+            });
+        };
+    </script>
+    <!-- Libs CSS -->
+    <link href="~/Design/fonts/feather/feather.css" rel="stylesheet" />
+    <link href="~/Design/libs/dragula/dist/dragula.min.css" rel="stylesheet" />
+    <link href="~/Design/libs/mdi/font/css/materialdesignicons.min.css" rel="stylesheet" />
+    <link href="~/Design/libs/prismjs/themes/prism.css" rel="stylesheet" />
+    <link href="~/Design/libs/dropzone/dist/dropzone.css" rel="stylesheet" />
+    <link href="~/Design/libs/magnific-popup/dist/magnific-popup.css" rel="stylesheet" />
+    <link href="~/Design/libs/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet">
+    <link href="~/Design/libs/yaireo/tagify/dist/tagify.css" rel="stylesheet">
+    <link href="~/Design/libs/tiny-slider/dist/tiny-slider.css" rel="stylesheet">
+    <link href="~/Design/libs/tippy.js/dist/tippy.css" rel="stylesheet">
+    <link href="~/Design/libs/cd" rel="stylesheet">
+    <link href="~/css/AnimationLogin.css" rel="stylesheet">
+
+    <link href="~/Design/libs/cdnjscloudflarecom/ajax/libs/font-awesome\5.11.2/css/all.css" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
+    <!-- Default theme -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css" />
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="~/Design/css/theme.min.css">
+    <title>Inscription plateforme des jeunes</title>
+</head>
+
+<body>
+	<!-- Page content -->
+	<div class="container d-flex flex-column">
+		<div class="row align-items-center justify-content-center no-gutters min-vh-100">
+			<div class="col-lg-5 col-md-8 py-8 py-xl-0">
+				<!-- Card -->
+				<div class="card shadow">
+					<!-- Card body -->
+					<div class="card-body p-6">
+						<div class="mb-4">
+							<div style="display:flex;justify-content:center;">
+							<div><a href="#"><img src="~/assets/images/logo143.jpeg" class="mb-1" alt="" style="width:150px;height:150px;"></a></div>
+							</div>
+							<h1 class="mb-1 font-weight-bold">Inscription</h1>
+							<span>Vous avez déja un compte?
+								<a asp-action="Login" asp-controller="Authentication" class="ml-1" style="color:#00AFF5!important;">S'authentifier</a></span>
+						</div>
+						<!-- Form -->
+						<form id="formulaire"  method="post">
+                            <div class="form-group">
+								<label for="username" class="form-label">Nom d'utilisateur</label>
+								<input type="text" autocomplete="off" id="username" class="form-control" asp-for="UserName" placeholder="Votre nom d'utilisateur ici"
+									required />
+									<span asp-validation-for="UserName" class="text-danger"></span>
+							</div>
+								<!-- Email -->
+							<div class="form-group">
+								<label for="email" class="form-label">Email</label>
+                                <input type="email" autocomplete="off" id="email" class="form-control" asp-for="Email" placeholder="Votre email ici"
+									required />
+									<span asp-validation-for="Email" class="text-danger"></span>
+							</div>
+								<!-- Password -->
+							<div class="form-group">
+								<label for="password" class="form-label">Mot de passe</label>
+                                <input type="password" autocomplete="off" id="password" class="form-control" asp-for="Password" placeholder="**************"
+									required />
+									<span asp-validation-for="Password" class="text-danger"></span>
+							</div>
+							<!-- Password -->
+							<div class="form-group">
+								<label for="password" class="form-label">Confirmation du mot de passe</label>
+                                <input type="password" autocomplete="off" id="passwordConfirm" class="form-control" placeholder="**************" />
+									<span  class="text-danger"></span>
+							</div>
+                            <div id="recaptcha_div"></div><br />
+								<!-- Checkbox -->
+							@*<div class="form-group">
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="agreeCheck" />
+									<label class="custom-control-label" for="agreeCheck"><span>I agree to the <a href="#!">Terms of
+												Service </a>and
+											<a href="#!">Privacy Policy.</a></span></label>
+								</div>
+							</div>*@
+							<h5 style="color:#ff0000b3;text-decoration: underline;">@TempData["LoginError"]</h5>
+							<h5 style="color:#ff0000b3;text-decoration: underline;">@ViewData["Message"]</h5>
+                            <div id="mesBoutons">
+                                <button type="submit" class="btn btn-block" style="background-color:#00AFF5;color:white;">Créer un compte</button>
+                                <a class="btn btn-block attention" style="background-color:#0074A3;color:white;" asp-controller="DemandCandidate" asp-action="Add">Poster ma candidature</a>
+                            </div>
+							<hr class="my-4" />
+                            <div class="font-size-md mt-4 text-center">
+                                <a href="https://www.facebook.com/منصة-الشباب-عين-السبع-107323618188959/" class="fab fa-facebook text-muted mr-3"></a>
+                                <a href="https://instagram.com/plateformedesjeunes.as?igshid=YmMyMTA2M2Y=" class="fab fa-instagram text-muted mr-3"></a>
+                                <a href="https://www.linkedin.com/in/plate-forme-des-jeunes-ain-sebaa-3439b2235" class="fab fa-linkedin text-muted "></a>
+                            </div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+    <!-- Scripts -->
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+            async defer>
+    </script>
+	<!-- Scripts -->
+    <!-- Libs JS -->
+    <script src="~/Design/libs/jquery/dist/jquery.min.js"></script>
+    <script src="~/Design/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/Design/libs/odometer/odometer.min.js"></script>
+    <script src="~/Design/libs/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="~/Design/libs/magnific-popup/dist/jquery.magnific-popup.min.js"></script>
+    <script src="~/Design/libs/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+    <script src="~/Design/libs/flatpickr/dist/flatpickr.min.js"></script>
+    <script src="~/Design/libs/inputmask/dist/jquery.inputmask.min.js"></script>
+    <script src="~/Design/libs/apexcharts/dist/apexcharts.min.js"></script>
+    <script src="~/Design/libs/quill/dist/quill.min.js"></script>
+    <script src="~/Design/libs/file-upload-with-preview/dist/file-upload-with-preview.min.js"></script>
+    <script src="~/Design/libs/dragula/dist/dragula.min.js"></script>
+    <script src="~/Design/libs/bs-stepper/dist/js/bs-stepper.min.js"></script>
+    <script src="~/Design/libs/dropzone/dist/min/dropzone.min.js"></script>
+    <script src="~/Design/libs/jQuery.print/jQuery.print.js"></script>
+    <script src="~/Design/libs/prismjs/prism.js"></script>
+    <script src="~/Design/libs/prismjs/components/prism-scss.min.js"></script>
+    <script src=""></script>
+
+    <script src="~/Design/libs/yaireo/tagify/dist/tagify.min.js"></script>
+    <script src="~/Design/libs/tiny-slider/dist/min/tiny-slider.js"></script>
+    <script src="~/Design/libs/popperjs/core/dist/umd/popper.min.js"></script>
+    <script src="~/Design/libs/tippy.js/dist/tippy-bundle.umd.min.js"></script>
+    <script src="~/Design/libs/typed.js/lib/typed.min.js"></script>
+
+    <!-- clipboard -->
+    <script src="~/Design/libs/cdnjscloudflarecom/ajax/libs/clipboard.js/1.5.12/clipboard.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+
+    <!-- Theme JS -->
+    <script src="~/Design/js/theme.min.js"></script>
+    <script>
+        const passwordConfirm = document.getElementById('passwordConfirm');
+        const password = document.getElementById('password');
+        const Formulaire = document.getElementById('formulaire');
+        /*
+        function confirmForm(){
+            if (password.textContent == passwordConfirm.textContent && passwordConfirm != null && passwordConfirm.length >= 4) {
+                Formulaire.submit();
+            }
+            else {
+                alertify.alert('Erreur', 'Veuiller remplir le formulaire correctement!', function () { });
+            }
+            
+        }
+        */
+    </script>
+</body>
+
+
+<!-- Mirrored from www.kodlama.org/pages/sign-in.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 30 Jun 2022 12:30:51 GMT -->
+</html>
+

@@ -1,0 +1,38 @@
+﻿/* Réduire la marge interne des cellules de tableau */
+table.table td {
+    padding: 0.25rem;
+}
+
+/* Réduire la marge externe de la table */
+table.table {
+    margin: 0;
+}
+
+    /* Réduire l'espacement entre les lignes de tableau */
+    table.table tbody tr {
+        margin-bottom: 0.5rem;
+    }
+
+        /* Réduire la hauteur de ligne pour compacter les lignes */
+        table.table tbody tr td {
+            line-height: 1.3;
+        }
+
+    /* Réduire la marge interne des cellules d'en-tête de tableau (th) */
+    table.table th {
+        padding: 0.25rem;
+    }
+
+    /* Réduire l'espacement entre les lignes d'en-tête de tableau (th) */
+    table.table thead tr {
+        margin-bottom: 0.25rem;
+    }
+
+        /* Réduire la hauteur de ligne pour les en-têtes de tableau (th) */
+        table.table thead tr th {
+            line-height: 1;
+        }
+.rounded {
+    width: 70px !important;
+    height: 37px !important;
+}

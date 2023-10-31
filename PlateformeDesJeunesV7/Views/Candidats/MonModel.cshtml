@@ -1,0 +1,189 @@
+﻿@model Client
+@{
+    Layout = "";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <title>@Model.Nom @Model.Prenom</title>
+    <style type="text/css">
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td:nth-of-type(odd) {
+            background: #eee;
+        }
+
+        th {
+            background: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+
+        td, th {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+            font-size: 15px;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        }
+        .email--inner-container {
+            padding-left: 20vh;
+            padding-right: 20vh;
+        }
+
+        .alert {
+            padding: 20px;
+            background-color: #f44336;
+            color: white;
+            opacity: 1;
+            transition: opacity 0.6s;
+            margin-bottom: 15px;
+        }
+
+            .alert.success {
+                background-color: #04AA6D;
+            }
+
+            .alert.info {
+                background-color: #2196F3;
+            }
+
+            .alert.warning {
+                background-color: #eee;
+            }
+
+        .badge {
+            /* Center the content */
+            align-items: center;
+            display: flex;
+            justify-content: center;
+            /* Colors */
+            color: #000080;
+            
+        }
+    </style>
+</head>
+<body class="body">
+    <header>
+        <h1 class="badge" style="text-align:center;font-style: italic;">@Model.Nom @Model.Prenom</h1>
+    </header>
+
+    <div class="email--background">
+        <div class="email--container">
+            <div class="email--inner-container" style="margin-bottom: 10vh;">
+                <div id="logo" style="text-align: center;">
+                    <img style="width: 150px; height: 150px;" src="~/Uploads/@(Model.ImageUrl)">
+                </div>
+                <table style="border-collapse: collapse; width: 100%;">
+                    <tbody>
+                        <tr>
+                            <td style="width: 50%;"><strong>Nom:</strong> @Model.Nom</td>
+                            <td style="width: 50%;"><strong>Prénom:</strong> @Model.Prenom</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 50%;"><strong>Date de naissance:</strong> @Model.DateNaissance.GetValueOrDefault().ToString("yyyy-MM-dd")</td>
+                            <td style="width: 50%;"><strong>CIN:</strong> @Model.CIN</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 50%;"><strong>Adresse:</strong> @Model.Adresse</td>
+                            <td style="width: 50%;"><strong>Date d'adhésion:</strong> @(Model.DateAderation?.ToString("yyyy-MM-dd"))</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 50%;"><strong>Découverte de la plateForme:</strong> @Model.DecouvertePlateForme</td>
+                            <td style="width: 50%;"><strong>Email:</strong> @Model.Email</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 50%;"><strong>Sexe:</strong> @Model.Sexe</td>
+                            <td style="width: 50%;"><strong>Orienté:</strong> @(Model.Oriente.GetValueOrDefault() ? "Oui" : "Non")</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <br />
+            <!--Partie 2-->
+
+            <div class="email--inner-container">
+                <div id="logo" style="text-align:center;">
+                    <h1 style="text-align:center;color:#000080;font-style: italic;">Diplomes :</h1>
+                </div>
+                @if (Model.Diplomes.Any())
+                {
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Diplome</th>
+                                <th>Branche</th>
+                                <th>Institut</th>
+                                <th>Date du diplome</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(var item in Model.Diplomes)
+                            {
+                                <tr>
+                                    <td>@item.DiplomeName</td>
+                                    <td>@item.Branche</td>
+                                    <td>@item.InstitutName</td>
+                                    <td>@item.DateObtentionDiplome.ToString("yyyy-MM-dd")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="alert warning" style="color:black">
+                        Aucun diplôme trouvé...
+                    </div>
+                }
+            </div>
+
+
+            <br />
+            <!--Partie 3-->
+
+            <div class="email--inner-container">
+                <div id="logo" style="text-align:center;">
+                    <h1 style="text-align:center;color:#000080;font-style: italic;">Formations :</h1>
+                </div>
+                @if (Model.InscriptionFormation.Any())
+                {
+                    
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Theme</th>
+                                    <th>Animateur</th>
+                                    <th>Duree de la formation</th>
+                                    <th>DateFormation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var item in Model.InscriptionFormation)
+                            {
+                                <tr>
+                                    <td>@item.Formation.Theme</td>
+                                    <td>@item.Formation.Animateur</td>
+                                    <td>@item.Formation.DureeFormation</td>
+                                    <td>@item.Formation.DateFormation.ToString("yyyy-MM-dd")</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                }
+                else
+                {
+                    <div class="alert warning" style="color:black">
+                        Aucune formation trouvé...
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,290 @@
+﻿@model Domain.Models.Statistique;
+
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_LayoutDashboard";
+}
+
+<div class="container-fluid p-4" style="
+    background-color: white;">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-12">
+            <div class="border-bottom pb-4 mb-4 d-lg-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="mb-0 h2 font-weight-bold">Dashboard</h1>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+            
+            <div class="col-xl-6 col-lg-6 col-md-12 col-12">
+              <!-- Card -->
+              <div class="card mb-4">
+                <!-- Card body -->
+                <div class="card-body">
+                  <div class="d-flex align-items-center justify-content-between mb-3 lh-1">
+                    <div>
+                      <span class="font-size-xs text-uppercase font-weight-semi-bold">Total des candidats</span>
+                    </div>
+                    <div>
+                      <a target="_blank" asp-controller="Candidats" asp-action="Index"><span class=" fe fe-book-open font-size-lg text-primary"></span></a>
+                    </div>
+                  </div>
+                  <h2 class="font-weight-bold mb-1">
+                    @Model.candidatAcceuilli
+                  </h2>
+                  @*<span class="text-danger font-weight-semi-bold">120+</span>*@
+                  <span class="ml-1 font-weight-medium">Nombre de candidat</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-12 col-12">
+              <!-- Card -->
+              <div class="card mb-4">
+                <!-- Card body -->
+                <div class="card-body">
+                  <div class="d-flex align-items-center justify-content-between mb-3 lh-1">
+                    <div>
+                      <span class="font-size-xs text-uppercase font-weight-semi-bold">Nombre de candidat orientée</span>
+                    </div>
+                    <div>
+                            <a target="_blank" asp-controller="Candidats" asp-action="Index" asp-route-OrientationFilter="Orienté"><span class=" fe fe-users font-size-lg text-primary"></span></a>
+                    </div>
+                  </div>
+                  <h2 class="font-weight-bold mb-1">
+                    @Model.nombreCandidatAcceuilliEtOriente
+                  </h2>
+                  @*<span class="text-success font-weight-semi-bold"><i class="fe fe-trending-up mr-1"></i>+1200</span>*@
+                  <span class="ml-1 font-weight-medium">Nombre de candidats orientée</span>
+                </div>
+              </div>
+            </div>
+        <div class="col-xl-6 col-lg-6 col-md-12 col-12">
+            <!-- Card -->
+            <div class="card mb-4">
+                <!-- Card body -->
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-3 lh-1">
+                        <div>
+                            <span class="font-size-xs text-uppercase font-weight-semi-bold">Nombre de candidat avec status d'orientation Refusé</span>
+                        </div>
+                        <div>
+                            <a target="_blank" asp-controller="Candidats" asp-action="Index" asp-route-OrientationFilter="Refusé"><span class=" fe fe-users font-size-lg text-primary"></span></a>
+                        </div>
+                    </div>
+                    <h2 class="font-weight-bold mb-1">
+                        @Model.nombreCandidatRefusé
+                    </h2>
+                    @*<span class="text-success font-weight-semi-bold"><i class="fe fe-trending-up mr-1"></i>+1200</span>*@
+                    <span class="ml-1 font-weight-medium">Nombre de candidats orientée</span>
+                </div>
+            </div>
+        </div>
+            <div class="col-xl-6 col-lg-6 col-md-12 col-12">
+              <!-- Card -->
+              <div class="card mb-4">
+                <!-- Card body -->
+                <div class="card-body">
+                  <div class="d-flex align-items-center justify-content-between mb-3 lh-1">
+                    <div>
+                      <span class="font-size-xs text-uppercase font-weight-semi-bold">Total des formations</span>
+                    </div>
+                    <div>
+                            <a target="_blank" asp-controller="Formations" asp-action="Index"><span class="fe fe-shopping-bag font-size-lg text-primary"></span></a>
+                    </div>
+                  </div>
+                  <h2 class="font-weight-bold mb-1">
+                    @Model.nombreFormation 
+                  </h2>
+                  @*<span class="text-success font-weight-semi-bold"><i class="fe fe-trending-up mr-1"></i>+20.9$</span>*@
+                  <span class="ml-1 font-weight-medium">Nombres de formations</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-12 col-12">
+              <!-- Card -->
+              <div class="card mb-4">
+                <!-- Card body -->
+                <div class="card-body">
+                  <div class="d-flex align-items-center justify-content-between mb-3 lh-1">
+                    <div>
+                      <span class="font-size-xs text-uppercase font-weight-semi-bold">Chercheur d'emploit</span>
+                    </div>
+                    <div>
+                            <a target="_blank" asp-controller="Candidats" asp-action="Index" asp-route-SearchStatut="1"><span class=" fe fe-user-check font-size-lg text-primary"></span></a>
+                    </div>
+                  </div>
+                  <h2 class="font-weight-bold mb-1">
+                    @Model.nombreChercheurEmploit
+                  </h2>
+                  @*<span class="text-success font-weight-semi-bold"><i class="fe fe-trending-up mr-1"></i>+200</span>*@
+                  <span class="ml-1 font-weight-medium">Nombre de chercheur d'emploit</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-6 col-lg-6 col-md-12 col-12">
+              <!-- Card -->
+              <div class="card mb-4">
+                <!-- Card body -->
+                <div class="card-body">
+                  <div class="d-flex align-items-center justify-content-between mb-3 lh-1">
+                    <div>
+                      <span class="font-size-xs text-uppercase font-weight-semi-bold">Porteur de projet</span>
+                    </div>
+                    <div>
+                      <a target="_blank" asp-controller="Candidats" asp-action="Index" asp-route-SearchStatut="0"><span class=" fe fe-user-check font-size-lg text-primary"></span></a>
+                    </div>
+                  </div>
+                  <h2 class="font-weight-bold mb-1">
+                    @Model.nombrePorteurDeProjets
+                  </h2>
+                  @*<span class="text-success font-weight-semi-bold"><i class="fe fe-trending-up mr-1"></i>+200</span>*@
+                  <span class="ml-1 font-weight-medium">Nombre de porteur de projet</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+    <div class="row">
+        <div class="col-xl-6 col-lg-12 col-md-12 col-12">
+            <!-- Card -->
+            <div class="card mb-4">
+                <!-- Card header -->
+                <div class="card-header align-items-center card-header-height  d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0">Homme : @Model.nombreHommes - Femme : @Model.nombreFemmes</h4>
+                    </div>
+
+                </div>
+                <!-- Card body -->
+                <div class="card-body">
+                    <div id="HF" class="apex-charts d-flex justify-content-center" style=""></div>
+                </div>
+            </div>
+        </div>
+         <div class="col-xl-6 col-lg-12 col-md-12 col-12">
+            <!-- Card -->
+            <div class="card mb-4">
+                <!-- Card header -->
+                <div class="card-header align-items-center card-header-height  d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0">Porteur de projet : @Model.nombrePorteurDeProjets - Chercheur d'emploit : @Model.nombreChercheurEmploit</h4>
+                    </div>
+
+                </div>
+                <!-- Card body -->
+                <div class="card-body">
+                    <div id="PPCE" class="apex-charts d-flex justify-content-center" style=""></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-lg-12 col-md-12 col-12">
+            <!-- Card -->
+            <div class="card mb-4">
+                <!-- Card header -->
+                <div class="card-header align-items-center card-header-height  d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0">Orienté : @Model.nombreCandidatAcceuilliEtOriente - Non orienté : @Model.nombreCandidatNonOrienté - Refusé : @Model.nombreCandidatRefusé</h4>
+                    </div>
+
+                </div>
+                <!-- Card body -->
+                <div class="card-body">
+                    <div id="ORN" class="apex-charts d-flex justify-content-center" style=""></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+@section Scripts{
+
+    <script>
+        var options = {
+            series: [@Html.DisplayFor(modelItem => modelItem.nombreHommes) , @Html.DisplayFor(modelItem => modelItem.nombreFemmes)],
+            chart: {
+                width: 430,
+                type: 'pie',
+            },
+            labels: ['Homme ', 'Femme'],
+            responsive: [{
+                breakpoint: 516,
+                options: {
+                    chart: {
+                        width: 380
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#HF"), options);
+        chart.render();
+    </script>
+
+    <script>
+        var options = {
+            series: [@Html.DisplayFor(modelItem => modelItem.nombrePorteurDeProjets) , @Html.DisplayFor(modelItem => modelItem.nombreChercheurEmploit)],
+            chart: {
+                width: 490,
+                type: 'pie',
+            },
+            labels: ['Porteur de projet', 'Chercheur d\emploit'],
+            responsive: [{
+                breakpoint: 516,
+                options: {
+                    chart: {
+                        width: 380
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#PPCE"), options);
+        chart.render();
+    </script>
+
+    <script>
+        var options = {
+            series: [@Html.DisplayFor(modelItem => modelItem.nombreCandidatAcceuilliEtOriente) , @Html.DisplayFor(modelItem => modelItem.nombreCandidatRefusé), @Html.DisplayFor(modelItem => modelItem.nombreCandidatNonOrienté)],
+            chart: {
+                width: 430,
+                type: 'pie',
+            },
+            labels: ['Orienté ', 'Refusé', 'Non orienté'],
+            responsive: [{
+                breakpoint: 516,
+                options: {
+                    chart: {
+                        width: 380
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }]
+        };
+
+        var chart = new ApexCharts(document.querySelector("#ORN"), options);
+        chart.render();
+    </script>
+
+  }
+

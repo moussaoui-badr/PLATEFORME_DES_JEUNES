@@ -1,0 +1,68 @@
+﻿@{
+    Layout = "_LayoutDashboard";
+}
+
+@model Domain.Entities.Client
+
+
+@{
+    Layout = "_LayoutDashboard";
+    string date = "";
+}
+
+<!-- Page header-->
+<div class="py-4 py-lg-6 bg-primary" style="
+    background-color: #04ADEF!important;">
+    <div class="container">
+        <div class="row">
+            <div class="offset-lg-1 col-lg-10 col-md-12 col-12">
+                <div class="d-lg-flex align-items-center justify-content-between">
+                    <!-- Content -->
+                    <div class="mb-4 mb-lg-0">
+                        <h1 class="text-white mb-1"></h1>
+                        <p class="mb-0 text-white lead">
+                            
+                        </p>
+                    </div>
+                    <div>
+                        @*<a href="instructor-courses.html" class="btn btn-white ">Back to Course</a>
+                        <a href="instructor-courses.html" class="btn btn-success ">Save</a>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page Content -->
+<div class="pb-12">
+    <div class="container">
+        <div id="courseForm" class="bs-stepper">
+            <div class="row">
+                <div class="offset-lg-1 col-lg-10 col-md-12 col-12">
+                    
+
+                    <form asp-action="ImportExcelFile" method="post" enctype="multipart/form-data">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label for="file" class="br_dropzone">
+                                    <input required type="file" id="file" name="file" onchange="this.form.fileName.value = this.files[0].name">
+                                    <input type="text" id="fileName" name="fileName" placeholder="Déposez le fichier à télécharger (ou cliquez)" readonly>
+                                </label>
+                            </div>
+                            <div class="text-center my-3">
+                                <a href="@Url.Action("DownloadFile", "Candidats", new {filename = "TableauDeBord-Axe-SousAxe-Indicateur.xlsx"})" class="btn btn w-xl" style="background:#45505e;color:white"> <i class="ri-file-fill align-bottom"></i> Canevas</a>
+                                <button type="submit" class="btn btn-primary w-xl"> <i class="ri-upload-2-fill align-bottom"></i> Charger un fichier de données</button>
+                            </div>
+                        </div>
+                    </form>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

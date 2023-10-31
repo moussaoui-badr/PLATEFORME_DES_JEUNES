@@ -1,0 +1,232 @@
+﻿@model Domain.Models.ComptabiliteModel
+
+@{
+    ViewData["Title"] = "Comptabilité";
+}
+
+@{
+    Layout = "_LayoutDashboard";
+}
+
+<div class="card mb-4">
+    <div style="display:flex;justify-content:space-between;">
+        <div class="card-header">
+            <h3 class="mb-0">Saisie partie comptabilité</h3>
+            <span>
+                Saisir les informations ci dessous.
+            </span>
+        </div>
+        <div class="card-header">
+        </div>
+    </div>
+    <!-- Card header -->
+    <!-- Card body -->
+    <div class="card-body">
+        <div class="col-xl-6 col-lg-6 col-md-6 col-12 mb-2" style="margin: auto;margin-top:20px;">
+            <div class="form-group">
+                <select class="selectpicker" data-width="50%" id="ChoixComptabilite">
+                    <option value="">--Catégorie de saisie--</option>
+                    <option value="Fonctionnement">Fonctionnement</option>
+                    <option value="Financement">Financement</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Form -->
+        <form method="post" class="col-xl-6 col-lg-6 col-md-6 col-12 mb-2" style="margin: auto;display:none;" id="formFonctionnement">
+            <div class="form-group">
+                <select asp-for="Fonctionnement.ChapitreId" class="selectpicker" data-width="100%" asp-items="ViewBag.Chapitres">
+                    <option value="" selected>--- Chapitres ---</option>
+                </select>
+            </div>
+            <div class="row">
+                <div class="form-group col-6">
+                    <label class="control-label">Numéro de chèque</label>
+                    <input asp-for="Fonctionnement.NuméroCheque" class="form-control" />
+                    <span class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-6">
+                    <label class="control-label">Bénficiaire</label>
+                    <input asp-for="Fonctionnement.Beneficiaire" class="form-control" />
+                    <span class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-6">
+                    <label class="control-label">Montant</label>
+                    <input asp-for="Fonctionnement.Montant" class="form-control" />
+                    <span class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-6">
+                    <label class="control-label">Date</label>
+                    <input required asp-for="Fonctionnement.Date" type="text" id="selectDate" class="form-control text-dark flatpickr"
+                           placeholder="Sélectionner la date" />
+                    <span class="text-danger"></span>
+                </div>
+            </div>
+            
+
+            @* <h3 class="control-label">Budget : </h3>
+            <div class="form-group">
+                <label class="control-label">Date</label>
+                <input required asp-for="Fonctionnement.DateBudget" type="text" id="selectDate" class="form-control text-dark flatpickr"
+                       placeholder="Sélectionner la date" />
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Montant</label>
+                <input asp-for="Fonctionnement.MontantBudget" class="form-control" />
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Emetteur</label>
+                <input asp-for="Fonctionnement.EmetteurBudget" class="form-control" />
+                <span class="text-danger"></span>
+            </div> *@
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" >Envoyer</button>
+                <a style="margin-left:15px;" asp-action="Fonctionnements">Retour</a>
+            </div>
+        </form>
+        <form method="post" class="col-xl-6 col-lg-6 col-md-6 col-12 mb-2" style="margin: auto;display:none;" id="formFinancement">
+            <div class="form-group">
+    <select asp-for="Financement.TypeFinancement" required class="selectpicker" id="TypeFinancement">
+        <option value="">-- Type --</option>
+        <option value="1">Debit</option>
+        <option value="2">Crédit</option>
+    </select>
+</div>
+
+            <div class="row">
+                <div class="form-group col-6" id="FinancementDate">
+                    <label class="control-label" id="DateLabel" disabled>Date</label>
+                    <input required asp-for="Financement.Date" type="date" id="selectDate" class="form-control text-dark"
+                           placeholder="Sélectionner la date" />
+                    <span class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-6" id="FinancementMontant">
+                    <label class="control-label" id="MontantLabel" disabled>Montant</label>
+                    <input required asp-for="Financement.Montant" class="form-control" />
+                    <span class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-6" id="FinancementNumeroCheque">
+    <label class="control-label" id="NumeroChequeLabel" disabled>Numéro de chèque</label>
+    <input asp-for="Financement.NumeroCheque" class="form-control"  />
+    <span class="text-danger"></span>
+</div>
+
+                <div class="form-group col-6" id="FinancementBeneficiaire">
+    <label class="control-label" id="BeneficiaireLabel" disabled>Bénéficiaire</label>
+    <input asp-for="Financement.Beneficiaire" class="form-control"  />
+    <span class="text-danger"></span>
+</div>
+            </div>
+            <div class="form-group col-6" id="FinancementCandidat">
+    <label class="control-label" id="CandidatLabel" disabled>Candidat</label>
+    <input asp-for="Financement.Candidat" class="form-control"  />
+    <span class="text-danger"></span>
+</div>
+
+           @*  <h3 class="control-label">Budget : </h3>
+            <div class="form-group">
+                <label class="control-label">Date</label>
+                <input required asp-for="Financement.DateBudget" type="text" id="selectDate" class="form-control text-dark flatpickr"
+                       placeholder="Sélectionner la date" />
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Montant</label>
+                <input asp-for="Financement.MontantBudget" class="form-control" />
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Emetteur</label>
+                <input asp-for="Financement.EmetteurBudget" class="form-control" />
+                <span class="text-danger"></span>
+            </div> *@
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Envoyer</button>
+                <a style="margin-left:15px;" asp-action="Fonctionnements">Retour</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script>
+        // Obtenir les éléments de formulaire que vous souhaitez masquer ou afficher
+        const dateInput = document.querySelector('#FinancementDate');
+        const montantInput = document.querySelector('#FinancementMontant');
+        const numeroChequeInput = document.querySelector('#FinancementNumeroCheque');
+        const beneficiaireInput = document.querySelector('#FinancementBeneficiaire');
+        const candidatInput = document.querySelector('#FinancementCandidat');
+
+        // Obtenir la liste déroulante
+        const typeFinancementSelect = document.getElementById("TypeFinancement");
+
+        // Gérer l'événement de changement de sélection
+        typeFinancementSelect.addEventListener("change", function () {
+            const selectedOption = typeFinancementSelect.value;
+
+            // Masquer tous les champs
+            dateInput.style.display = "none";
+            montantInput.style.display = "none";
+            numeroChequeInput.style.display = "none";
+            beneficiaireInput.style.display = "none";
+            candidatInput.style.display = "none";
+
+            // Afficher les champs en fonction de la sélection
+            if (selectedOption === "1") {
+                dateInput.style.display = "block";
+                montantInput.style.display = "block";
+                numeroChequeInput.style.display = "block";
+                beneficiaireInput.style.display = "block";
+                candidatInput.style.display = "block";
+            } else if (selectedOption === "2") {
+                dateInput.style.display = "block";
+                montantInput.style.display = "block";
+                candidatInput.style.display = "block";
+            }
+        });
+    </script>
+    <!-- recupérer la valeur du select list avec id ChoixComptabilite et si la valeur recupéré est Financement supprimer le style display:none; du formulaire avec id formFinancement-->
+    <script>
+        $(document).ready(function () {
+            dateInput.style.display = "none";
+            montantInput.style.display = "none";
+            numeroChequeInput.style.display = "none";
+            beneficiaireInput.style.display = "none";
+            candidatInput.style.display = "none";
+            $("#ChoixComptabilite").change(function () 
+                { 
+                var choix = $("#ChoixComptabilite").val(); 
+                if (choix === "Financement") 
+                { 
+                    $('#formFinancement').show(); 
+                    $('#formFonctionnement').hide(); 
+                } 
+                else if (choix === "Fonctionnement") 
+                { 
+                    $('#formFonctionnement').show(); 
+                    $('#formFinancement').hide(); 
+                }
+                else{
+                    $('#formFonctionnement').hide();
+                    $('#formFinancement').hide();
+                }
+            }); 
+        });
+        
+    </script>
+
+    }

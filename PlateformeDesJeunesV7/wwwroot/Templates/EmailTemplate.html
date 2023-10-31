@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!--[if gte mso 9]>
+      <xml>
+        <o:OfficeDocumentSettings>
+          <o:AllowPNG />
+          <o:PixelsPerInch>96</o:PixelsPerInch>
+        </o:OfficeDocumentSettings>
+      </xml>
+    <![endif]-->
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="format-detection" content="date=no" />
+    <meta name="format-detection" content="address=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="x-apple-disable-message-reformatting" />
+
+    <!--[if !mso]><!-->
+    <link href="https://fonts.googleapis.com/css?family=Muli:400,400i,700,700i"
+          rel="stylesheet" />
+    <!--<![endif]-->
+    <title>[Nom] [Prenom]</title>
+    <!--[if gte mso 9]>
+      <style type="text/css" media="all">
+        sup {
+          font-size: 100% !important;
+        }
+      </style>
+    <![endif]-->
+
+    <style type="text/css" media="screen">
+        /* Linked Styles */
+
+        
+
+        table {
+            width: 750px;
+            border-collapse: collapse;
+            
+        }
+
+        /* Zebra striping */
+        td:nth-of-type(odd) {
+            background: #eee;
+        }
+
+        th {
+            background: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+
+        td, th {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+            font-size: 18px;
+        }
+        
+
+        /* 
+Max width before this PARTICULAR table gets nasty
+This query will take effect for any screen smaller than 760px
+and also iPads specifically.
+*/
+        @media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px) {
+
+            table {
+                width: 100%;
+            }
+
+            /* Force table to not be like tables anymore */
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+                /* Hide table headers (but not display: none;, for accessibility) */
+                thead tr {
+                    position: absolute;
+                    top: -9999px;
+                    left: -9999px;
+                }
+
+            tr {
+                border: 1px solid #ccc;
+            }
+
+            td {
+                /* Behave  like a "row" */
+                border: none;
+                border-bottom: 1px solid #eee;
+                position: relative;
+                padding-left: 50%;
+                margin-bottom: 15px;
+            }
+
+                td:before {
+                    /* Now like a table header */
+                    position: absolute;
+                    /* Top/left values mimic padding */
+                    top: 6px;
+                    left: 6px;
+                    width: 45%;
+                    padding-right: 10px;
+                    white-space: nowrap;
+                    /* Label the data */
+                    content: attr(data-column);
+                    color: #000;
+                    font-weight: bold;
+                }
+        }
+ 
+    </style>
+</head>
+<body class="body">
+    <br />
+    <br />
+    <br />
+    
+    <header>
+        <h1 style="text-align:center;">[Nom] [Prenom]</h1>
+    </header>
+
+    <div class="email--background">
+        <div class="email--container">
+            <!--<img src="LogoThe3s.jpg" alt="THE3S" style="margin: auto; width: 250px;">-->
+
+            <div class="email--inner-container">
+                <!--https://localhost:5001/background/Image1-removebg-preview.png-->
+                <div id="logo">
+                    <img style="width:150px;height:150px;" src="[ImageUrl]">
+                </div>
+
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Prénom</th>
+                            <th>Date de naissance</th>
+                            <th>CIN</th>
+                            <th>Adresse</th>
+                            <th>Date d'adèration</th>
+                            <th>Decouverte de la plateForme</th>
+                            <th>Email</th>
+                            <th>Sexe</th>
+                            <th>Oriente</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-column="Nom">[Nom]</td>
+                            <td data-column="Prénom">[Prenom]</td>
+                            <td data-column="Date de naissance">[DateNaissance]</td>
+                            <td data-column="CIN">[Cin]</td>
+                            <td data-column="Adresse">[Adresse]</td>
+                            <td data-column="Date d'adhèration">[DateAderation]</td>
+                            <td data-column="Decouverte de la plateForme">[DecouvertePlateforme]</td>
+                            <td data-column="Email">[Email]</td>
+                            <td data-column="Sexe">[Sexe]</td>
+                            <td data-column="Oriente">[Oriente]</td>
+
+                        </tr>
+
+                    </tbody>
+                </table>
+                [EspaceDiplome]
+                <h3>[Diplome]</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nom du diplome</th>
+                            <th>Branche</th>
+                            <th>Nom de l'institut</th>
+                            <th>Date d'obtention du diplome</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        [Diplomes]
+                    </tbody>
+                </table>
+                [EspaceFormation]
+                [EspaceFormation]
+                <h3>[Formation]</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Theme</th>
+                            <th>Date de formation</th>
+                            <th>Duree de formation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        [Formations]
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+
+        <div class="footer-junk">
+            <a href="#"></a>
+        </div>
+
+    </div>
+</body>
+</html>
+
+<script>
+    
+</script>

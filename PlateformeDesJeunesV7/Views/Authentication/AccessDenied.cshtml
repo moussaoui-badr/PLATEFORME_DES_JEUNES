@@ -1,0 +1,72 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Domain.Entities
+
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    Layout = null;
+}
+
+<style>
+    body {
+        background-color: black;
+        color: white;
+    }
+
+    h1 {
+        color: red;
+    }
+
+    h6 {
+        color: red;
+        text-decoration: underline;
+    }
+    .btn_return{
+        margin-top: 10px;
+        width : 100%;
+        text-align: center;
+        
+    }
+    .btn_return a{
+        border: solid red 3px;
+        background-color:red;
+        color:white;
+        border-radius:10px;
+        text-decoration:none;
+        padding:10px;
+    }
+
+</style>
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Access Denied</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+<body>
+    <div class="w3-display-middle" style="
+    text-align: center;">
+        <h1 class="w3-jumbo w3-animate-top w3-center"><code>Access Denied</code></h1>
+        <hr class="w3-border-white w3-animate-left" style="margin:auto;width:50%">
+        <h3 class="w3-center w3-animate-right">You dont have permission to view this page.</h3>
+        <h3 class="w3-center w3-animate-zoom">🚫🚫🚫🚫</h3>
+        <h6 class="w3-center w3-animate-zoom">error code:403 forbidden</h6>
+        
+        <br />
+        
+        <br />
+        <div class="btn_return">
+            <a class="w3-center w3-animate-zoom" asp-action="Logout" asp-controller="Authentication">Se connecter avec un autre compte</a>
+        </div>
+        
+    </div>
+</body>
+</html>

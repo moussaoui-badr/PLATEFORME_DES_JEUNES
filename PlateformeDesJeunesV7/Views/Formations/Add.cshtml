@@ -1,0 +1,77 @@
+﻿@model Domain.Entities.Formation
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+@{
+    Layout = "_LayoutDashboard";
+}
+
+<div class="card mb-4">
+    <div style="display:flex;justify-content:space-between;">
+        <div class="card-header">
+            <h3 class="mb-0">Création d'une formation</h3>
+            <span>
+                Saisir les informations ci dessous.
+            </span>
+        </div>
+        <div class="card-header">
+        </div>
+    </div>
+    <!-- Card header -->
+    <!-- Card body -->
+    <div class="card-body">
+        <!-- Form -->
+        <form asp-action="Add" class="col-xl-6 col-lg-6 col-md-6 col-12 mb-2" style="margin: auto;">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+
+                <label asp-for="DateFormation" class="control-label"></label>
+                <input asp-for="DateFormation" id="Date" type="text" class="form-control flatpickr" placeholder="Date de la formation">
+                <span asp-validation-for="DateFormation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DureeFormation" class="control-label"></label>
+                <input asp-for="DureeFormation" class="form-control" />
+                <span asp-validation-for="DureeFormation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Theme" class="control-label"></label>
+                <input asp-for="Theme" class="form-control" />
+                <span asp-validation-for="Theme" class="text-danger"></span>
+            </div>
+            @{
+                if (User.IsInRole("HeureJoyeuse"))
+                {
+                    <input style="display:none;" asp-for="Animateur" value="L'HEURE JOYEUSE" class="form-control" />
+                }
+                else if (User.IsInRole("Amideast"))
+                {
+                    <input style="display:none;" asp-for="Animateur" value="Amideast" class="form-control" />
+                }
+                else
+                {
+                    <div class="form-group">
+                        <label asp-for="Animateur" class="control-label"></label>
+                        <input asp-for="Animateur" class="form-control" />
+                        <span asp-validation-for="Animateur" class="text-danger"></span>
+                    </div>
+                }
+            }
+            <div class="form-group">
+                <input type="submit" value="Envoyer" class="btn btn-primary" />
+                <a style="margin-left:15px;" asp-action="Index">Retour</a>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

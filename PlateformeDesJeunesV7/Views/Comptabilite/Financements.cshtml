@@ -1,0 +1,155 @@
+﻿@model List<Financement>
+@using System.Globalization
+@{
+    Layout = "_LayoutDashboard";
+    var nfi = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
+    nfi.NumberGroupSeparator = " ";
+}
+<style>
+    .disabled {
+    }
+</style>
+<div class="card mb-4">
+    <div style="display:flex;justify-content:space-between;">
+        <div class="card-header">
+            <h3 class="mb-0">Financements</h3>
+            <span>
+                Utiliser les filtres pour rechercher.
+            </span>
+        </div>
+        <div class="card-header">
+            <a type="button" class="btn btn-primary" asp-controller="Comptabilite" asp-action="Add">Nouvelle saisie</a>
+        </div>
+    </div>
+    <!-- Card header -->
+    <!-- Card body -->
+    <div class="card-body">
+        <!-- Form -->
+        <form class="form-row mt-3" asp-action="Financements" asp-controller="Comptabilite" method="get">
+            <div class="col-lg-6 mb-2 col-md-6 col-12 ">
+                <select name="Type" value="@ViewData["Type"]" class="selectpicker" data-width="100%">
+                    <option value="">-- Type de financement --</option>
+                    <option value="1">Debit</option>
+                    <option value="2">Crédit</option>
+                </select>
+            </div>
+            
+            <div class="col-lg-6 mb-2 col-md-6 col-12  ">
+                <input name="NumeroCheque" id="NumeroCheque" value="@ViewData["NumeroCheque"]" type="search" class="form-control" placeholder="Numero de chèque" />
+            </div>
+            <div class="col-lg-6 mb-2 col-md-6 col-12  ">
+                <input name="Candidat" id="Candidat" value="@ViewData["Candidat"]" type="search" class="form-control" placeholder="Candidat" />
+            </div>
+            <div class="col-lg-6 mb-2 col-md-6 col-12  ">
+                <input name="Beneficiaire" id="Beneficiaire" value="@ViewData["Beneficiaire"]" type="search" class="form-control" placeholder="Bénéficiaire" />
+            </div>
+            <div class="col-lg-6 mb-2 col-md-6 col-12  ">
+                <input name="Montant" id="Montant" type="number" class="form-control" placeholder="Montant" />
+            </div>
+            <div class="col-lg-6 col-md-6 col-12 mb-2">
+                <div class="w-md-50">
+                    <input name="SearchDate" id="Date" value="@ViewData["CurrentFilterD"]" type="text" class="form-control flatpickr" placeholder="Date de départ">
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-12 mb-2">
+                <div class="w-md-50">
+                    <input name="SearchDateO" value="@ViewData["CurrentFilterDO"]" id="Date" type="text" class="form-control flatpickr" placeholder="Date de fin">
+                </div>
+            </div>
+
+            <div class="col-lg-12 col-md-12 col-12 mb-2" style="text-align:right!important;">
+                <button type="submit" class="btn btn-outline-info me-2">Rechercher</button>
+                <a asp-action="Financements" type="button" class="btn btn-outline-primary">Initialiser</a>
+            </div>
+        </form>
+    </div>
+
+</div>
+<div class="text-center">
+@if (Model != null)
+{
+        
+        <!-- Table -->
+        <div class="row mt-0 mt-md-4">
+            <div class="col-12">
+                <!-- Card -->
+                <div class="card mb-4">
+
+                    <!-- Table -->
+                    <div class="table-responsive">
+
+                        <table class="table mb-0 text-nowrap table-hover table-centered table-expanded">
+                            <!-- Ajout de la classe "table-expanded" -->
+
+                            <thead class="table-light">
+                    <tr>
+                        <th scope="col" class="border-0 font-weight-bold">Type</th>
+                        <th scope="col" class="border-0 font-weight-bold">Date</th>
+                        <th scope="col" class="border-0 font-weight-bold">Candidat</th>
+                        <th scope="col" class="border-0 font-weight-bold">Montant</th>
+                        <th scope="col" class="border-0 font-weight-bold">Numéro chèque</th>
+                        <th scope="col" class="border-0 font-weight-bold">Bénéficiaire</th>
+                        <th scope="col" class="border-0 font-weight-bold">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model)
+                {
+                    //Index du foreach
+                    var index = Model.IndexOf(item);
+                    <tr>
+                        <td class="border-top-0" style="text-overflow: ellipsis;overflow: hidden;max-width: 300px;">
+                            @if(item.TypeFinancement == 1)
+                            {
+                                <span class="badge badge-pill badge-danger">Débit</span>
+                            }
+                            else if(item.TypeFinancement == 2)
+                            {
+                            <span class="badge badge-pill badge-success">Crédit</span>
+                            }
+                            else
+                            {
+                                            <span class="badge badge-pill badge-success">A modifier</span>
+                                        }
+                        </td>
+                        <td class="border-top-0" style="text-overflow: ellipsis;overflow: hidden;max-width: 300px;">
+                            @item.Date.GetValueOrDefault().ToString("dd/MM/yyyy")
+                        </td>
+                        <td class="border-top-0" style="text-overflow: ellipsis;overflow: hidden;max-width: 300px;">
+                            @item.Candidat
+                        </td>
+                        <td class="border-top-0" style="text-overflow: ellipsis;overflow: hidden;max-width: 300px;">
+                            @item.Montant.GetValueOrDefault().ToString("#,##0.00", nfi)
+                        </td>
+                        <td class="border-top-0" style="text-overflow: ellipsis;overflow: hidden;max-width: 300px;">
+                            @(item.NumeroCheque == null ? "__" : item.NumeroCheque)
+                        </td>
+                        <td class="border-top-0" style="text-overflow: ellipsis;overflow: hidden;max-width: 300px;">
+                            @(item.Beneficiaire == null ? "__" : item.Beneficiaire)
+                        </td>
+
+                        <td class="text-muted border-top-0">
+                        <a asp-action="UpdateFinancement" asp-controller="Comptabilite" asp-route-id="@item.FinancementID"><i class="fe fe-edit dropdown-item-icon"></i></a>
+                        <a style="cursor:pointer;" id="@item.FinancementID" onclick="confirm(this)"><i class="fe fe-trash dropdown-item-icon"></i></a>
+                        </td>
+                       
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+            </div>
+        </div>
+    </div>
+}
+</div>
+@section Scripts {
+    <script>
+        function confirm(idButton) {
+            var pageURL = $(location).attr("href");
+            alertify.confirm('Confirmation de suppression', 'Est-te vous sûr de vouloir supprimer cet élément ?', function () { window.location.replace("@(Url.Action("RemoveFinancement"))" + "/" + idButton.id ) }
+                , function () { /*alertify.error('Cancel')*/ });
+        }
+    </script>
+
+}
