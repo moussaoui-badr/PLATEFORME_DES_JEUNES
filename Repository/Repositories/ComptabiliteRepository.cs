@@ -14,9 +14,18 @@ namespace Repository.Repositories
         {
             _dbContext = dbContext;
         }
-        public async Task<List<Chapitre>> GetListChapitres(int ChapitreId, double MontantTotal, string Date)
+        public async Task<List<Chapitre>> GetListChapitres(int ChapitreId, double MontantTotal, string Date, int Exercice)
         {
             var result = _dbContext.Chapitres.Include(c => c.Fonctionnements).AsQueryable();
+            if(Exercice != 0 && !string.IsNullOrEmpty(Date))
+            {
+                DateTime oDate = Convert.ToDateTime(Date);
+                DateTime premierJourAnnee = new(oDate.Year, 1, 1); // Premier jour de l'année
+                DateTime dernierJourAnnee = new(oDate.Year, 12, 31); // Dernier jour de l'année
+
+                result = result.Where(p => p.DateCreation >= premierJourAnnee && p.DateCreation <= dernierJourAnnee);
+                return await result.ToListAsync();
+            }
             if (ChapitreId != 0)
             {
                 result = result.Where(c => c.ChapitreID == ChapitreId);
@@ -56,12 +65,12 @@ namespace Repository.Repositories
             if (!string.IsNullOrEmpty(SearchDate))
             {
                 DateTime oDate = Convert.ToDateTime(SearchDate);
-                result = result.Where(p => p.DateCreation >= oDate);
+                result = result.Where(p => p.Date >= oDate);
             }
             if (!string.IsNullOrEmpty(SearchDateO))
             {
                 DateTime oDateO = Convert.ToDateTime(SearchDateO);
-                result = result.Where(p => p.DateCreation <= oDateO);
+                result = result.Where(p => p.Date <= oDateO);
             }
             return await result.ToListAsync();
         }
@@ -92,12 +101,12 @@ namespace Repository.Repositories
             if (!string.IsNullOrEmpty(SearchDate))
             {
                 DateTime oDate = Convert.ToDateTime(SearchDate);
-                result = result.Where(p => p.DateCreation >= oDate);
+                result = result.Where(p => p.Date >= oDate);
             }
             if (!string.IsNullOrEmpty(SearchDateO))
             {
                 DateTime oDateO = Convert.ToDateTime(SearchDateO);
-                result = result.Where(p => p.DateCreation <= oDateO);
+                result = result.Where(p => p.Date <= oDateO);
             }
             return await result.ToListAsync();
         }

@@ -8,7 +8,7 @@ namespace Service.IService
         Task<bool> AddFonctionnement(Fonctionnement fonctionnement);
         Task<bool> AddFinancement(Financement financement);
 
-        Task<List<Chapitre>> GetListChapitres(int ChapitreId, double MontantTotal, string Date);
+        Task<List<Chapitre>> GetListChapitres(int ChapitreId, double MontantTotal, string Date, int Exercice);
         Task<List<Fonctionnement>> GetListFonctionnement(int ChapitreId, string NuméroCheque, string Beneficiaire, double Montant, string SearchDate, string SearchDateO);
         Task<List<Financement>> GetListFinancement(int type, string Candidat, string NumeroCheque, string Beneficiaire, double Montant, string SearchDate, string SearchDateO);
         Task<List<Chapitre>> GetListChapitres();

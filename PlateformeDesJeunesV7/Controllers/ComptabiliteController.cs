@@ -3,6 +3,7 @@ using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Repository.IRepositories;
 using Service.IService;
 
 namespace Web.Controllers
@@ -12,13 +13,25 @@ namespace Web.Controllers
     public class ComptabiliteController : Controller
     {
         private readonly IComptabiliteService _comptabiliteService;
+        private readonly IExerciceRepository _exerciceRepository;
 
-        public ComptabiliteController(IComptabiliteService comptabiliteService)
+        public ComptabiliteController(IComptabiliteService comptabiliteService, IExerciceRepository exerciceRepository)
         {
             _comptabiliteService = comptabiliteService;
+            _exerciceRepository = exerciceRepository;
         }
 
-        public async Task<IActionResult> Chapitres(int ChapitreId, double MontantTotale, string Date)
+        public async Task<IActionResult> Exercices(int ChapitreId, double MontantTotale, string Date, int Exercice)
+        {
+            if (!string.IsNullOrEmpty(Date) || string.IsNullOrEmpty(Date))
+            {
+                ViewData["Date"] = Date;
+                return View(await _comptabiliteService.GetListChapitres(ChapitreId, MontantTotale, Date, Exercice));
+            }
+            return View(new List<Chapitre>());
+        }
+
+        public async Task<IActionResult> Chapitres(int ChapitreId, double MontantTotale, string Date, int Exercice)
         {
             ViewBag.Chapitres = new SelectList(await _comptabiliteService.GetListChapitres(), "ChapitreID", "ChapitreTitle");
             if(ChapitreId != 0 ||  MontantTotale != 0 || !string.IsNullOrEmpty(Date))
@@ -26,7 +39,7 @@ namespace Web.Controllers
                 ViewData["ChapitreId"] = ChapitreId;
                 ViewData["MontantTotale"] = MontantTotale;
                 ViewData["Date"] = Date;
-                return View(await _comptabiliteService.GetListChapitres(ChapitreId, MontantTotale, Date));
+                return View(await _comptabiliteService.GetListChapitres(ChapitreId, MontantTotale, Date, Exercice));
             }
             return View(new List<Chapitre>());
         }

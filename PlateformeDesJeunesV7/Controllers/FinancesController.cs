@@ -24,12 +24,26 @@ namespace PlateformeDesJeunesAinSebaa.Controllers
             _candidatService = candidatService;
             _emailService = emailService;
         }
-        //public IActionResult Index()
-        //{
+        public async Task<IActionResult> RapportApportEnDH(string SearchNom, string SearchPrenom, string SearchDate, string SearchDateO, int? pageNumber, string SearchCIN, string PGFilter)
+        {
+            try
+            {
+                //ClientFinance + List INDH (Information + Apport en dh)
+                ViewData["CINSortParm"] = SearchCIN;
+                ViewData["CurrentFilterN"] = SearchNom;
+                ViewData["CurrentFilterP"] = SearchPrenom;
+                ViewData["CurrentFilterD"] = SearchDate;
+                ViewData["CurrentFilterDO"] = SearchDateO;
+                ViewData["PlateformeGestionnaireSortParm"] = PGFilter;
+                return View(await _candidatService.GetCandidats(PGFilter, SearchNom, SearchPrenom, SearchDate, SearchDateO, pageNumber, SearchCIN, 15));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return RedirectToAction("Index", "Finances", new { message = ex.Message });
+            }
+        }
 
-        //    return View();
-
-        //}
         public async Task<IActionResult> MonModel(int id)
         {
             var client = await _candidatService.GetCandidat(id);

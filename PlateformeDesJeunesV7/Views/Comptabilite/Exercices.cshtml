@@ -1,0 +1,108 @@
+﻿@model List<Chapitre>
+@using System.Globalization
+@{
+    Layout = "_LayoutDashboard";
+    var nfi = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
+    nfi.NumberGroupSeparator = " ";
+}
+<style>
+    .disabled {
+    }
+
+    #tableauChapitres th {
+        width: 25%;
+    }
+
+</style>
+<div class="card mb-4">
+    <div style="display:flex;justify-content:space-between;">
+        <div class="card-header">
+            <h3 class="mb-0">Exercices</h3>
+            <span>
+                Utiliser les filtres pour rechercher.
+            </span>
+        </div>
+    </div>
+</div>
+<!-- Card header -->
+<div class="card-header border-bottom-0">
+    <h3 class="mb-0">Les exercices</h3>
+</div>
+<div class="text-center">
+    @if (Model != null)
+    {
+        var model = Model.GroupBy(chapitre => chapitre.DateCreation.Year)
+        .OrderBy(groupe => groupe.Key);
+
+        @foreach (var groupeChapitres in model)
+        {
+            int annee = groupeChapitres.Key; // Obtenez l'année du groupe
+            List<Chapitre> chapitresDeLAnnee = groupeChapitres.OrderBy(chapitre => chapitre.ChapitreTitle).ToList(); // Triez les chapitres à l'intérieur du groupe
+            
+            <div class="row">
+                <div class="col-12">
+                    <div class="card mb-4">
+                        <div class="table-responsive">
+                            <table class="table mb-0 text-nowrap table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th scope="col">Exercices</th>
+                                        <th scope="col">Montant totale</th>
+                                        <th scope="col">Montant restant</th>
+                                        <th scope="col">Montant utilisé</th>
+                                        <th scope="col">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <a href="#" class="text-inherit">@annee</a>
+                                        </td>
+                                        <td>
+                                            @(chapitresDeLAnnee.Sum(c => c.MontantTotale).ToString("#,##0.00", nfi))
+                                        </td>
+                                        <td>
+                                            @((chapitresDeLAnnee.Sum(c => c.MontantTotale) - chapitresDeLAnnee.Sum(c => c.Fonctionnements.Sum(c => c.Montant))).GetValueOrDefault().ToString("#,##0.00", nfi))
+                                        </td>
+                                        <td>
+                                            @((chapitresDeLAnnee.Sum(c => c.MontantTotale) - (chapitresDeLAnnee.Sum(c => c.MontantTotale) - chapitresDeLAnnee.Sum(c => c.Fonctionnements.Sum(c => c.Montant)))).GetValueOrDefault().ToString("#,##0.00", nfi))
+                                        </td>
+                                        <td>
+                                            <a asp-action="Chapitres" asp-controller="Comptabilite" asp-route-Exercice="1" asp-route-Date="@(new DateTime(annee, 1, 1).ToString("yyyy-MM-dd"))"><i class="fe fe-edit dropdown-item-icon"></i></a>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        }
+    }
+</div>
+<div style="margin-bottom:20vh;"></div>
+@section Scripts {
+    <script>
+        function confirm(idButton) {
+            var pageURL = $(location).attr("href");
+            alertify.confirm('Confirmation de suppression', 'Est-te vous sûr de vouloir supprimer cet élement ?', function () { window.location.replace("@(Url.Action("RemoveChapitre"))" + "/" + idButton.id) }
+                , function () { /*alertify.error('Cancel')*/ });
+        }
+
+        function toggleIcon(link) {
+            var icon = link.querySelector('i');
+            if (icon.classList.contains('fa-chevron-down')) {
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            } else {
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            }
+        }
+
+    </script>
+
+}

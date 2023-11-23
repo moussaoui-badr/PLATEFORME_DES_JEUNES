@@ -21,6 +21,7 @@ namespace Repository
             services.AddScoped<IEmailRepository, EmailRepository>();
             services.AddScoped<ICandidatINDHRepository, CandidatINDHRepository>();
             services.AddScoped<IComptabiliteRepository, ComptabiliteRepository>();
+            services.AddScoped<IExerciceRepository, ExerciceRepository>();
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(

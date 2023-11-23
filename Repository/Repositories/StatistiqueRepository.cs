@@ -17,8 +17,8 @@ namespace Repository.Repositories
         }
         public async Task<StatistiqueP2> GetStatistique(string SearchPG, string SearchDate, string SearchDateO)
         {
-            var Montants = _context.ClientFinances.Select(c => new { c.Created, c.PlateformeGestionnaire, c.MontantApportPersonnel, c.MontantINDH, c.MontantProjet }).AsQueryable();
-            var INDH = _context.INDHS.Where(c => c.ClientFinanceID != null).AsQueryable();
+            var Montants = _context.ClientFinances.AsQueryable();
+            var INDH = _context.INDHS.Where(c => c.ClientFinanceID != null && c.ClientFinanceID != 0).AsQueryable();
             var NombreCandidats = await Montants.CountAsync();
             if (!string.IsNullOrEmpty(SearchPG))
             {

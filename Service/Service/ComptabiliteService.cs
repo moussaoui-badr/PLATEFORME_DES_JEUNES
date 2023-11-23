@@ -99,9 +99,9 @@ namespace Service.Service
             return await _comptabiliteRepository.GetFonctionnementById(id);
         }
 
-        public async Task<List<Chapitre>> GetListChapitres(int ChapitreId, double MontantTotal, string Date)
+        public async Task<List<Chapitre>> GetListChapitres(int ChapitreId, double MontantTotal, string Date, int Exercice)
         {
-            return await _comptabiliteRepository.GetListChapitres(ChapitreId, MontantTotal, Date);
+            return await _comptabiliteRepository.GetListChapitres(ChapitreId, MontantTotal, Date, Exercice);
         }
 
         public async Task<List<Chapitre>> GetListChapitres()

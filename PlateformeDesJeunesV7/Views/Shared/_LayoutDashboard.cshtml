@@ -176,10 +176,15 @@
                                     @if (User.IsInRole("Admin"))
                                     {
                                     <li class="nav-item">
-                                        <a class="nav-link active" asp-controller="Comptabilite" asp-action="Chapitres" style="color: white!important;">
+                                        <a class="nav-link active" asp-controller="Comptabilite" asp-action="Exercices" style="color: white!important;">
                                             <i class="nav-icon fe fe-user-plus mr-2" style="color: white!important;"></i>Exercices
                                         </a>
                                     </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link active" asp-controller="Comptabilite" asp-action="Chapitres" style="color: white!important;">
+                                                <i class="nav-icon fe fe-user-plus mr-2" style="color: white!important;"></i>Chapitres
+                                            </a>
+                                        </li>
                                         <li class="nav-item">
                                             <a class="nav-link active" asp-controller="Comptabilite" asp-action="BudgetFonctionnement" style="color: white!important;">
                                                 <i class="nav-icon fe fe-trending-up mr-2" style="color: white!important;"></i>B fonctionnement
