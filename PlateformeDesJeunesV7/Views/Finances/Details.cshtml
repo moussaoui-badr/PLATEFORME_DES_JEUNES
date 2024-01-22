@@ -43,7 +43,10 @@
                                 </svg>
                                 </a>*@
                             </h2>
-                            @if (Math.Abs(Model.MontantProjet - (Model.INDHS.Where(e => e.Etat == Etat.Acquis || e.Etat == Etat.Amenagement).Select(m => m.MontantAcquisition).Sum())) == 0)
+                            @{
+                                var MontantRAR = Math.Abs(Model.MontantProjet - (Model.INDHS.Select(m => m.PartIndh).Sum() + Model.INDHS.Select(m => m.ApportEnDhs).Sum() + Model.INDHS.Select(m => m.ApportEnAmenagement).Sum()));
+                            }
+                            @if (MontantRAR == 0)
                             {
                                 <span class=""> (Dossier cloturé)</span>
                             }

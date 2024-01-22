@@ -98,9 +98,12 @@ nfi.NumberGroupSeparator = " ";
                                 </div>
                                 <div class="ml-lg-2 mt-2 mt-lg-0">
                                     <h4 class="mb-1 h5">
+                                        @{
+                                            var MontantRAR = Math.Abs(item.MontantProjet - (item.INDHS.Select(m => m.PartIndh).Sum() + item.INDHS.Select(m => m.ApportEnDhs).Sum() + item.INDHS.Select(m => m.ApportEnAmenagement).Sum()));
+                                        }
                                         <a asp-action="Details" asp-controller="Finances" asp-route-id="@item.ClientFinanceID" class="text-inherit">
                                             <span style="margin-right:5px;">@item.Nom</span><span>@item.Prenom</span>
-                                            @if (Math.Abs(item.MontantProjet - (item.INDHS.Where(e => e.Etat == Etat.Acquis || e.Etat == Etat.Amenagement).Select(m => m.MontantAcquisition).Sum())) == 0)
+                                            @if (MontantRAR == 0)
                                             {
                                                 <span class=""> (Dossier cloturé)</span>
                                             }
@@ -215,8 +218,8 @@ nfi.NumberGroupSeparator = " ";
                         </td>
                         <td class="border-top-0" style="text-overflow: ellipsis;overflow: hidden;max-width: 300px;">
 
-                            <span>@Math.Abs(item.MontantProjet - (item.INDHS.Select(m => m.PartIndh).Sum() + item.INDHS.Select(m => m.ApportEnDhs).Sum() + item.INDHS.Select(m => m.ApportEnAmenagement).Sum() + item.INDHS.Select(m => m.Autre).Sum())).ToString("#,0.00", nfi)</span>
-                            
+                            <span>@MontantRAR.ToString("#,0.00", nfi)</span>
+                            @* +item.INDHS.Select(m => m.Autre).Sum() *@
                         </td>
                         <td class="border-top-0" style="text-overflow: ellipsis;overflow: hidden;max-width: 300px;">
                             @if (item.ApportPersonnelConfirme)

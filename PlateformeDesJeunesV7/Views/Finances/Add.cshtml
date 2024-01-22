@@ -348,10 +348,18 @@ else
             // Montants acquisition
             var montantsAcquisitions = document.getElementsByClassName("montantacquisition");
 
+            // Montants autres
+            var autresindh = document.getElementsByClassName("autre");
+
             for (var i = 0; i < nombreElements; i++) {
 
                 // Conversion du montant en float et soustraction du rarMontantProjet
                 rarMontantProjet = rarMontantProjet.toFixed(2) - parseFloat(montantsAcquisitions[i].value.replace(',', '.')).toFixed(2) || 0;
+            }
+            for (var i = 0; i < nombreElements; i++) {
+                var cal = parseFloat(autresindh[i].value.replace(',', '.')).toFixed(2) || 0;
+                rarMontantProjet = parseFloat(rarMontantProjet.toFixed(2)) + parseFloat(cal);
+
             }
 
             // Obtenez l'élément où vous afficherez l'écart
