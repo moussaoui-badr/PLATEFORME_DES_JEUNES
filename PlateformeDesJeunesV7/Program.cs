@@ -40,6 +40,13 @@ builder.Services.AddAuthentication().AddCookie(options =>
     options.ExpireTimeSpan = TimeSpan.FromDays(30);
     options.SlidingExpiration = true;
 });
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    // Définissez ici la durée de la session souhaitée en minutes
+    options.ExpireTimeSpan = TimeSpan.FromDays(30); // Par exemple, 30 minutes
+    options.SlidingExpiration = true; // La session se prolonge à chaque requête
+});
+
 // services
 builder.Services.AddServices(builder.Configuration);
 // repository and db context

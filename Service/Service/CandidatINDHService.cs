@@ -20,9 +20,9 @@ namespace Service.Service
             _candidatRepository = candidatRepository;
             _hosting = hosting;
         }
-        public async Task<PaginatedList<ClientFinance>> GetCandidats(string SearchPG, string SearchNom, string SearchPrenom, string SearchDate, string SearchDateO, int? pageNumber, string SearchCIN, int PageSize)
+        public async Task<PaginatedList<ClientFinance>> GetCandidats(string SearchPG, string SearchNom, string SearchPrenom, string SearchDate, string SearchDateO, int? pageNumber, string SearchCIN, int PageSize, int? Cloture_EnCours)
         {
-            return await _candidatRepository.GetCandidats(SearchPG, SearchNom, SearchPrenom, SearchDate, SearchDateO, pageNumber, SearchCIN, PageSize);
+            return await _candidatRepository.GetCandidats(SearchPG, SearchNom, SearchPrenom, SearchDate, SearchDateO, pageNumber, SearchCIN, PageSize, Cloture_EnCours);
         }
 
         public async Task<Response> AddCandidat(CandidatINDHViewModel client)

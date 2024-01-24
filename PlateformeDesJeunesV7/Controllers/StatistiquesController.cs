@@ -20,12 +20,13 @@ namespace Web.Controllers
             return View(await _statistiqueService.GetStatistique());
         }
 
-        public async Task<IActionResult> P2(string PGFilter, string SearchDate, string SearchDateO)
+        public async Task<IActionResult> P2(string PGFilter, string SearchDate, string SearchDateO, int? Cloture_EnCours)
         {
             ViewData["CurrentFilterD"] = SearchDate;
             ViewData["CurrentFilterDO"] = SearchDateO;
             ViewData["PlateformeGestionnaireSortParm"] = PGFilter;
-            return View(await _statistiqueService.GetStatistique(PGFilter, SearchDate, SearchDateO));
+            ViewData["Cloture_EnCours"] = Cloture_EnCours;
+            return View(await _statistiqueService.GetStatistique(PGFilter, SearchDate, SearchDateO, Cloture_EnCours));
         }
 
         public async Task<IActionResult> P3(string DateDu, string DateAu)

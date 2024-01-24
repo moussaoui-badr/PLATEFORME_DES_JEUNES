@@ -18,9 +18,9 @@ namespace Service.Service
             return await _statistiqueRepository.GetStatistique();
         }
 
-        public async Task<StatistiqueP2> GetStatistique(string SearchPG, string SearchDate, string SearchDateO)
+        public async Task<StatistiqueP2> GetStatistique(string SearchPG, string SearchDate, string SearchDateO, int? Cloture_EnCours)
         {
-            return await _statistiqueRepository.GetStatistique(SearchPG, SearchDate, SearchDateO);
+            return await _statistiqueRepository.GetStatistique(SearchPG, SearchDate, SearchDateO, Cloture_EnCours);
         }
 
         public async Task<StatistiquesComptabilite> StatistiquesComptabilite(string DateDu, string DateAu)

@@ -38,6 +38,8 @@ namespace Domain.Entities
 
         [NotMapped]
         public int Etat { get; set; }
+        [NotMapped]
+        public int? Cloture_EnCours { get; set; }
         public DateTime? Modified { get; set; }
         public ICollection<INDH> INDHS { get; set; }
         public bool ApportPersonnelConfirme { get; set; }

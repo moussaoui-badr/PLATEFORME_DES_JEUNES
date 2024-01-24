@@ -18,9 +18,28 @@ namespace Repository.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<PaginatedList<ClientFinance>> GetCandidats(string SearchPG, string SearchNom, string SearchPrenom, string SearchDate, string SearchDateO, int? pageNumber, string SearchCIN, int PageSize)
+        public async Task<PaginatedList<ClientFinance>> GetCandidats(string SearchPG, string SearchNom, string SearchPrenom, string SearchDate, string SearchDateO, int? pageNumber, string SearchCIN, int PageSize, int? Cloture_EnCours)
         {
             var clients = _dbContext.ClientFinances.Include(i => i.INDHS).AsQueryable();
+
+            if (Cloture_EnCours != null)
+            {
+                if(Cloture_EnCours == 2)
+                {
+                    // Condition pour les dossiers en cours
+                    clients = clients.Where(c =>
+                        Math.Abs(c.MontantProjet - (c.INDHS.Select(m => m.PartIndh).Sum() +
+                        c.INDHS.Select(m => m.ApportEnDhs).Sum() +
+                        c.INDHS.Select(m => m.ApportEnAmenagement).Sum())) != 0);
+                }
+                else if(Cloture_EnCours == 1)
+                {
+                    clients = clients.Where(c =>
+                        Math.Abs(c.MontantProjet - (c.INDHS.Select(m => m.PartIndh).Sum() +
+                        c.INDHS.Select(m => m.ApportEnDhs).Sum() +
+                        c.INDHS.Select(m => m.ApportEnAmenagement).Sum())) == 0);
+                }
+            }
 
             if (!string.IsNullOrEmpty(SearchCIN))
             {

@@ -46,47 +46,47 @@
     <div class="card-body">
         @if (Model != null && Model.Any())
         {
-            <div class="table-responsive border-0 overflow-y-hidden card-body">
-                <table class="table mb-0 text-nowrap">
-                    <thead>
+        <!-- Table -->
+        <div class="table-responsive border-0 overflow-y-hidden card-body">
+            <table class="table mb-0 text-nowrap">
+                <thead>
+                    <tr>
+                    <th scope="col">#</th>
+                    <th scope="col" class="border-0">Date du Budget</th>
+                    <th scope="col" class="border-0">Montant du Budget</th>
+                    <th scope="col" class="border-0">Émetteur du Budget</th>
+                    <th scope="col" class="border-0">Numéro de Chèque</th>
+                    <th scope="col" class="border-0">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                    @foreach (var budget in Model)
+                    {
                         <tr>
-                            <th scope="col" class="border-0">ID</th>
-                            <th scope="col" class="border-0">Date du Budget</th>
-                            <th scope="col" class="border-0">Montant du Budget</th>
-                            <th scope="col" class="border-0">Émetteur du Budget</th>
-                            <th scope="col" class="border-0">Numéro de Chèque</th>
-                            <th scope="col" class="border-0">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var budget in Model)
-                        {
-                            <tr>
-                                <td class="border-top-0">@budget.BudgetFinancementID</td>
+                            <td class="border-top-0">@budget.BudgetFinancementID</td>
                             <td class="border-top-0">@budget.DateBudget.ToString("dd/MM/yyyy")</td>
-                                <td class="border-top-0">@budget.MontantBudget.ToString("#,##0.00", nfi)</td>
-                                <td class="border-top-0">@budget.EmetteurBudget</td>
-                                <td class="border-top-0">@budget.NuméroCheque</td>
-                                <td class="border-top-0">
+                            <td class="border-top-0">@budget.MontantBudget.ToString("#,##0.00", nfi)</td>
+                            <td class="border-top-0">@budget.EmetteurBudget</td>
+                            <td class="border-top-0">@budget.NuméroCheque</td>
+                            <td class="border-top-0">
                                 <a asp-action="UpdateBudgetFinancement" asp-route-id="@budget.BudgetFinancementID">
                                     <i class="fe fe-edit dropdown-item-icon"></i>
-                                    </a>
-                                    <a style="cursor:pointer;" id="@budget.BudgetFinancementID" onclick="confirmDelete(this)">
-                                        <i class="fe fe-trash dropdown-item-icon"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+                                </a>
+                                <a style="cursor:pointer;" id="@budget.BudgetFinancementID" onclick="confirmDelete(this)">
+                                    <i class="fe fe-trash dropdown-item-icon"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+            </tbody>
+        </table>
+        </div>
         }
         else
         {
             <p>Aucun budget de financement n'a été enregistré.</p>
         }
     </div>
-</div>
 @section Scripts {
     <script>
         function confirmDelete(button) {

@@ -18,7 +18,7 @@ namespace Service.IService
         Task<Response> EditCandidatNotMapProfile(ClientFinance client);
         Task<Response> AddDocument(List<DocumentINDH> documents, int ID);
         Task<Response> AddCandidat(CandidatINDHViewModel client);
-        Task<PaginatedList<ClientFinance>> GetCandidats(string SearchPG, string SearchNom, string SearchPrenom, string SearchDate, string SearchDateO, int? pageNumber, string SearchCIN, int PageSize);
+        Task<PaginatedList<ClientFinance>> GetCandidats(string SearchPG, string SearchNom, string SearchPrenom, string SearchDate, string SearchDateO, int? pageNumber, string SearchCIN, int PageSize, int? Cloture_EnCours);
         Task<Response> AddIndh(List<INDH> INDH, int ID, PlateformeGestionnaire pg);
     }
 }

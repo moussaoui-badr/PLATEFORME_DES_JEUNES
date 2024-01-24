@@ -21,5 +21,8 @@
         public double ApportEnDHS { get; set; }
         public double ApportEnAmenagement { get; set; }
 
+
+        public int? Cloture_EnCours { get; set; }
+
     }
 }

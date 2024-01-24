@@ -35,7 +35,7 @@ namespace PlateformeDesJeunesAinSebaa.Controllers
                 ViewData["CurrentFilterD"] = SearchDate;
                 ViewData["CurrentFilterDO"] = SearchDateO;
                 ViewData["PlateformeGestionnaireSortParm"] = PGFilter;
-                return View(await _candidatService.GetCandidats(PGFilter, SearchNom, SearchPrenom, SearchDate, SearchDateO, pageNumber, SearchCIN, 15));
+                return View(await _candidatService.GetCandidats(PGFilter, SearchNom, SearchPrenom, SearchDate, SearchDateO, pageNumber, SearchCIN, 15, null));
             }
             catch (Exception ex)
             {
@@ -76,7 +76,7 @@ namespace PlateformeDesJeunesAinSebaa.Controllers
                 return RedirectToAction("Filtre", "Finances", new { message = ex.Message });
             }
         }
-        public async Task<IActionResult> Index(string SearchNom, string SearchPrenom, string SearchDate, string SearchDateO, int? pageNumber, string SearchCIN, string PGFilter)
+        public async Task<IActionResult> Index(string SearchNom, string SearchPrenom, string SearchDate, string SearchDateO, int? pageNumber, string SearchCIN, string PGFilter, int? Cloture_EnCours)
         {
             try
             {
@@ -86,7 +86,8 @@ namespace PlateformeDesJeunesAinSebaa.Controllers
                 ViewData["CurrentFilterD"] = SearchDate;
                 ViewData["CurrentFilterDO"] = SearchDateO;
                 ViewData["PlateformeGestionnaireSortParm"] = PGFilter;
-                return View(await _candidatService.GetCandidats(PGFilter, SearchNom, SearchPrenom, SearchDate, SearchDateO, pageNumber, SearchCIN, 15));
+                ViewData["Cloture_EnCours"] = Cloture_EnCours;
+                return View(await _candidatService.GetCandidats(PGFilter, SearchNom, SearchPrenom, SearchDate, SearchDateO, pageNumber, SearchCIN, 15, Cloture_EnCours));
             }
             catch (Exception ex)
             {
@@ -248,7 +249,7 @@ namespace PlateformeDesJeunesAinSebaa.Controllers
 
         public async Task<IActionResult> SaisieBGExcel(string SearchNom, string SearchPrenom, string SearchDate, string SearchDateO, int? pageNumber, string SearchCIN, string PGFilter)
         {
-            var candidats = await _candidatService.GetCandidats(PGFilter, SearchNom, SearchPrenom, SearchDate, SearchDateO, pageNumber, SearchCIN, 500);
+            var candidats = await _candidatService.GetCandidats(PGFilter, SearchNom, SearchPrenom, SearchDate, SearchDateO, pageNumber, SearchCIN, 500, null);
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             var stream = new MemoryStream();

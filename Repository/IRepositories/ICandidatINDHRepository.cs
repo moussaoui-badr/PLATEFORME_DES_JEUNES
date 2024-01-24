@@ -15,7 +15,7 @@ namespace Repository.IRepositories
         Task<Response> EditCandidat(ClientFinance client);
         Task<Response> AddDocument(List<DocumentINDH> documents);
         Task<Response> AddCandidat(ClientFinance client);
-        Task<PaginatedList<ClientFinance>> GetCandidats(string SearchPG, string SearchNom, string SearchPrenom, string SearchDate, string SearchDateO, int? pageNumber, string SearchCIN, int PageSize);
+        Task<PaginatedList<ClientFinance>> GetCandidats(string SearchPG, string SearchNom, string SearchPrenom, string SearchDate, string SearchDateO, int? pageNumber, string SearchCIN, int PageSize, int? Cloture_EnCours);
         Task<Response> AddIndh(List<INDH> INDH, int ID, PlateformeGestionnaire pg);
     }
 }

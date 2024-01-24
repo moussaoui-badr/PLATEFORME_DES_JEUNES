@@ -134,6 +134,7 @@ namespace Repository.Repositories
             return await _dbContext.Chapitres.Select(c => new Chapitre { ChapitreID = c.ChapitreID, ChapitreTitle = c.ChapitreTitle }).ToListAsync();
         }
 
+
         public async Task<bool> DeleteFinancement(int id)
         {
             var financement = await _dbContext.Financements.FindAsync(id);

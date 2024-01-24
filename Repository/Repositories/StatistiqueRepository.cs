@@ -2,6 +2,7 @@
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Repository.Data;
+using Repository.Data.Migrations;
 using Repository.IRepositories;
 
 namespace Repository.Repositories
@@ -15,11 +16,30 @@ namespace Repository.Repositories
         {
             _context = dbContext;
         }
-        public async Task<StatistiqueP2> GetStatistique(string SearchPG, string SearchDate, string SearchDateO)
+        public async Task<StatistiqueP2> GetStatistique(string SearchPG, string SearchDate, string SearchDateO, int? Cloture_EnCours)
         {
             var Montants = _context.ClientFinances.AsQueryable();
             var INDH = _context.INDHS.Where(c => c.ClientFinanceID != null && c.ClientFinanceID != 0).AsQueryable();
             var NombreCandidats = await Montants.CountAsync();
+
+            //if (Cloture_EnCours != null)
+            //{
+            //    if (Cloture_EnCours == 2)
+            //    {
+            //        // Condition pour les dossiers en cours
+            //        Montants = Montants.Where(c =>
+            //            Math.Abs(c.MontantProjet - (c.INDHS.Select(m => m.PartIndh).Sum() +
+            //            c.INDHS.Select(m => m.ApportEnDhs).Sum() +
+            //            c.INDHS.Select(m => m.ApportEnAmenagement).Sum())) != 0);
+            //    }
+            //    else if (Cloture_EnCours == 1)
+            //    {
+            //        Montants = Montants.Where(c =>
+            //            Math.Abs(c.MontantProjet - (c.INDHS.Select(m => m.PartIndh).Sum() +
+            //            c.INDHS.Select(m => m.ApportEnDhs).Sum() +
+            //            c.INDHS.Select(m => m.ApportEnAmenagement).Sum())) == 0);
+            //    }
+            //}
             if (!string.IsNullOrEmpty(SearchPG))
             {
                 Montants = Montants.Where(c => c.PlateformeGestionnaire == (SearchPG == "AinSebaa" ? PlateformeGestionnaire.AinSebaa : SearchPG == "RocheNoir" ? PlateformeGestionnaire.RocheNoir : PlateformeGestionnaire.HayMohammadi));

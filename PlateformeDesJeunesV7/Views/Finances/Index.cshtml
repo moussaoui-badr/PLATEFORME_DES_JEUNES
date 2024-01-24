@@ -12,7 +12,7 @@ nfi.NumberGroupSeparator = " ";
 <div class="card mb-4">
     <div style="display:flex;justify-content:space-between;">
         <div class="card-header">
-            <h3 class="mb-0">Candidats</h3>
+            <h3 class="mb-0">Partie finance</h3>
             <span>
                 Utiliser les filtres pour rechercher vos candidats.
             </span>
@@ -49,7 +49,39 @@ nfi.NumberGroupSeparator = " ";
                 </select>
 
             </div>
+            <div class="col-lg-6 mb-2 col-md-6 col-12 ">
+                @if (ViewData["PlateformeGestionnaireSortParm"] != null)
+                {
+                    if (ViewData["PlateformeGestionnaireSortParm"].ToString() == "1")
+                    {
+                        <select name="Cloture_EnCours" value="@ViewData["Cloture_EnCours"]" class="selectpicker" data-width="100%">
+                            <option value="">--- Type de dossier ---</option>
+                            <option value="">All</option>
+                            <option value="1" selected>Clôturé</option>
+                            <option value="2">En cours</option>
+                        </select>
+                    }
+                    else if (ViewData["PlateformeGestionnaireSortParm"].ToString() == "2")
+                    {
+                        <select name="Cloture_EnCours" value="@ViewData["Cloture_EnCours"]" class="selectpicker" data-width="100%">
+                            <option value="" >--- Type de dossier ---</option>
+                            <option value="">All</option>
+                            <option value="1">Clôturé</option>
+                            <option value="2" selected>En cours</option>
+                        </select>
+                    }
+                }
+                else
+                {
+                    <select name="Cloture_EnCours" value="@ViewData["Cloture_EnCours"]" class="selectpicker" data-width="100%">
+                        <option value="" selected>--- Type de dossier ---</option>
+                        <option value="">All</option>
+                        <option value="1">Clôturé</option>
+                        <option value="2">En cours</option>
+                    </select>
+                }
 
+            </div>
             <div class="col-lg-6 col-md-6 col-12 mb-2">
                 <div class="w-md-50">
                     <input name="SearchDate" id="Date" value="@ViewData["CurrentFilterD"]" type="text" class="form-control flatpickr" placeholder="Date de départ">
