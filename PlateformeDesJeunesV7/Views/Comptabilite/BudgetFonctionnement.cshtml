@@ -47,10 +47,11 @@
 
 @if (Model != null && Model.Any())
 {
+    <div class="card mb-4">
     <!-- Table -->
-    <div class="table-responsive border-0 overflow-y-hidden card-body">
-        <table class="table mb-0 text-nowrap">
-            <thead>
+    <div class="table-responsive">
+            <table class="table mb-0 table-hover table-centered text-nowrap">
+                <thead class="table-light">
                 <tr>
                     <th scope="col" class="border-0">#</th>
                     <th scope="col" class="border-0">Date du Budget</th>
@@ -81,6 +82,7 @@
                 }
             </tbody>
         </table>
+    </div>
     </div>
 }
 else

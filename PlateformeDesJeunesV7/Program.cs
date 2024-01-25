@@ -46,6 +46,12 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.ExpireTimeSpan = TimeSpan.FromDays(30); // Par exemple, 30 minutes
     options.SlidingExpiration = true; // La session se prolonge à chaque requête
 });
+// Dans la méthode `ConfigureServices` de votre Startup.cs
+builder.Services.Configure<SecurityStampValidatorOptions>(options =>
+{
+    // Désactiver la déconnexion automatique
+    options.ValidationInterval = TimeSpan.FromDays(365);
+});
 
 // services
 builder.Services.AddServices(builder.Configuration);
