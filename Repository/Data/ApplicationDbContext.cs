@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using KhalfiElection.Models.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,5 +30,26 @@ namespace Repository.Data
         public DbSet<BudgetFinancement> BudgetFinancement { get; set; }
         public DbSet<BudgetFonctionnement> BudgetFonctionnement { get; set; }
 
+
+        public DbSet<Personne> Personnes { get; set; }
+        public DbSet<Famille> Familles { get; set; }
+        public DbSet<Secteur> Secteurs { get; set; }
+        public DbSet<TypeRelationParente> TypesRelationParente { get; set; }
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Personne>()
+                .HasOne(p => p.Famille) // Une personne appartient à une seule famille
+                .WithMany(f => f.Membres) // Une famille peut avoir plusieurs membres
+                .HasForeignKey(p => p.FamilleId); // Clé étrangère dans Personne
+
+            modelBuilder.Entity<Famille>()
+                .HasMany(f => f.Membres) // Une famille peut avoir plusieurs membres
+                .WithOne(p => p.Famille) // Un membre appartient à une seule famille
+                .HasForeignKey(p => p.FamilleId); // Clé étrangère dans Personne
+
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }
