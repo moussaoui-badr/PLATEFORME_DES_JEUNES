@@ -53,6 +53,10 @@ namespace PlateformeDesJeunesAinSebaa.Controllers
                         return View();
                     }
 
+                    if (User.IsInRole("GestionneurBlog"))
+                    {
+                        return RedirectToAction("Index", "GestionContenu");
+                    }
                     return RedirectToAction("Index", "Candidats");
                 }
                 ViewData["ClientKey"] = _captchaSettings.ClientKey;
@@ -151,7 +155,10 @@ namespace PlateformeDesJeunesAinSebaa.Controllers
             {
                 return RedirectToAction("Index", "Finances");
             }
-
+            if (User.IsInRole("GestionneurBlog"))
+            {
+                return RedirectToAction("Index", "GestionContenu");
+            }
             return View();
         }
 

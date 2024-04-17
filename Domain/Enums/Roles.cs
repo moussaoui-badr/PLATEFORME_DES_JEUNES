@@ -8,6 +8,7 @@
         Amideast,
         Finance,
         SuperAdmin,
-        Comptable
+        Comptable,
+        GestionneurBlog
     }
 }

@@ -129,7 +129,7 @@ namespace PlateformeDesJeunesAinSebaa.Controllers
         public async Task<IActionResult> SaisieBGExcel(string SearchNom, string SearchPrenom, string SearchDate, string SearchDateO, int? pageNumber, string SearchCIN, string SearchStatut, string OrientationFilter)
         {
             var path = Path.Combine(Directory.GetCurrentDirectory(), "ExcelCandidats", "MaListe.xlsx");
-            var candidats = await _candidatService.GetCandidats(SearchNom, SearchPrenom, SearchDate, SearchDateO, pageNumber, SearchCIN, SearchStatut, OrientationFilter, User, 500);
+            var candidats = await _candidatService.GetCandidats(SearchNom, SearchPrenom, SearchDate, SearchDateO, pageNumber, SearchCIN, SearchStatut, OrientationFilter, User, 3000);
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 

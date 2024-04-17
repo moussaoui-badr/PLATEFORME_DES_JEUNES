@@ -30,15 +30,15 @@ nfi.NumberGroupSeparator = " ";
         <!-- Form -->
         <form class="form-row mt-3" asp-action="Index" asp-controller="Finances" method="get">
             <div class="col-lg-6 mb-2 col-md-6 col-12 ">
-                <input name="SearchNom" id="Nom" value="@ViewData["CurrentFilterN"]" type="search" class="form-control" placeholder="Nom" />
+                <input name="SearchNom" id="Nom" value="@ViewData["CurrentFilterN"]?.ToString()" type="search" class="form-control" placeholder="Nom" />
             </div>
 
             <div class="col-lg-6 mb-2 col-md-6 col-12  ">
-                <input name="SearchCIN" id="CIN" value="@ViewData["CINSortParm"]" type="search" class="form-control" placeholder="CIN" />
+                <input name="SearchCIN" id="CIN" value="@ViewData["CINSortParm"]?.ToString()" type="search" class="form-control" placeholder="CIN" />
             </div>
             <div class="col-lg-6 mb-2 col-md-6 col-12 ">
 
-                <select name="PGFilter" value="@ViewData["PlateformeGestionnaireSortParm"]" class="selectpicker" data-width="100%">
+                <select name="PGFilter" value="@ViewData["PlateformeGestionnaireSortParm"]?.ToString()" class="selectpicker" data-width="100%">
                     
                         <option value="" selected>--- Plateforme gestionnaire ---</option>
                     
@@ -52,18 +52,18 @@ nfi.NumberGroupSeparator = " ";
             <div class="col-lg-6 mb-2 col-md-6 col-12 ">
                 @if (ViewData["PlateformeGestionnaireSortParm"] != null)
                 {
-                    if (ViewData["PlateformeGestionnaireSortParm"].ToString() == "1")
+                    if (ViewData["PlateformeGestionnaireSortParm"]?.ToString() == "1")
                     {
-                        <select name="Cloture_EnCours" value="@ViewData["Cloture_EnCours"]" class="selectpicker" data-width="100%">
+                        <select name="Cloture_EnCours" value="@ViewData["Cloture_EnCours"]?.ToString()" class="selectpicker" data-width="100%">
                             <option value="">--- Type de dossier ---</option>
                             <option value="">All</option>
                             <option value="1" selected>Clôturé</option>
                             <option value="2">En cours</option>
                         </select>
                     }
-                    else if (ViewData["PlateformeGestionnaireSortParm"].ToString() == "2")
+                    else if (ViewData["PlateformeGestionnaireSortParm"]?.ToString() == "2")
                     {
-                        <select name="Cloture_EnCours" value="@ViewData["Cloture_EnCours"]" class="selectpicker" data-width="100%">
+                        <select name="Cloture_EnCours" value="@ViewData["Cloture_EnCours"]?.ToString()" class="selectpicker" data-width="100%">
                             <option value="" >--- Type de dossier ---</option>
                             <option value="">All</option>
                             <option value="1">Clôturé</option>
@@ -73,7 +73,7 @@ nfi.NumberGroupSeparator = " ";
                 }
                 else
                 {
-                    <select name="Cloture_EnCours" value="@ViewData["Cloture_EnCours"]" class="selectpicker" data-width="100%">
+                    <select name="Cloture_EnCours" value="@ViewData["Cloture_EnCours"]?.ToString()" class="selectpicker" data-width="100%">
                         <option value="" selected>--- Type de dossier ---</option>
                         <option value="">All</option>
                         <option value="1">Clôturé</option>
@@ -84,12 +84,12 @@ nfi.NumberGroupSeparator = " ";
             </div>
             <div class="col-lg-6 col-md-6 col-12 mb-2">
                 <div class="w-md-50">
-                    <input name="SearchDate" id="Date" value="@ViewData["CurrentFilterD"]" type="text" class="form-control flatpickr" placeholder="Date de départ">
+                    <input name="SearchDate" id="Date" value="@ViewData["CurrentFilterD"]?.ToString()" type="text" class="form-control flatpickr" placeholder="Date de départ">
                 </div>
             </div>
             <div class="col-lg-6 col-md-6 col-12 mb-2">
                 <div class="w-md-50">
-                    <input name="SearchDateO" value="@ViewData["CurrentFilterDO"]" id="Date" type="text" class="form-control flatpickr" placeholder="Date de fin">
+                    <input name="SearchDateO" value="@ViewData["CurrentFilterDO"]?.ToString()" id="Date" type="text" class="form-control flatpickr" placeholder="Date de fin">
                 </div>
             </div>
             <div class="col-lg-12 col-md-12 col-12 mb-2" style="text-align:right!important;">
@@ -135,9 +135,9 @@ nfi.NumberGroupSeparator = " ";
                                         }
                                         <a asp-action="Details" asp-controller="Finances" asp-route-id="@item.ClientFinanceID" class="text-inherit">
                                             <span style="margin-right:5px;">@item.Nom</span><span>@item.Prenom</span>
-                                            @if (MontantRAR == 0)
+                                            @if (MontantRAR < 1)
                                             {
-                                                <span class=""> (Dossier cloturé)</span>
+                                                <span class="@MontantRAR"> (Dossier cloturé)</span>
                                             }
                                             else
                                             {
@@ -300,11 +300,13 @@ nfi.NumberGroupSeparator = " ";
                         <li class="page-item">
                             <a class="page-link @prevDisabled" asp-controller="Finances" asp-action="Index"
                    asp-route-pageNumber="@(Model.PageIndex - 1)"
-                   asp-route-SearchNom="@ViewData["CurrentFilterN"]"
-                   asp-route-SearchPrenom="@ViewData["CurrentFilterP"]"
-                   asp-route-SearchDate="@ViewData["CurrentFilterD"]"
-                   asp-route-SearchCIN="@ViewData["CINSortParm"]"
-                   asp-route-PGFilter="@ViewData["PlateformeGestionnaireSortParm"]"
+                               asp-route-SearchNom="@ViewData["CurrentFilterN"]?.ToString()"
+                               asp-route-SearchPrenom="@ViewData["CurrentFilterP"]?.ToString()"
+                               asp-route-SearchDate="@ViewData["CurrentFilterD"]?.ToString()"
+                               asp-route-SearchCIN="@ViewData["CINSortParm"]?.ToString()"
+                               asp-route-SearchStatut="@ViewData["StatutSortParm"]?.ToString()"
+                               asp-route-OrientationFilter="@ViewData["OrientationSortParm"]?.ToString()"
+                               asp-route-PGFilter="@ViewData["PlateformeGestionnaireSortParm"]?.ToString()"
                    aria-label="Précédent">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
@@ -316,12 +318,13 @@ nfi.NumberGroupSeparator = " ";
                         <li class="page-item @(Model.PageIndex == pageNumber ? "active" : "")">
                             <a class="page-link" asp-controller="Finances" asp-action="Index"
                                asp-route-pageNumber="@pageNumber"
-                               asp-route-SearchNom="@ViewData["CurrentFilterN"]"
-                               asp-route-SearchPrenom="@ViewData["CurrentFilterP"]"
-                               asp-route-SearchDate="@ViewData["CurrentFilterD"]"
-                               asp-route-SearchCIN="@ViewData["CINSortParm"]"
-                               asp-route-SearchStatut="@ViewData["StatutSortParm"]"
-                               asp-route-OrientationFilter="@ViewData["OrientationSortParm"]">@pageNumber</a>
+                               asp-route-SearchNom="@ViewData["CurrentFilterN"]?.ToString()"
+                               asp-route-SearchPrenom="@ViewData["CurrentFilterP"]?.ToString()"
+                               asp-route-SearchDate="@ViewData["CurrentFilterD"]?.ToString()"
+                               asp-route-SearchCIN="@ViewData["CINSortParm"]?.ToString()"
+                               asp-route-SearchStatut="@ViewData["StatutSortParm"]?.ToString()"
+                               asp-route-OrientationFilter="@ViewData["OrientationSortParm"]?.ToString()"
+                               asp-route-PGFilter="@ViewData["PlateformeGestionnaireSortParm"]?.ToString()">@pageNumber</a>
                         </li>
                     }
                     @if (nextDisabled == "disabled")
@@ -333,11 +336,13 @@ nfi.NumberGroupSeparator = " ";
                         <li class="page-item">
                             <a class="page-link @nextDisabled" asp-controller="Finances" asp-action="Index"
                    asp-route-pageNumber="@(Model.PageIndex + 1)"
-                   asp-route-SearchNom="@ViewData["CurrentFilterN"]"
-                   asp-route-SearchPrenom="@ViewData["CurrentFilterP"]"
-                   asp-route-SearchDate="@ViewData["CurrentFilterD"]"
-                   asp-route-SearchCIN="@ViewData["CINSortParm"]"
-                   asp-route-PGFilter="@ViewData["PlateformeGestionnaireSortParm"]"
+                               asp-route-SearchNom="@ViewData["CurrentFilterN"]?.ToString()"
+                               asp-route-SearchPrenom="@ViewData["CurrentFilterP"]?.ToString()"
+                               asp-route-SearchDate="@ViewData["CurrentFilterD"]?.ToString()"
+                               asp-route-SearchCIN="@ViewData["CINSortParm"]?.ToString()"
+                               asp-route-SearchStatut="@ViewData["StatutSortParm"]?.ToString()"
+                               asp-route-OrientationFilter="@ViewData["OrientationSortParm"]?.ToString()"
+                               asp-route-PGFilter="@ViewData["PlateformeGestionnaireSortParm"]?.ToString()"
                    aria-label="Suivant">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>

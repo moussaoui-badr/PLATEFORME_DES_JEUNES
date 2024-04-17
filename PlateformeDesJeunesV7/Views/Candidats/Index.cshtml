@@ -18,8 +18,12 @@
             </span>
         </div>
         <div class="card-header">
-            @if (User.IsInRole("Admin") || User.IsInRole("Gestionnaire"))
+            @if (User.IsInRole("Gestionnaire"))
             {
+                if (User.IsInRole("Admin"))
+                {
+                    <a type="button" class="btn btn-primary" asp-controller="Candidats" asp-action="SaisieBGExcel" asp-route-SearchDate="@(ViewData["CurrentFilterD"]?.ToString() ?? "")" asp-route-SearchDateO="@(ViewData["CurrentFilterDO"]?.ToString() ?? "")" asp-route-SearchStatut="@(ViewData["StatutSortParm"]?.ToString() ?? "")" asp-route-OrientationFilter="@(ViewData["OrientationSortParm"]?.ToString() ?? "")">Impression candidat</a>
+                }
                 <a type="button" class="btn btn-info" asp-controller="Candidats" asp-action="Add">Ajouter un candidat</a>
             }
         </div>

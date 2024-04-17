@@ -11,17 +11,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Optimisation SEO -->
-    <title>Plateforme des Jeunes Ain Sebaa - Amélioration du Revenu et Inclusion Économique des Jeunes</title>
-    <meta name="description" content="Plateforme des Jeunes Ain Sebaa s'engage dans l'amélioration du revenu et l'inclusion économique des jeunes. Rejoignez-nous pour faire la différence.">
+    <title>Plateforme des Jeunes INDH Ain Sebaa - Amélioration du Revenu et Inclusion Économique des Jeunes</title>
+    <meta name="description" content="Plateforme des Jeunes INDH Ain Sebaa s'engage dans l'amélioration du revenu et l'inclusion économique des jeunes. Rejoignez-nous pour faire la différence.">
     <meta name="robots" content="index, follow, max-image-preview:large">
     <link rel="canonical" href="https://plateformedesjeunes-ainsebaa.ma">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Plateforme des Jeunes Ain Sebaa - Amélioration du Revenu et Inclusion Économique des Jeunes">
-    <meta property="og:description" content="Plateforme des Jeunes Ain Sebaa s'engage dans l'amélioration du revenu et l'inclusion économique des jeunes. Rejoignez-nous pour faire la différence.">
+    <meta property="og:description" content="Plateforme des Jeunes INDH Ain Sebaa s'engage dans l'amélioration du revenu et l'inclusion économique des jeunes. Rejoignez-nous pour faire la différence.">
     <meta property="og:url" content="https://www.facebook.com/plateformedesjeunes.as">
-    <meta property="og:site_name" content="Plateforme des Jeunes Ain Sebaa">
+    <meta property="og:site_name" content="Plateforme des Jeunes INDH Ain Sebaa">
     <meta property="og:locale" content="fr_FR">
     <meta property="og:image" content="https://scontent.fcmn2-2.fna.fbcdn.net/v/t39.30808-6/277250841_298291872425465_2706695951558468858_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=efb6e6&_nc_eui2=AeE1KGfknEMBfDvIhRVglaRBZlQGzk7xNK5mVAbOTvE0rqUZU2kk6oWDv2XGAg8i1jzRaYWsmQPIjeOeoQdDixoc&_nc_ohc=WVgXaozbJTgAX9N_XBG&_nc_ht=scontent.fcmn2-2.fna&oh=00_AfAxstddXsy3iets1Km3UanRB38ZDPbcgFvcHSZRv9TxdA&oe=65B6B94D">
 
@@ -29,7 +29,7 @@
     <meta property="og:instagram" content="https://www.instagram.com/plateformedesjeunes.as/?igshid=YmMyMTA2M2Y%3D">
 
     <!-- Lien vers LinkedIn -->
-    <meta name="linkedin:site" content="Plateforme des Jeunes Ain Sebaa">
+    <meta name="linkedin:site" content="Plateforme des Jeunes INDH Ain Sebaa">
     <meta name="linkedin:description" content="Plateforme des Jeunes Ain Sebaa s'engage dans l'amélioration du revenu et l'inclusion économique des jeunes. Rejoignez-nous pour faire la différence.">
     <meta name="linkedin:image" content="https://scontent.fcmn2-2.fna.fbcdn.net/v/t39.30808-6/277250841_298291872425465_2706695951558468858_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=efb6e6&_nc_eui2=AeE1KGfknEMBfDvIhRVglaRBZlQGzk7xNK5mVAbOTvE0rqUZU2kk6oWDv2XGAg8i1jzRaYWsmQPIjeOeoQdDixoc&_nc_ohc=WVgXaozbJTgAX9N_XBG&_nc_ht=scontent.fcmn2-2.fna&oh=00_AfAxstddXsy3iets1Km3UanRB38ZDPbcgFvcHSZRv9TxdA&oe=65B6B94D">
     <meta name="linkedin:owner" content="plateforme des jeunes - AIN SBAA">
@@ -42,7 +42,7 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary">
     <meta name="twitter:site" content="@@Association l'Heure Joyeuse">
-    <meta name="twitter:title" content="Plateforme des Jeunes Ain Sebaa">
+    <meta name="twitter:title" content="Plateforme des Jeunes INDH Ain Sebaa">
     <meta name="twitter:description" content="Plateforme des Jeunes Ain Sebaa s'engage dans l'amélioration du revenu et l'inclusion économique des jeunes. Rejoignez-nous pour faire la différence.">
     <meta name="twitter:image" content="https://scontent.fcmn2-2.fna.fbcdn.net/v/t39.30808-6/277250841_298291872425465_2706695951558468858_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=efb6e6&_nc_eui2=AeE1KGfknEMBfDvIhRVglaRBZlQGzk7xNK5mVAbOTvE0rqUZU2kk6oWDv2XGAg8i1jzRaYWsmQPIjeOeoQdDixoc&_nc_ohc=WVgXaozbJTgAX9N_XBG&_nc_ht=scontent.fcmn2-2.fna&oh=00_AfAxstddXsy3iets1Km3UanRB38ZDPbcgFvcHSZRv9TxdA&oe=65B6B94D">
 
@@ -93,16 +93,17 @@
                 <a class="navbar-brand" asp-controller="Candidats" asp-action="Index" style="padding:0px!important;"><img style="width:80%!important;height:180px;margin-bottom:3px;" src="~/background/logo143.jpeg" alt="" /></a>
                 <!-- Navbar nav -->
                 <ul class="navbar-nav flex-column" id="sideNavbar">
-                    <!-- Nav item -->
-                    
+                    @if (User.IsInRole("Gestionnaire") || User.IsInRole("Admin") || User.IsInRole("HeureJoyeuse") || User.IsInRole("Amideast"))
+                    {
+                        <!-- Nav item -->
                         <li class="nav-item active">
-                        <a class="nav-link active" href="#!" data-toggle="collapse" data-target="#navCourses1" aria-expanded="true"
-                           aria-controls="navCourses1">
+                            <a class="nav-link active" href="#!" data-toggle="collapse" data-target="#navCourses1" aria-expanded="true"
+                            aria-controls="navCourses1">
                                 <i class="nav-icon fe fe-user mr-2"></i>Phase 1 :
                             </a>
-                        <div id="navCourses1" class="collapse @(!User.IsInRole("Admin") ? "show" : "")" data-parent="#sideNavbar">
+                            <div id="navCourses1" class="collapse @(!User.IsInRole("Admin") ? "show" : "")" data-parent="#sideNavbar">
                                 <ul class="nav flex-column">
-                                @if (User.IsInRole("Gestionnaire") || User.IsInRole("Admin"))
+                                    @if (User.IsInRole("Gestionnaire") || User.IsInRole("Admin"))
                                     {
                                         <li class="nav-item">
                                             <a class="nav-link active" asp-controller="GestionCandidatPublic" asp-action="Index" style="color: white!important;">
@@ -131,40 +132,41 @@
                                             </li>
                                         }
                                     }
-                                @if (User.IsInRole("Gestionnaire") || User.IsInRole("Admin") || User.IsInRole("HeureJoyeuse") || User.IsInRole("Amideast"))
-                                {
-                                    <li class="nav-item">
-                                        <a class="nav-link active" asp-controller="Formations" asp-action="index" style="color: white!important;">
-                                            <i class="nav-icon fe fe-plus-square mr-2" style="color: white!important;"></i>Formations
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link active" asp-controller="Candidats" asp-action="Orientation" style="color: white!important;">
-                                            <i class="nav-icon fe fe-check-circle mr-2" style="color: white!important;"></i>Orientations
-                                        </a>
-                                    </li>
-                                }
+                                    @if (User.IsInRole("Gestionnaire") || User.IsInRole("Admin") || User.IsInRole("HeureJoyeuse") || User.IsInRole("Amideast"))
+                                    {
+                                        <li class="nav-item">
+                                            <a class="nav-link active" asp-controller="Formations" asp-action="index" style="color: white!important;">
+                                                <i class="nav-icon fe fe-plus-square mr-2" style="color: white!important;"></i>Formations
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link active" asp-controller="Candidats" asp-action="Orientation" style="color: white!important;">
+                                                <i class="nav-icon fe fe-check-circle mr-2" style="color: white!important;"></i>Orientations
+                                            </a>
+                                        </li>
+                                    }
 
 
                                 </ul>
                             </div>
                         </li>
-                    
+
+                    }
                     @if (User.IsInRole("Finance") || User.IsInRole("Admin"))
                     {
                         <li class="nav-item">
                             <a class="nav-link active" href="#!" data-toggle="collapse" data-target="#navCourses2" aria-expanded="true"
-                           aria-controls="navCourses2">
+                               aria-controls="navCourses2">
                                 <i class="nav-icon fe fe-book mr-2"></i>Phase finance :
                             </a>
                             <div id="navCourses2" class="collapse " data-parent="#sideNavbar">
                                 <ul class="nav flex-column">
-                                    
-                                        <li class="nav-item">
-                                            <a class="nav-link active" asp-controller="Finances" asp-action="Index" style="color: white!important;">
-                                                <i class="nav-icon fe fe-user-plus mr-2" style="color: white!important;"></i>Financement
-                                            </a>
-                                        </li>
+
+                                    <li class="nav-item">
+                                        <a class="nav-link active" asp-controller="Finances" asp-action="Index" style="color: white!important;">
+                                            <i class="nav-icon fe fe-user-plus mr-2" style="color: white!important;"></i>Financement
+                                        </a>
+                                    </li>
                                     <li class="nav-item">
                                         <a class="nav-link active" asp-controller="Finances" asp-action="Filtre" style="color: white!important;">
                                             <i class="nav-icon fe fe-user-plus mr-2" style="color: white!important;"></i>Détails
@@ -182,7 +184,7 @@
                             </div>
                         </li>
                     }
-                    
+
                     @if (User.IsInRole("Comptable") || User.IsInRole("Admin"))
                     {
                         <li class="nav-item">
@@ -205,18 +207,18 @@
                                             </a>
                                         </li>
                                     }
-                                        <li class="nav-item">
-                                            <a class="nav-link active" asp-controller="Comptabilite" asp-action="Fonctionnements" style="color: white!important;">
-                                                <i class="nav-icon fe fe-user-plus mr-2" style="color: white!important;"></i>Fonctionnement
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link active" asp-controller="Comptabilite" asp-action="Financements" style="color: white!important;">
-                                                <i class="nav-icon fe fe-user-plus mr-2" style="color: white!important;"></i>Financement
-                                            </a>
-                                        </li>
-                                    
-                                    
+                                    <li class="nav-item">
+                                        <a class="nav-link active" asp-controller="Comptabilite" asp-action="Fonctionnements" style="color: white!important;">
+                                            <i class="nav-icon fe fe-user-plus mr-2" style="color: white!important;"></i>Fonctionnement
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link active" asp-controller="Comptabilite" asp-action="Financements" style="color: white!important;">
+                                            <i class="nav-icon fe fe-user-plus mr-2" style="color: white!important;"></i>Financement
+                                        </a>
+                                    </li>
+
+
                                     @if (User.IsInRole("Admin"))
                                     {
                                         <li class="nav-item">
@@ -239,7 +241,25 @@
                             </div>
                         </li>
                     }
-                    
+                    <!--PHASE BLOG-->
+                    @if (User.IsInRole("GestionneurBlog"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#!" data-toggle="collapse" data-target="#navCourses4" aria-expanded="true"
+                               aria-controls="navCourses4">
+                                <i class="nav-icon fe fe-book mr-2"></i>Gestion de blog :
+                            </a>
+                            <div id="navCourses4" class="collapse @(User.IsInRole("GestionneurBlog") ? "show" : "")" data-parent="#sideNavbar">
+                                <ul class="nav flex-column">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" asp-controller="GestionContenu" asp-action="Index" style="color: white!important;">
+                                            <i class="nav-icon fe fe-user-plus mr-2" style="color: white!important;"></i>Gestion de blog
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    }
                 </ul>
             </div>
             <a class="navbar-brand" asp-controller="Candidats" asp-action="index" style="position: absolute;padding: 0px!important;bottom: 0px;width: 100%; display: flex;justify-content: center;">
@@ -261,9 +281,9 @@
                     </div>
                     <a id="nav-toggle" href="#!" class="ml-lg-3 "><i class="fe fe-menu"></i></a>
                     <div class="ml-lg-3 d-none d-md-none d-lg-block" id="containerDiv">
-                        <div id="backgroundDiv" style="top: 0; z-index: 1; position: absolute; height: 180px; width: 260px; background-color:white;"></div>
+                        @* <div id="backgroundDiv" style="top: 0; z-index: 1; position: absolute; height: 180px; width: 260px; background-color:white;"></div>
                         <img id="logoImage" src="~/Uploads/imglogoplateforme.jfif" style="z-index: 2; position: absolute; height: 140px;" />
-                    </div>
+                    *@ </div>
 
 
                     <ul class="navbar-nav navbar-right-wrap ml-auto  d-flex nav-top-wrap ">
@@ -284,7 +304,6 @@
                                         </a>
                                     </div>
                                     <ul class="list-group list-group-flush notification-list-scroll" id="notif_container">
-                                        
                                     </ul>
                                     <div class="border-top px-3 pt-3 pb-0">
                                         <a href="notification-history.html" class="text-muted">See all Notifications</a>
@@ -313,48 +332,48 @@
                                 </div>
                                 <div class="dropdown-divider"></div>
                                 <ul class="list-unstyled">
-                                <li class="dropdown-submenu dropleft-lg">
-                                <a class="dropdown-item dropdown-list-group-item dropdown-toggle" href="#!">
-                                <i class="fe fe-circle mr-2"></i>Status
-                                </a>
-                                <ul class="dropdown-menu">
-                                <li>
-                                <a class="dropdown-item" href="#!">
-                                <span class="badge-dot bg-success mr-2"></span>Online
-                                </a>
-                                </li>
-                                <li>
-                                <a class="dropdown-item" href="#!">
-                                <span class="badge-dot bg-secondary mr-2"></span>Offline
-                                </a>
-                                </li>
-                                <li>
-                                <a class="dropdown-item" href="#!">
-                                <span class="badge-dot bg-warning mr-2"></span>Away
-                                </a>
-                                </li>
-                                <li>
-                                <a class="dropdown-item" href="#!">
-                                <span class="badge-dot bg-danger mr-2"></span>Busy
-                                </a>
-                                </li>
-                                </ul>
-                                </li>
-                                <li>
-                                <a class="dropdown-item" href="profile-edit.html">
-                                <i class="fe fe-user mr-2"></i>Profile
-                                </a>
-                                </li>
-                                <li>
-                                <a class="dropdown-item" href="student-subscriptions.html">
-                                <i class="fe fe-star mr-2"></i>Subscription
-                                </a>
-                                </li>
-                                <li>
-                                <a class="dropdown-item" href="#!">
-                                <i class="fe fe-settings mr-2"></i>Settings
-                                </a>
-                                </li>
+                                    <li class="dropdown-submenu dropleft-lg">
+                                        <a class="dropdown-item dropdown-list-group-item dropdown-toggle" href="#!">
+                                            <i class="fe fe-circle mr-2"></i>Status
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" href="#!">
+                                                    <span class="badge-dot bg-success mr-2"></span>Online
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="#!">
+                                                    <span class="badge-dot bg-secondary mr-2"></span>Offline
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="#!">
+                                                    <span class="badge-dot bg-warning mr-2"></span>Away
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="#!">
+                                                    <span class="badge-dot bg-danger mr-2"></span>Busy
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="profile-edit.html">
+                                            <i class="fe fe-user mr-2"></i>Profile
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="student-subscriptions.html">
+                                            <i class="fe fe-star mr-2"></i>Subscription
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#!">
+                                            <i class="fe fe-settings mr-2"></i>Settings
+                                        </a>
+                                    </li>
                                 </ul>
                                 <div class="dropdown-divider"></div>
                                 <ul class="list-unstyled">
@@ -370,7 +389,7 @@
                 </nav>
             </div>
             @*<div class="position-relative" style="width:100%;height:150px;">
-                
+
             </div>*@
             <!-- Page Header -->
             @RenderBody()
@@ -416,7 +435,7 @@
         <!-- Theme JS -->
         <script src="~/Design/js/theme.min.js"></script>
 
-        
+
         <script>
             function goToNotification() {
                 return window.location.replace("@(Url.Action("Notification", "Clients"))");
@@ -474,17 +493,16 @@
 
 
 </html>
-@* 
+@*
 @section Scripts {
     <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
     <script src="~/js/chat.js"></script> *@
-    @*<script>
+@*<script>
         $(document).ready(function () {
             alert($(window).width());
         });
-        
+
     </script>*@
 
 
 
-        

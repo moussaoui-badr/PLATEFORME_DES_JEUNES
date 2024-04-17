@@ -5,28 +5,114 @@
     Layout = "_LayoutBlog";
 }
 
-<section class="py-8">
+<style>
+    .video-container {
+        position: relative;
+        width: 100%;
+        height: 785px;
+        padding-top: 100%; /* Aspect ratio 16:9 */
+        overflow: hidden;
+    }
+
+        .video-container video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .video-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: auto; /* Keep the aspect ratio */
+            cursor: pointer;
+        }
+
+</style>
+@* <section class="bg-primary d-flex flex-row text-white">
+    <div class="p-2 w-75">
+            <a style="width:30px;height:30px;" href="https://www.facebook.com/منصة-الشباب-عين-السبع-107323618188959/" class="fab fa-facebook text-muted mr-3"></a>
+        <a style="width:30px;height:30px;" href="https://instagram.com/plateformedesjeunes.as?igshid=YmMyMTA2M2Y=" class="fab fa-instagram text-muted mr-3"></a>
+        <a style="width:30px;height:30px;" href="https://www.linkedin.com/company/plateforme-des-jeunes-ain-sbaa/" class="fab fa-linkedin text-muted "></a>
+    </div>
+    <div class="p-2 mr-4">Flex item 2</div>
+</section> *@
+<section class="bg-primary">
     <div class="container">
-        <div class="row">
-            <div class="offset-xl-2 col-xl-8 offset-lg-1 col-lg-10 col-md-12 col-12">
-                <div class="text-center mb-5">
-                    <h1 class="display-2 fw-bold">Geeks Newsroom</h1>
-                    <p class="lead">Our features, journey, tips and us being us. Lorem ipsum dolor sit amet, accumsan in, tempor dictum neque.</p>
+        <!-- Hero Section -->
+        <div class="row align-items-center g-0">
+            <div class="col-xl-12 col-lg-12 col-md-12">
+                <div class="py-7 py-lg-0 my-4 text-center" style="z-index:1000;">
+                    <h1 class="text-white display-4 fw-bold">Extrait du discours de Sa Majesté le Roi Mohammed VI</h1>
+                    <div id="video-container" class="video-wrapper text-center">
+                        <video height="500px;" controlslist="nodownload" playsinline="" poster="~/assets/images/2bPAhqAjyE8wVsGnWVb4MXZnF0A.svg" autoplay="" preload="auto" data-tap-to-unmute="true" data-unmute-hides-captions="true">
+                            <source src="~/ContenuBlog/Index/plateformedesjeunes.mp4" type="video/mp4">
+                            <source src="" type="video/webm">
+                        </video>
+                    </div>
+
+
+                    <p class="text-white-50 mb-4 lead">Sa Majesté le Roi Mohammed VI, que Dieu L’assiste, a présidé, mercredi 19 septembre 2018 au Palais Royal à Rabat, la cérémonie de lancement de la 3ème phase de l’Initiative Nationale pour le Développement Humain (INDH) (2019-2023), conçue selon une nouvelle ingénierie, pour une enveloppe estimée à 18 milliards de dirhams.</p>
+                    
+                    <br />
+
+                    <a href="pages/course-filter-list.html" class="btn btn-dark">Browse Courses</a>
+                    <a href="pages/sign-in.html" class="btn btn-white">Are You Instructor?</a>
                 </div>
-                <!-- Form -->
-                <form class="row px-md-8 mx-md-8 needs-validation" novalidate>
-                    <div class="mb-3 col ps-0 ms-2 ms-md-0">
-                        <input type="email" class="form-control" placeholder="Email Address" required />
-                        <div class="invalid-feedback">Please valid a Email Address</div>
+            </div>
+            @* <div class="col-xl-7 col-lg-6 col-md-12 text-lg-end text-center">
+                <img src="~/assets/images/blog/blogpost-1.jpg" alt="heroimg" class="img-fluid">
+            </div> *@
+        </div>
+    </div>
+</section>
+
+<section class="bg-white py-4 shadow-sm">
+    <div class="container">
+        <div class="row align-items-center g-0">
+            <!-- Features -->
+            <div class="col-xl-4 col-lg-4 col-md-6 mb-lg-0 mb-4">
+                <div class="d-flex align-items-center">
+                    <span class="icon-shape icon-lg bg-light-warning rounded-circle text-center text-dark-warning fs-4">
+                        <i class="fe fe-video"></i>
+                    </span>
+                    <div class="ms-3">
+                        <h4 class="mb-0 fw-semibold">Plateforme des jeunes AIN SEBAA INDH</h4>
+                        <p class="mb-0">Enjoy a variety of fresh topics</p>
                     </div>
-                    <div class="mb-3 col-auto ps-0">
-                        <button class="btn btn-primary" type="submit">Submit</button>
+                </div>
+            </div>
+            <!-- Features -->
+            <div class="col-xl-4 col-lg-4 col-md-6 mb-lg-0 mb-4">
+                <div class="d-flex align-items-center">
+                    <span class="icon-shape icon-lg bg-light-warning rounded-circle text-center text-dark-warning fs-4">
+                        <i class="fe fe-users"></i>
+                    </span>
+                    <div class="ms-3">
+                        <h4 class="mb-0 fw-semibold">Recherche d'emploi, Entrepreneur, Entreprenariat</h4>
+                        <p class="mb-0">Find the right instructor for you</p>
                     </div>
-                </form>
+                </div>
+            </div>
+            <!-- Features -->
+            <div class="col-xl-4 col-lg-4 col-md-12">
+                <div class="d-flex align-items-center">
+                    <span class="icon-shape icon-lg bg-light-warning rounded-circle text-center text-dark-warning fs-4">
+                        <i class="fe fe-clock"></i>
+                    </span>
+                    <div class="ms-3">
+                        <h4 class="mb-0 fw-semibold">Plateforme des jeunes, formations</h4>
+                        <p class="mb-0">Learn on your schedule</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
+
 
 <section class="pb-8">
     <div class="container">
@@ -41,10 +127,10 @@
                     <!-- Card body -->
                     <div class="card-body">
                         <a href="#" class="fs-5 mb-2 fw-semibold d-block text-success">Courses</a>
-                        <h3><a href="blog-single.html" class="text-inherit">How to become modern Stack Developer in 2020</a></h3>
+                        <h3><a href="blog-single.html" class="text-inherit">INDH et </a></h3>
                         <p>Lorem ipsum dolor sit amet, accu msan in, tempor dictum nequrem ipsum...</p>
                         <!-- Media content -->
-                        <div class="row align-items-center g-0 mt-4">
+                        @* <div class="row align-items-center g-0 mt-4">
                             <div class="col-auto">
                                 <img src="~/assets/images/avatar/avatar-7.jpg" alt="avatar" class="rounded-circle avatar-sm me-2" />
                             </div>
@@ -55,7 +141,7 @@
                             <div class="col-auto">
                                 <p class="fs-6 mb-0">20 Min Read</p>
                             </div>
-                        </div>
+                        </div> *@
                     </div>
                 </div>
             </div>
@@ -69,7 +155,7 @@
                         <h3><a href="blog-single.html" class="text-inherit">What is PHP Function? For Beginner’s Guide</a></h3>
                         <p>Lorem ipsum dolor sit amet, accu msan in, tempor dictum nequrem ipsum...</p>
                         <!-- Row  -->
-                        <div class="row align-items-center g-0 mt-4">
+                        @* <div class="row align-items-center g-0 mt-4">
                             <div class="col-auto">
                                 <img src="~/assets/images/avatar/avatar-8.jpg" alt="avatar" class="rounded-circle avatar-sm me-2" />
                             </div>
@@ -80,7 +166,7 @@
                             <div class="col-auto">
                                 <p class="fs-6 mb-0">8 Min Read</p>
                             </div>
-                        </div>
+                        </div> *@
                     </div>
                 </div>
             </div>
@@ -91,11 +177,11 @@
                     <!-- Card body-->
                     <div class="card-body">
                         <a href="#" class="fs-5 fw-semibold d-block mb-3 text-primary">Workshop</a>
-                        <h3><a href="blog-single.html" class="text-inherit">What is Cyber Security? A Beginner’s Guide</a></h3>
+                        <h3><a href="blog-single.html" class="text-inherit">Extrait du discours de Sa Majesté le Roi Mohammed VI</a></h3>
                         <p>Lorem ipsum dolor sit amet, accu msan in, tempor dictum nequrem ipsum...</p>
                         <!-- Media content -->
                         <!-- Row -->
-                        <div class="row align-items-center g-0 mt-4">
+                        @* <div class="row align-items-center g-0 mt-4">
                             <div class="col-auto">
                                 <img src="~/assets/images/avatar/avatar-9.jpg" alt="avatar" class="rounded-circle avatar-sm me-2" />
                             </div>
@@ -106,7 +192,7 @@
                             <div class="col-auto">
                                 <p class="fs-6 mb-0">15 Min Read</p>
                             </div>
-                        </div>
+                        </div> *@
                     </div>
                 </div>
             </div>
@@ -117,7 +203,7 @@
                     <!-- Card body -->
                     <div class="card-body">
                         <a href="#" class="fs-5 fw-semibold d-block mb-3 text-danger">Tutorial</a>
-                        <h3><a href="blog-single.html" class="text-inherit">What is machine learning and how does it work?</a></h3>
+                        <h3><a href="blog-single.html" class="text-inherit">Plateforme des jeunes</a></h3>
                         <p>Lorem ipsum dolor sit amet, accu msan in, tempor dictum nequrem ipsum...</p>
                         <!-- Media content -->
                         <div class="row align-items-center g-0 mt-4">
@@ -143,7 +229,7 @@
                     <div class="card-body">
                         <a href="#" class="fs-5 fw-semibold d-block mb-3 text-primary">Workshop</a>
                         <a href="blog-single.html">
-                            <h3>The Best DevOps Tools for Your Application Lifecycle</h3>
+                            <h3>Plateforme des jeunes INDH AIN SEBAA</h3>
                         </a>
                         <p>Inventore pariatur veritatis maxime fugiat sint dolorem quas culpa officiis nemo quis!</p>
                         <!-- Media content -->
@@ -170,7 +256,7 @@
                     <!-- Card body -->
                     <div class="card-body">
                         <a href="#" class="fs-5 fw-semibold d-block mb-3 text-info">Courses</a>
-                        <h3><a href="blog-single.html" class="text-inherit">How to become modern Stack Developer in 2020</a></h3>
+                        <h3><a href="blog-single.html" class="text-inherit">Plateforme des jeunes AIN SEBAA INDH  un processus de développement renouvel</a></h3>
                         <p>At beatae non sit dicta similique perspiciatis facilis veritatis quam. Recusandae, corrupti?</p>
                         <!-- Row  -->
                         <div class="row align-items-center g-0 mt-4">
@@ -195,7 +281,7 @@
                     <!-- Card body -->
                     <div class="card-body">
                         <a href="#" class="fs-5 fw-semibold d-block mb-3 text-warning">Company</a>
-                        <h3><a href="blog-single.html" class="text-inherit">How to Become a Data Scientist?</a></h3>
+                        <h3><a href="blog-single.html" class="text-inherit">L'INDH dans sa phase III</a></h3>
                         <p>Nulla voluptate in facere saepe est alias et iste, accusantium sint enim!</p>
                         <!-- Media content -->
                         <div class="row align-items-center g-0 mt-4">
@@ -220,7 +306,7 @@
                     <!-- Card body -->
                     <div class="card-body">
                         <a href="#" class="fs-5 fw-semibold d-block mb-3 text-primary">Workshop</a>
-                        <h3><a href="blog-single.html" class="text-inherit">How to become WebDesinger?</a></h3>
+                        <h3><a href="blog-single.html" class="text-inherit">Formulaire de recherche d'emploi</a></h3>
                         <!-- Media content -->
                         <p>Vero expedita voluptatibus cumque sunt ullam cum natus, vitae provident debitis pariatur?</p>
                         <!-- Row  -->
@@ -246,7 +332,7 @@
                     <!-- Card body -->
                     <div class="card-body">
                         <a href="#" class="fs-5 fw-semibold d-block mb-3 text-danger">Tutorial</a>
-                        <h3><a href="blog-single.html" class="text-inherit">Developing Agile Leadership</a></h3>
+                        <h3><a href="blog-single.html" class="text-inherit">L'appui à l'entrepreneuriat, L'appui à l'employabilité</a></h3>
                         <p>Debitis ipsam ratione molestias dolores qui asperiores consequatur facilis error.</p>
                         <!-- Media content -->
                         <div class="row align-items-center g-0 mt-4">
@@ -264,6 +350,27 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Buttom -->
+            <div class="col-xl-12 col-lg-12 col-md-12 col-12 text-center mt-4">
+                <a href="#" class="btn btn-primary">
+                    <div class="spinner-border spinner-border-sm me-2" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    Load More
+                </a>
+            </div>
+
         </div>
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        document.getElementById('videoCover').addEventListener('click', function () {
+            var videoPlayer = document.getElementById('videoPlayer');
+            videoPlayer.play(); // Lance la vidéo
+            this.style.display = 'none'; // Cache l'image de prévisualisation
+        });
+    </script>
+}
