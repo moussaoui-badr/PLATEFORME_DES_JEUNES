@@ -2,19 +2,13 @@
 
 @{
     Layout = "_LayoutDashboard";
-    ViewData["Title"] = "Home Page";
-    var pivots = ViewBag.Pivot as List<KhalfiElection.Models.Entities.Personne>;
-    pivots = pivots?.Select(c => new KhalfiElection.Models.Entities.Personne
-            {
-                PersonneId = c.PersonneId,
-                Nom = c.Nom + " " + c.Prenom
-            }).ToList() ?? new List<KhalfiElection.Models.Entities.Personne>();
+    ViewData["Title"] = "Création d'un pivot";
 }
 
 <div class="card mb-4">
     <div style="display:flex;justify-content:space-between;">
         <div class="card-header">
-            <h3 class="mb-0">Pivot | Famille</h3>
+            <h3 class="mb-0">Pivot </h3>
             <span>
                 Création
             </span>
@@ -26,7 +20,7 @@
 
 <div class="card-body">
     <!-- Form -->
-    <form asp-action="Create" method="post" class="form-row mt-3">
+    <form asp-action="CreatePivot" method="post" class="form-row mt-3">
                 <div class="col-lg-6 mb-2 col-md-6 col-12">
                     <label asp-for="Personne.Nom" class="control-label"></label>
                     <input asp-for="Personne.Nom" class="form-control" />
@@ -64,20 +58,7 @@
                 </select>
                     <span asp-validation-for="Personne.SecteurId" class="text-danger"></span>
                 </div>
-<div class="col-lg-6 mb-2 col-md-6 col-12">
-                    <label asp-for="Personne.RelationParenteId" class="control-label"> Relation familial</label>
-                <select asp-for="Personne.RelationParenteId" class="selectpicker" data-width="100%" data-live-search="true" asp-items="ViewBag.RelationParenteId">
-                    <option value="" selected>--Relation parenté--</option>
-                </select>
-                    <span asp-validation-for="Personne.RelationParenteId" class="text-danger"></span>
-                </div>
-<div class="col-lg-6 mb-2 col-md-6 col-12">
-                <label asp-for="Personne.PivotId" class="control-label">Pivot</label>
-                <select asp-for="Personne.PivotId" class="selectpicker" data-width="100%" data-live-search="true" asp-items="@(new SelectList(pivots, "PersonneId", "Nom"))">
-                    <option value="" selected>--Pivot--</option>
-                </select>
-                <span asp-validation-for="Personne.PivotId" class="text-danger"></span>
-                </div>
+
             <div class="col-lg-12 col-md-12 col-12 mb-2" style="text-align:right!important;">
                 <button type="submit" class="btn btn-outline-info me-2">Créer</button>
             </div>

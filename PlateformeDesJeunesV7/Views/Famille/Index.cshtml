@@ -1,4 +1,4 @@
-﻿@model List<KhalfiElection.Models.Entities.Famille>
+﻿@model List<KhalfiElection.Models.Entities.Personne>
 @{
     Layout = "_LayoutDashboard";
     ViewData["Title"] = "Home Page";
@@ -27,9 +27,14 @@
         
         
         <div>
-                <a type="button" class="btn btn-info" asp-controller="Famille" asp-action="Create">Création</a>
+            <a type="button" class="btn btn-info" asp-controller="Famille" asp-action="CreatePivot">Création d'un pivot</a>
         </div>
-           
+        <div>
+            <a type="button" class="btn btn-success" asp-controller="Famille" asp-action="CreateResponsable">Création d'un responsable de famille</a>
+        </div>
+        <div>
+            <a type="button" class="btn btn-secondary" asp-controller="Famille" asp-action="CreateMember">Création d'un membre d'une famille</a>
+        </div>
     </div>
 
 <!-- end page title -->
@@ -68,106 +73,48 @@
 
 </div>
 
+    <div class="card mb-4 mt-3">
+    <div class="card-body">
     <div class="table-responsive border-0 overflow-y-hidden card-body">
         <table class="table mb-0 text-nowrap">
             <thead>
                 <tr>
-                    <th>Nom</th>
-                    <th>Prénom</th>
-                    <th>CIN</th>
-                    <th>Date de naissance</th>
-                    <th>Adresse</th>
-                    <th>GSM</th>
-                    <th>Secteur</th>
-                    <th>Action</th>
+                    <th style="line-height:1.3" class="font-weight-bold text-uppercase">Nom &Aacute; Prénom</th>
+                        <th style="line-height:1.3" class="font-weight-bold text-uppercase">CIN</th>
+                        <th style="line-height:1.3" class="font-weight-bold text-uppercase">Date de naissance</th>
+                        <th style="line-height:1.3" class="font-weight-bold text-uppercase">Adresse</th>
+                        <th style="line-height:1.3" class="font-weight-bold text-uppercase">GSM</th>
+                        <th style="line-height:1.3" class="font-weight-bold text-uppercase">Secteur</th>
+                        <th style="line-height:1.3" class="font-weight-bold text-uppercase">Action</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.Select(c => c.Membres))
+                @foreach (var responsable in Model)
                 {
-                    var responsable = item?.FirstOrDefault(c => c.IsResponsable == true);
-                    var membres = item?.Where(c => c.IsResponsable == null || c.IsResponsable == false);
+                    <tr>
+                        <td>@responsable.Nom @responsable.Prenom</td>
+                        <td>@responsable.CIN</td>
+                        <td>@(responsable.DateNaissance == null ? "" : responsable.DateNaissance.Value.Date.ToShortDateString())</td>
+                        <td>@responsable.Adresse</td>
+                        <td>@responsable.GSM</td>
+                        <td>@responsable.Secteur?.Nom</td>
+                        <td class="table-action">
+                            <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-edit dropdown-item-icon"></i></a>
+                            <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-trash dropdown-item-icon"></i></a>
 
-                    if (responsable != null)
-                    {
-                        <tr>
-                            <td>@responsable.Nom</td>
-                            <td>@responsable.Prenom</td>
-                            <td>@responsable.CIN</td>
-                            <td>@(responsable.DateNaissance == null ? "" : responsable.DateNaissance.Value.Date.ToShortDateString())</td>
-                            <td>@responsable.Adresse</td>
-                            <td>@responsable.GSM</td>
-                            <td>@responsable.Secteur?.Nom</td>
-                            <td class="table-action">
-                                @if (membres != null && membres.Any())
-                                {
-                                    <a href="javascript: void(0);" class="action-icon toggle-details"> <i class="fas fa-chevron-down dropdown-item-icon"></i></a>
-                                }
-                                <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-edit dropdown-item-icon"></i></a>
-                                <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-trash dropdown-item-icon"></i></a>
-
-                            </td>
-                        </tr>
-
-                        foreach (var membre in membres)
-                        {
-                            <tr class="details-row-@index bg-light border border-primary" style="display: none;">
-                                <td>@membre.Nom</td>
-                                <td>@membre.Prenom</td>
-                                <td>@membre.CIN</td>
-                                <td>@(membre.DateNaissance == null ? "" : membre.DateNaissance.Value.Date.ToShortDateString())</td>
-                                <td>@membre.Adresse</td>
-                                <td>@membre.GSM</td>
-                                <td>@membre.Secteur?.Nom</td>
-                                <td class="table-action">
-                                    <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-edit dropdown-item-icon"></i></a>
-                                    <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-trash dropdown-item-icon"></i></a>
-
-                                </td>
-                            </tr>
-                        }
-                        index++;
-                    }
+                        </td>
+                    </tr>
                 }
 
             </tbody>
         </table>
 
 </div>
-
+</div>
+</div>
 </div>
 
-
 @section Scripts {
-
-    <script>
-        // Ajouter un gestionnaire d'événements aux icônes de bascule pour afficher/masquer les détails
-        document.querySelectorAll('.toggle-details').forEach(icon => {
-            icon.addEventListener('click', function () {
-                let currentRow = this.closest('tr');
-                let detailsRow = currentRow.nextElementSibling;
-                if (detailsRow) {
-                    let index = parseInt(detailsRow.classList[0].split('-')[2]); // Extract index from the class name
-                    let tbody = currentRow.closest('tbody'); // Get the parent tbody
-                    let detailsRows = tbody.querySelectorAll('.details-row-' + index); // Select all details rows with the corresponding index
-                    detailsRows.forEach(detailsRow => {
-                        if (detailsRow.style.display === 'none' || detailsRow.style.display === '') {
-                            detailsRow.style.display = 'table-row';
-                            this.querySelector('i').classList.remove('mdi-chevron-down');
-                            this.querySelector('i').classList.add('mdi-chevron-up');
-                        } else {
-                            detailsRow.style.display = 'none';
-                            this.querySelector('i').classList.remove('mdi-chevron-up');
-                            this.querySelector('i').classList.add('mdi-chevron-down');
-                        }
-                    });
-                }
-            });
-        });
-
-
-    </script>
-
     <script>
         document.getElementById('searchForm').addEventListener('submit', function (event) {
             event.preventDefault(); // Prevent form submission

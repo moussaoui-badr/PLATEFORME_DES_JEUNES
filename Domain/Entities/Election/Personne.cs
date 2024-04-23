@@ -19,13 +19,12 @@ namespace KhalfiElection.Models.Entities
         public int? RelationParenteId { get; set; }
         public TypeRelationParente? RelationParente { get; set; }
 
-        public int? FamilleId { get; set; }
-        public Famille? Famille { get; set; }
-
         public bool? IsResponsable { get; set; }
 
         public int? PivotId { get; set; }
         public Personne? Pivot { get; set; }
+
+        public int? ResponsableFamilleId { get; set; }
     }
 
 }
