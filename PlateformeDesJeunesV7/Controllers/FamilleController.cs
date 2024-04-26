@@ -21,16 +21,16 @@ namespace Web.Controllers
         }
 
 #nullable disable
-        public async Task<IActionResult> Index(int? secteur, int? pivot, string? SearchNom, string? SearchCIN)
+        public async Task<IActionResult> Index(int? secteurId, int? pivotId, string? SearchNom, string? SearchCIN)
         {
             var secteurs = await _context.Secteurs.ToListAsync();
             var pivots = await _context.Personnes.Where(c => c.PivotId == null).ToListAsync();
 
-            if (secteur == null && pivot == null && string.IsNullOrEmpty(SearchNom) && string.IsNullOrEmpty(SearchCIN))
-            {
-                ViewBag.Pivot = pivots;
-                ViewBag.Secteur = new SelectList(secteurs, "Id", "Nom");
+            ViewBag.Pivot = pivots;
+            ViewBag.Secteur = new SelectList(secteurs, "Id", "Nom");
 
+            if (secteurId == null && pivotId == null && string.IsNullOrEmpty(SearchNom) && string.IsNullOrEmpty(SearchCIN))
+            {
                 return View(new List<Personne>());
             }
 
@@ -38,14 +38,18 @@ namespace Web.Controllers
                 .Include(c => c.Secteur)
                 .AsQueryable();
 
-            if (secteur != null && secteur != 0)
+            //Récupération du pivot et de ses responsables et membres
+
+            if (secteurId != null && secteurId != 0)
             {
-                membres = membres.Where(c => c.SecteurId == secteur && c.PivotId == null);
+                membres = membres.Where(c => c.SecteurId == secteurId);
             }
-            if (pivot != null && pivot != 0)
+
+            if (pivotId != null && pivotId != 0)
             {
-                membres = membres.Where(c => c.PersonneId == pivot);
+                membres = membres.Where(c => c.PivotId == pivotId || c.PersonneId == pivotId);
             }
+            
             if (!string.IsNullOrEmpty(SearchNom))
             {
                 membres = membres.Where(c => c.Nom.Contains(SearchNom) || c.Prenom.Contains(SearchNom));
@@ -54,9 +58,6 @@ namespace Web.Controllers
             {
                 membres = membres.Where(c => c.CIN.Contains(SearchCIN));
             }
-
-            ViewBag.Pivot = pivots;
-            ViewBag.Secteur = new SelectList(secteurs, "Id", "Nom");
 
             var result = await membres.ToListAsync();
 
@@ -139,6 +140,11 @@ namespace Web.Controllers
         {
             try
             {
+                personne.ResponsableFamilleId = personne.PivotId;
+                var pivotId = await _context.Personnes.Where(c => c.PersonneId == personne.PivotId).Select(c => c.PivotId).FirstOrDefaultAsync();
+                personne.PivotId = pivotId;
+
+
                 await _context.AddAsync(personne);
                 await _context.SaveChangesAsync();
 

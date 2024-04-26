@@ -11,7 +11,7 @@ using Service;
 var builder = WebApplication.CreateBuilder(args);
 
 string? connectionString = builder.Configuration.GetConnectionString(builder.Environment.IsProduction() ? "SQLProd" : "SQLDev");
-//connectionString = "Data Source=52.117.100.168\\MSSQLSERVER2019;Initial Catalog=plateformedesjeunes-ainsebaa_ma_si;Persist Security Info=False;Integrated Security=false;User ID=plateformedesjeunes-ainsebaa_ma_si;pwd=Freeak-badr1;Connect Timeout=15;Encrypt=False;Packet Size=4096";
+connectionString = "Data Source=52.117.100.168\\MSSQLSERVER2019;Initial Catalog=plateformedesjeunes-ainsebaa_ma_si;Persist Security Info=False;Integrated Security=false;User ID=plateformedesjeunes-ainsebaa_ma_si;pwd=Freeak-badr1;Connect Timeout=15;Encrypt=False;Packet Size=4096";
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
@@ -123,6 +123,6 @@ static void CreateDbIfNotExists(IHost host)
         }
     }
 }
-CreateDbIfNotExists(app);
+//CreateDbIfNotExists(app);
 
 app.Run();

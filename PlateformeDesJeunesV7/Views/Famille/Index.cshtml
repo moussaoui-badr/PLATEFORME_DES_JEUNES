@@ -89,23 +89,63 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var responsable in Model)
-                {
-                    <tr>
-                        <td>@responsable.Nom @responsable.Prenom</td>
-                        <td>@responsable.CIN</td>
-                        <td>@(responsable.DateNaissance == null ? "" : responsable.DateNaissance.Value.Date.ToShortDateString())</td>
-                        <td>@responsable.Adresse</td>
-                        <td>@responsable.GSM</td>
-                        <td>@responsable.Secteur?.Nom</td>
-                        <td class="table-action">
-                            <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-edit dropdown-item-icon"></i></a>
-                            <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-trash dropdown-item-icon"></i></a>
+                    @foreach (var pivot in Model.Where(c => c.PivotId == null))
+                    {
+                        <tr class="bg-danger text-white">
+                            <td>@pivot.Nom @pivot.Prenom</td>
+                            <td>@pivot.CIN</td>
+                            <td>@(pivot.DateNaissance == null ? "" : pivot.DateNaissance.Value.Date.ToShortDateString())</td>
+                            <td>@pivot.Adresse</td>
+                            <td>@pivot.GSM</td>
+                            <td>@pivot.Secteur?.Nom</td>
+                            <td class="table-action">
+                                <a href="javascript: void(0);" class="action-icon toggle-details"> <i class="fas fa-chevron-down dropdown-item-icon text-white"></i></a>
+                                <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-edit dropdown-item-icon text-white"></i></a>
+                                <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-trash dropdown-item-icon text-white"></i></a>
+                            </td>
+                        </tr>
 
-                        </td>
-                    </tr>
-                }
+                        var responsables = Model.Where(c => c.PivotId == pivot.PersonneId && c.IsResponsable == true).ToList();
 
+                        foreach (var responsable in responsables)
+                        {
+                            <tr class="details-row-@index bg-warning text-white border border-primary" style="display: none;">
+                                <td>@responsable.Nom @responsable.Prenom</td>
+                                <td>@responsable.CIN</td>
+                                <td>@(responsable.DateNaissance == null ? "" : responsable.DateNaissance.Value.Date.ToShortDateString())</td>
+                                <td>@responsable.Adresse</td>
+                                <td>@responsable.GSM</td>
+                                <td>@responsable.Secteur?.Nom</td>
+                                <td class="table-action">
+                                    <a href="javascript: void(0);" class="action-icon toggle-details"> <i class="fas fa-chevron-down dropdown-item-icon text-white"></i></a>
+                                    <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-edit dropdown-item-icon text-white"></i></a>
+                                    <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-trash dropdown-item-icon text-white"></i></a>
+
+                                </td>
+                            </tr>
+
+                            index++;
+                            var membres = Model.Where(c => c.ResponsableFamilleId == responsable.PersonneId).ToList();
+
+                            foreach (var membre in membres)
+                            {
+                                    <tr class="details-row-@(index) bg-white border border-secondary" style="display: none;">
+                                    <td>@membre.Nom @membre.Prenom</td>
+                                    <td>@membre.CIN</td>
+                                    <td>@(membre.DateNaissance == null ? "" : membre.DateNaissance.Value.Date.ToShortDateString())</td>
+                                    <td>@membre.Adresse</td>
+                                    <td>@membre.GSM</td>
+                                    <td>@membre.Secteur?.Nom</td>
+                                    <td class="table-action">
+                                        <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-edit dropdown-item-icon text-white"></i></a>
+                                        <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-trash dropdown-item-icon text-white"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+
+                        index++;
+                    }
             </tbody>
         </table>
 
@@ -116,6 +156,33 @@
 
 @section Scripts {
     <script>
+        // Ajouter un gestionnaire d'événements aux icônes de bascule pour afficher/masquer les détails
+        document.querySelectorAll('.toggle-details').forEach(icon => {
+            icon.addEventListener('click', function () {
+                let currentRow = this.closest('tr');
+                let detailsRow = currentRow.nextElementSibling;
+                if (detailsRow) {
+                    let index = parseInt(detailsRow.classList[0].split('-')[2]); // Extract index from the class name
+                    let tbody = currentRow.closest('tbody'); // Get the parent tbody
+                    let detailsRows = tbody.querySelectorAll('.details-row-' + index); // Select all details rows with the corresponding index
+                    detailsRows.forEach(detailsRow => {
+                        if (detailsRow.style.display === 'none' || detailsRow.style.display === '') {
+                            detailsRow.style.display = 'table-row';
+                            this.querySelector('i').classList.remove('mdi-chevron-down');
+                            this.querySelector('i').classList.add('mdi-chevron-up');
+                        } else {
+                            detailsRow.style.display = 'none';
+                            this.querySelector('i').classList.remove('mdi-chevron-up');
+                            this.querySelector('i').classList.add('mdi-chevron-down');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+
+    <script>
         document.getElementById('searchForm').addEventListener('submit', function (event) {
             event.preventDefault(); // Prevent form submission
             var secteur = document.getElementById('secteur').value;
@@ -123,8 +190,8 @@
             var nom = document.getElementById('Nom').value;
             var cin = document.getElementById('CIN').value;
             var url = '@Url.Action("Index", "Famille")'; // Modify this according to your controller route
-            url += '?secteur=' + encodeURIComponent(secteur) +
-                '&pivot=' + encodeURIComponent(pivot) +
+            url += '?secteurId=' + encodeURIComponent(secteur) +
+                '&pivotId=' + encodeURIComponent(pivot) +
                 '&SearchNom=' + encodeURIComponent(nom) +
                 '&SearchCIN=' + encodeURIComponent(cin);
             window.location.href = url; // Redirect to the constructed URL
@@ -132,10 +199,12 @@
 
         // Reset form fields
         document.getElementById('resetBtn').addEventListener('click', function () {
-            document.getElementById('secteur').value = '';
-            document.getElementById('pivot').value = '';
+            document.getElementById('secteurId').value = '';
+            document.getElementById('pivotId').value = '';
             document.getElementById('Nom').value = '';
             document.getElementById('CIN').value = '';
         });
     </script>
+
+
 }
