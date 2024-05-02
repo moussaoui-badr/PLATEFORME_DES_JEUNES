@@ -1,16 +1,18 @@
-﻿@model List<KhalfiElection.Models.Entities.Personne>
+﻿@model Domain.Models.Election.StatistiqueFamille
 @{
     Layout = "_LayoutDashboard";
     ViewData["Title"] = "Home Page";
 
-    var pivots = ViewBag.Pivot as List<KhalfiElection.Models.Entities.Personne>;
-    pivots = pivots?.Select(c => new KhalfiElection.Models.Entities.Personne
+    var pivots = ViewBag.Pivot as List<Domain.Entities.V2.PersonnePivot>;
+    pivots = pivots?.Select(c => new Domain.Entities.V2.PersonnePivot
     {
-        PersonneId = c.PersonneId,
+        PersonnePivotId = c.PersonnePivotId,
         Nom = c.Nom + " " + c.Prenom
-    }).ToList() ?? new List<KhalfiElection.Models.Entities.Personne>();
+            }).ToList() ?? new List<Domain.Entities.V2.PersonnePivot>();
 
-    var index = 0;
+    var indexPivot = 0;
+    var indexResponsables = 0;
+    var indexMembres = 0;
 }
 <div class="container-fluid">
 
@@ -44,17 +46,43 @@
             <form class="row mt-3" asp-action="Index" asp-controller="Famille" method="get" id="searchForm">
             <div class="col-lg-4 col-md-6 col-12 mb-2">
                 <div class="mb-3">
-                        <select class="selectpicker" data-live-search="true" id="secteur" name="secteur" asp-items="@ViewBag.Secteur" data-width="100%">
+                        <select class="selectpicker" data-live-search="true" id="secteur" asp-for="SecteurId" data-width="100%">
                         <option value="" selected>--- Secteur ---</option>
-                        <!-- Ajoutez vos options ici -->
+                            @if (ViewBag.Secteur != null)
+                            {
+                                foreach (var item in ViewBag.Secteur as List<KhalfiElection.Models.Entities.Secteur>)
+                                {
+                                    if (Model.SecteurId.GetValueOrDefault() != item.Id)
+                                    {
+                                        <option value="@item.Id">@item.Nom</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@item.Id" selected>@item.Nom</option>
+                                    }
+                                }
+                            }
                     </select>
                 </div>
             </div>
             <div class="col-lg-4 col-md-6 col-12 mb-2">
                 <div class="mb-3">
-                        <select class="selectpicker" data-live-search="true" id="pivot" name="pivot" asp-items="@(new SelectList(pivots, "PersonneId", "Nom"))" data-width="100%">
+                        <select class="selectpicker" data-live-search="true" id="pivot" asp-for="PivotId" data-width="100%">
                         <option value="" selected>--- Pivot ---</option>
-                        <!-- Ajoutez vos options ici -->
+                            @if (pivots != null)
+                            {
+                                foreach (var item in pivots)
+                                {
+                                    if (Model.PivotId.GetValueOrDefault() != item.PersonnePivotId)
+                                    {
+                                        <option value="@item.PersonnePivotId">@item.Nom</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@item.PersonnePivotId" selected>@item.Nom</option>
+                                    }
+                                }
+                            }
                     </select>
                 </div>
             </div>
@@ -89,7 +117,7 @@
                 </tr>
             </thead>
             <tbody>
-                    @foreach (var pivot in Model.Where(c => c.PivotId == null))
+                    @foreach (var pivot in Model.PersonnePivot ?? new List<Domain.Entities.V2.PersonnePivot>())
                     {
                         <tr class="bg-danger text-white">
                             <td>@pivot.Nom @pivot.Prenom</td>
@@ -99,52 +127,57 @@
                             <td>@pivot.GSM</td>
                             <td>@pivot.Secteur?.Nom</td>
                             <td class="table-action">
-                                <a href="javascript: void(0);" class="action-icon toggle-details"> <i class="fas fa-chevron-down dropdown-item-icon text-white"></i></a>
+                                <a href="javascript: void(0);" class="action-icon toggle-pivot-details" id="@pivot.PersonnePivotId"> <i class="fas fa-chevron-down dropdown-item-icon text-white"></i></a>
                                 <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-edit dropdown-item-icon text-white"></i></a>
                                 <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-trash dropdown-item-icon text-white"></i></a>
                             </td>
                         </tr>
 
-                        var responsables = Model.Where(c => c.PivotId == pivot.PersonneId && c.IsResponsable == true).ToList();
+                            var responsables = pivot.Responsables;
 
-                        foreach (var responsable in responsables)
-                        {
-                            <tr class="details-row-@index bg-warning text-white border border-primary" style="display: none;">
-                                <td>@responsable.Nom @responsable.Prenom</td>
-                                <td>@responsable.CIN</td>
-                                <td>@(responsable.DateNaissance == null ? "" : responsable.DateNaissance.Value.Date.ToShortDateString())</td>
-                                <td>@responsable.Adresse</td>
-                                <td>@responsable.GSM</td>
-                                <td>@responsable.Secteur?.Nom</td>
-                                <td class="table-action">
-                                    <a href="javascript: void(0);" class="action-icon toggle-details"> <i class="fas fa-chevron-down dropdown-item-icon text-white"></i></a>
-                                    <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-edit dropdown-item-icon text-white"></i></a>
-                                    <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-trash dropdown-item-icon text-white"></i></a>
-
-                                </td>
-                            </tr>
-
-                            index++;
-                            var membres = Model.Where(c => c.ResponsableFamilleId == responsable.PersonneId).ToList();
-
-                            foreach (var membre in membres)
+                            if(responsables != null && responsables.Any())
                             {
-                                    <tr class="details-row-@(index) bg-white border border-secondary" style="display: none;">
-                                    <td>@membre.Nom @membre.Prenom</td>
-                                    <td>@membre.CIN</td>
-                                    <td>@(membre.DateNaissance == null ? "" : membre.DateNaissance.Value.Date.ToShortDateString())</td>
-                                    <td>@membre.Adresse</td>
-                                    <td>@membre.GSM</td>
-                                    <td>@membre.Secteur?.Nom</td>
-                                    <td class="table-action">
-                                        <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-edit dropdown-item-icon text-white"></i></a>
-                                        <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-trash dropdown-item-icon text-white"></i></a>
-                                    </td>
-                                </tr>
-                            }
-                        }
+                                foreach (var responsable in responsables)
+                                {
+                                    <tr class="details-row-pivot-@(pivot.PersonnePivotId) bg-warning text-white border border-primary" style="display: none;">
+                                        <td>@responsable.Nom @responsable.Prenom</td>
+                                        <td>@responsable.CIN</td>
+                                        <td>@(responsable.DateNaissance == null ? "" : responsable.DateNaissance.Value.Date.ToShortDateString())</td>
+                                        <td>@responsable.Adresse</td>
+                                        <td>@responsable.GSM</td>
+                                        <td>@responsable.Secteur?.Nom</td>
+                                        <td class="table-action">
+                                            <a href="javascript: void(0);" class="action-icon toggle-responsable-details" id="@responsable.PersonneResponsableId"> <i class="fas fa-chevron-down dropdown-item-icon text-white"></i></a>
+                                            <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-edit dropdown-item-icon text-white"></i></a>
+                                            <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-trash dropdown-item-icon text-white"></i></a>
 
-                        index++;
+                                        </td>
+                                    </tr>
+
+                                    var membres = responsable.Membres;
+
+                                    if(membres != null && membres.Any())
+                                    {
+                                        foreach (var membre in membres)
+                                        {
+                                            <tr class="details-row-membre-@(responsable.PersonneResponsableId) bg-white border border-secondary" style="display: none;">
+                                                <td>@membre.Nom @membre.Prenom (@(membre.RelationParente?.Nom ?? ""))</td>
+                                                <td>@membre.CIN</td>
+                                                <td>@(membre.DateNaissance == null ? "" : membre.DateNaissance.Value.Date.ToShortDateString())</td>
+                                                <td>@membre.Adresse</td>
+                                                <td>@membre.GSM</td>
+                                                <td>@membre.Secteur?.Nom</td>
+                                                <td class="table-action">
+                                                    <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-edit dropdown-item-icon text-white"></i></a>
+                                                    <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-trash dropdown-item-icon text-white"></i></a>
+                                                </td>
+                                            </tr>
+
+                                            indexMembres++;
+                                        }
+                                    }
+                                }
+                            }
                     }
             </tbody>
         </table>
@@ -156,29 +189,44 @@
 
 @section Scripts {
     <script>
-        // Ajouter un gestionnaire d'événements aux icônes de bascule pour afficher/masquer les détails
-        document.querySelectorAll('.toggle-details').forEach(icon => {
+        document.querySelectorAll('.toggle-pivot-details').forEach(icon => {
             icon.addEventListener('click', function () {
-                let currentRow = this.closest('tr');
-                let detailsRow = currentRow.nextElementSibling;
-                if (detailsRow) {
-                    let index = parseInt(detailsRow.classList[0].split('-')[2]); // Extract index from the class name
-                    let tbody = currentRow.closest('tbody'); // Get the parent tbody
-                    let detailsRows = tbody.querySelectorAll('.details-row-' + index); // Select all details rows with the corresponding index
-                    detailsRows.forEach(detailsRow => {
-                        if (detailsRow.style.display === 'none' || detailsRow.style.display === '') {
-                            detailsRow.style.display = 'table-row';
-                            this.querySelector('i').classList.remove('mdi-chevron-down');
-                            this.querySelector('i').classList.add('mdi-chevron-up');
-                        } else {
-                            detailsRow.style.display = 'none';
-                            this.querySelector('i').classList.remove('mdi-chevron-up');
-                            this.querySelector('i').classList.add('mdi-chevron-down');
-                        }
-                    });
-                }
+                let pivotId = this.id; // Récupérer l'ID du pivot à partir de l'élément toggle
+                let detailsRows = document.querySelectorAll('.details-row-pivot-' + pivotId);
+                detailsRows.forEach(detailsRow => {
+                    detailsRow.style.display = detailsRow.style.display === 'none' ? 'table-row' : 'none';
+                });
+
+                this.querySelector('i').classList.toggle('fa-chevron-up');
+                this.querySelector('i').classList.toggle('fa-chevron-down');
             });
         });
+
+        document.querySelectorAll('.toggle-responsable-details').forEach(icon => {
+            icon.addEventListener('click', function () {
+                let responsableId = this.id; // Récupérer l'ID du responsable à partir de l'élément toggle
+                let detailsRows = document.querySelectorAll('.details-row-membre-' + responsableId);
+                detailsRows.forEach(detailsRow => {
+                    detailsRow.style.display = detailsRow.style.display === 'none' ? 'table-row' : 'none';
+                });
+
+                this.querySelector('i').classList.toggle('fa-chevron-up');
+                this.querySelector('i').classList.toggle('fa-chevron-down');
+            });
+        });
+
+        // document.querySelectorAll('.toggle-membre-details').forEach(icon => {
+        //     icon.addEventListener('click', function () {
+        //         let responsableId = this.id; // Récupérer l'ID du responsable à partir de l'élément toggle du membre
+        //         let detailsRows = document.querySelectorAll('.details-row-membre-responsable-' + responsableId);
+        //         detailsRows.forEach(detailsRow => {
+        //             detailsRow.style.display = detailsRow.style.display === 'none' ? 'table-row' : 'none';
+        //         });
+
+        //         this.querySelector('i').classList.toggle('fa-chevron-up');
+        //         this.querySelector('i').classList.toggle('fa-chevron-down');
+        //     });
+        // });
     </script>
 
 

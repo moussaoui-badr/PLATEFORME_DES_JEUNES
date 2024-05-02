@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Entities.V2;
 using KhalfiElection.Models.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -36,8 +37,17 @@ namespace Repository.Data
         public DbSet<TypeRelationParente> TypesRelationParente { get; set; }
 
 
+        public DbSet<PersonnePivot> PersonnePivot { get; set; }
+        public DbSet<PersonneResponsable> PersonneResponsable { get; set; }
+        public DbSet<PersonneMembre> PersonneMembre { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Personne>()
+            .HasOne(p => p.ResponsableFamille) // Définit la relation avec la propriété ResponsableFamille
+            .WithMany() // Indique qu'il peut y avoir plusieurs Personne liées à un ResponsableFamille
+            .HasForeignKey(p => p.ResponsableFamilleId); // Clé étrangère
+
             base.OnModelCreating(modelBuilder);
         }
     }

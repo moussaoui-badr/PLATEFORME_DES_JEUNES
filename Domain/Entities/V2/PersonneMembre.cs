@@ -1,10 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using KhalfiElection.Models.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace KhalfiElection.Models.Entities
+namespace Domain.Entities.V2
 {
-    public class Personne
+    public class PersonneMembre
     {
-        public int PersonneId { get; set; }
+        public int PersonneMembreId { get; set; }
         public string? Nom { get; set; }
         public string? Prenom { get; set; }
         public string? CIN { get; set; }
@@ -19,13 +24,9 @@ namespace KhalfiElection.Models.Entities
         public int? RelationParenteId { get; set; }
         public TypeRelationParente? RelationParente { get; set; }
 
-        public bool? IsResponsable { get; set; }
+        public int? ResponsableId { get; set; }
+        public PersonneResponsable? Responsable { get; set; }
 
         public int? PivotId { get; set; }
-        public Personne? Pivot { get; set; }
-
-        public int? ResponsableFamilleId { get; set; }
-        public Personne? ResponsableFamille { get; set; }
     }
-
 }

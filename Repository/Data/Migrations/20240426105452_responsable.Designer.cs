@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Repository.Data;
 
@@ -11,9 +12,11 @@ using Repository.Data;
 namespace Repository.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240426105452_responsable")]
+    partial class responsable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -647,141 +650,6 @@ namespace Repository.Data.Migrations
                     b.ToTable("InscriptionFormation");
                 });
 
-            modelBuilder.Entity("Domain.Entities.V2.PersonneMembre", b =>
-                {
-                    b.Property<int>("PersonneMembreId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PersonneMembreId"));
-
-                    b.Property<string>("Adresse")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CIN")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateCreation")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DateNaissance")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("GSM")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Nom")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PivotId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Prenom")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("RelationParenteId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ResponsableId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SecteurId")
-                        .HasColumnType("int");
-
-                    b.HasKey("PersonneMembreId");
-
-                    b.HasIndex("RelationParenteId");
-
-                    b.HasIndex("ResponsableId");
-
-                    b.HasIndex("SecteurId");
-
-                    b.ToTable("PersonneMembre");
-                });
-
-            modelBuilder.Entity("Domain.Entities.V2.PersonnePivot", b =>
-                {
-                    b.Property<int>("PersonnePivotId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PersonnePivotId"));
-
-                    b.Property<string>("Adresse")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CIN")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateCreation")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DateNaissance")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("GSM")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Nom")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Prenom")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("SecteurId")
-                        .HasColumnType("int");
-
-                    b.HasKey("PersonnePivotId");
-
-                    b.HasIndex("SecteurId");
-
-                    b.ToTable("PersonnePivot");
-                });
-
-            modelBuilder.Entity("Domain.Entities.V2.PersonneResponsable", b =>
-                {
-                    b.Property<int>("PersonneResponsableId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PersonneResponsableId"));
-
-                    b.Property<string>("Adresse")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CIN")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateCreation")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DateNaissance")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("GSM")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Nom")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PivotId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Prenom")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("SecteurId")
-                        .HasColumnType("int");
-
-                    b.HasKey("PersonneResponsableId");
-
-                    b.HasIndex("PivotId");
-
-                    b.HasIndex("SecteurId");
-
-                    b.ToTable("PersonneResponsable");
-                });
-
             modelBuilder.Entity("KhalfiElection.Models.Entities.Personne", b =>
                 {
                     b.Property<int>("PersonneId")
@@ -1084,51 +952,6 @@ namespace Repository.Data.Migrations
                     b.Navigation("Formation");
                 });
 
-            modelBuilder.Entity("Domain.Entities.V2.PersonneMembre", b =>
-                {
-                    b.HasOne("KhalfiElection.Models.Entities.TypeRelationParente", "RelationParente")
-                        .WithMany()
-                        .HasForeignKey("RelationParenteId");
-
-                    b.HasOne("Domain.Entities.V2.PersonneResponsable", "Responsable")
-                        .WithMany("Membres")
-                        .HasForeignKey("ResponsableId");
-
-                    b.HasOne("KhalfiElection.Models.Entities.Secteur", "Secteur")
-                        .WithMany()
-                        .HasForeignKey("SecteurId");
-
-                    b.Navigation("RelationParente");
-
-                    b.Navigation("Responsable");
-
-                    b.Navigation("Secteur");
-                });
-
-            modelBuilder.Entity("Domain.Entities.V2.PersonnePivot", b =>
-                {
-                    b.HasOne("KhalfiElection.Models.Entities.Secteur", "Secteur")
-                        .WithMany()
-                        .HasForeignKey("SecteurId");
-
-                    b.Navigation("Secteur");
-                });
-
-            modelBuilder.Entity("Domain.Entities.V2.PersonneResponsable", b =>
-                {
-                    b.HasOne("Domain.Entities.V2.PersonnePivot", "Pivot")
-                        .WithMany("Responsables")
-                        .HasForeignKey("PivotId");
-
-                    b.HasOne("KhalfiElection.Models.Entities.Secteur", "Secteur")
-                        .WithMany()
-                        .HasForeignKey("SecteurId");
-
-                    b.Navigation("Pivot");
-
-                    b.Navigation("Secteur");
-                });
-
             modelBuilder.Entity("KhalfiElection.Models.Entities.Personne", b =>
                 {
                     b.HasOne("KhalfiElection.Models.Entities.Personne", "Pivot")
@@ -1238,16 +1061,6 @@ namespace Repository.Data.Migrations
             modelBuilder.Entity("Domain.Entities.Formation", b =>
                 {
                     b.Navigation("InscriptionFormation");
-                });
-
-            modelBuilder.Entity("Domain.Entities.V2.PersonnePivot", b =>
-                {
-                    b.Navigation("Responsables");
-                });
-
-            modelBuilder.Entity("Domain.Entities.V2.PersonneResponsable", b =>
-                {
-                    b.Navigation("Membres");
                 });
 #pragma warning restore 612, 618
         }

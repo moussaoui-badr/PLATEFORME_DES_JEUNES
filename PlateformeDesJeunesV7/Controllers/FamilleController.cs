@@ -6,6 +6,7 @@ using Repository.Data;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Domain.Models.Election;
+using Domain.Entities.V2;
 
 namespace Web.Controllers
 {
@@ -21,47 +22,48 @@ namespace Web.Controllers
         }
 
 #nullable disable
-        public async Task<IActionResult> Index(int? secteurId, int? pivotId, string? SearchNom, string? SearchCIN)
+        public async Task<IActionResult> Index(StatistiqueFamille model)
         {
             var secteurs = await _context.Secteurs.ToListAsync();
-            var pivots = await _context.Personnes.Where(c => c.PivotId == null).ToListAsync();
+            var pivots = await _context.PersonnePivot.ToListAsync();
 
             ViewBag.Pivot = pivots;
-            ViewBag.Secteur = new SelectList(secteurs, "Id", "Nom");
+            ViewBag.Secteur = secteurs;
 
-            if (secteurId == null && pivotId == null && string.IsNullOrEmpty(SearchNom) && string.IsNullOrEmpty(SearchCIN))
+            if (model.SecteurId == null && model.PivotId == null && string.IsNullOrEmpty(model.SearchNom) && string.IsNullOrEmpty(model.SearchCIN))
             {
-                return View(new List<Personne>());
+                return View(model);
             }
 
-            var membres = _context.Personnes
+            var membres = _context.PersonnePivot
                 .Include(c => c.Secteur)
+                .Include(c => c.Responsables)
+                .ThenInclude(c => c.Membres)
+                .ThenInclude(c => c.RelationParente)
                 .AsQueryable();
 
             //Récupération du pivot et de ses responsables et membres
-
-            if (secteurId != null && secteurId != 0)
+            if (model.PivotId != null && model.PivotId != 0)
             {
-                membres = membres.Where(c => c.SecteurId == secteurId);
+                membres = membres.Where(c => c.PersonnePivotId == model.PivotId);
             }
-
-            if (pivotId != null && pivotId != 0)
+            if (model.SecteurId != null && model.SecteurId != 0)
             {
-                membres = membres.Where(c => c.PivotId == pivotId || c.PersonneId == pivotId);
+                membres = membres.Where(c => c.SecteurId == model.SecteurId );
             }
-            
-            if (!string.IsNullOrEmpty(SearchNom))
+            if (!string.IsNullOrEmpty(model.SearchNom))
             {
-                membres = membres.Where(c => c.Nom.Contains(SearchNom) || c.Prenom.Contains(SearchNom));
+                membres = membres.Where(c => c.Nom.Contains(model.SearchNom) || c.Prenom.Contains(model.SearchNom) );
             }
-            if (!string.IsNullOrEmpty(SearchCIN))
+            if (!string.IsNullOrEmpty(model.SearchCIN))
             {
-                membres = membres.Where(c => c.CIN.Contains(SearchCIN));
+                membres = membres.Where(c => c.CIN.Contains(model.SearchCIN));
             }
 
             var result = await membres.ToListAsync();
+            model.PersonnePivot = result;
 
-            return View(result);
+            return View(model);
         }
 
         public IActionResult Privacy()
@@ -72,7 +74,7 @@ namespace Web.Controllers
         // GET: Personnes/Create
         public async Task<IActionResult> CreatePivot()
         {
-            var pivots = await _context.Personnes.Where(c => c.PivotId == null).ToListAsync();
+            var pivots = await _context.PersonnePivot.ToListAsync();
 
             ViewBag.Pivot = pivots; ViewData["RelationParenteId"] = new SelectList(await _context.TypesRelationParente.ToListAsync(), "Id", "Nom");
             ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom");
@@ -80,35 +82,33 @@ namespace Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePivot(Personne personne)
+        public async Task<IActionResult> CreatePivot(PersonnePivot personne)
         {
             try
             {
-                await _context.AddAsync(personne);
+                await _context.PersonnePivot.AddAsync(personne);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                ViewData["PivotId"] = new SelectList(await _context.Personnes.Where(c => c.IsResponsable == true).ToListAsync(), "PersonneId", "Nom", personne.PivotId);
-                ViewData["RelationParenteId"] = new SelectList(await _context.TypesRelationParente.ToListAsync(), "Id", "Nom", personne.RelationParenteId);
-                ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom", personne.SecteurId);
-                return View(personne);
+                return View(ex);
             }
         }
 
         public async Task<IActionResult> CreateResponsable()
         {
-            var pivots = await _context.Personnes.Where(c => c.PivotId == null).ToListAsync();
+            var pivots = await _context.PersonnePivot.ToListAsync();
 
-            ViewBag.Pivot = pivots; ViewData["RelationParenteId"] = new SelectList(await _context.TypesRelationParente.ToListAsync(), "Id", "Nom");
+            ViewBag.Pivot = pivots; 
+            ViewData["RelationParenteId"] = new SelectList(await _context.TypesRelationParente.ToListAsync(), "Id", "Nom");
             ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom");
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateResponsable(Personne personne)
+        public async Task<IActionResult> CreateResponsable(PersonneResponsable personne)
         {
             try
             {
@@ -119,32 +119,36 @@ namespace Web.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["PivotId"] = new SelectList(await _context.Personnes.Where(c => c.IsResponsable == true).ToListAsync(), "PersonneId", "Nom", personne.PivotId);
-                ViewData["RelationParenteId"] = new SelectList(await _context.TypesRelationParente.ToListAsync(), "Id", "Nom", personne.RelationParenteId);
-                ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom", personne.SecteurId);
-                return View(personne);
+                return View(ex);
             }
         }
 
         public async Task<IActionResult> CreateMember()
         {
-            var pivots = await _context.Personnes.Where(c => c.IsResponsable == true).ToListAsync();
+            var pivots = await _context.PersonnePivot.ToListAsync();
+            var responsables = await _context.PersonneResponsable.Select(c => new PersonneResponsable
+            {
+                PersonneResponsableId = c.PersonneResponsableId,
+                Nom = c.Nom + " " + c.Prenom,
+                PivotId = c.PivotId
+            }).ToListAsync();
 
-            ViewBag.Pivot = pivots; ViewData["RelationParenteId"] = new SelectList(await _context.TypesRelationParente.ToListAsync(), "Id", "Nom");
+            //Convertir en json responsables
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(responsables);
+
+            ViewBag.Responsable = json;
+            ViewBag.Pivot = pivots;
+
+            ViewData["RelationParenteId"] = new SelectList(await _context.TypesRelationParente.ToListAsync(), "Id", "Nom");
             ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom");
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateMember(Personne personne)
+        public async Task<IActionResult> CreateMember(PersonneMembre personne)
         {
             try
             {
-                personne.ResponsableFamilleId = personne.PivotId;
-                var pivotId = await _context.Personnes.Where(c => c.PersonneId == personne.PivotId).Select(c => c.PivotId).FirstOrDefaultAsync();
-                personne.PivotId = pivotId;
-
-
                 await _context.AddAsync(personne);
                 await _context.SaveChangesAsync();
 
@@ -152,10 +156,7 @@ namespace Web.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["PivotId"] = new SelectList(await _context.Personnes.Where(c => c.IsResponsable == true).ToListAsync(), "PersonneId", "Nom", personne.PivotId);
-                ViewData["RelationParenteId"] = new SelectList(await _context.TypesRelationParente.ToListAsync(), "Id", "Nom", personne.RelationParenteId);
-                ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom", personne.SecteurId);
-                return View(personne);
+                return View(ex);
             }
         }
 
@@ -203,5 +204,146 @@ namespace Web.Controllers
 
             return View(model);
         }
+
+        //Mofification PersonnePivot
+        public async Task<IActionResult> EditPivot(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var personne = await _context.PersonnePivot.FindAsync(id);
+            if (personne == null)
+            {
+                return NotFound();
+            }
+
+            ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom");
+            return View(personne);
+        }
+        // POST: Personnes/Edit/5   
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditPivot(int id, PersonnePivot personne)
+        {
+            if (id != personne.PersonnePivotId)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                _context.Update(personne);
+                await _context.SaveChangesAsync();
+                
+                return RedirectToAction(nameof(Index));
+            }
+
+            ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom");
+            return View(personne);
+        }
+        //Edit Responsable
+        public async Task<IActionResult> EditResponsable(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var personne = await _context.PersonneResponsable.FindAsync(id);
+            if (personne == null)
+            {
+                return NotFound();
+            }
+
+            ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom");
+            return View(personne);
+        }
+
+        // POST: Personnes/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditResponsable(int id, PersonneResponsable personne)
+        {
+            if (id != personne.PersonneResponsableId)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                _context.Update(personne);
+                await _context.SaveChangesAsync();
+                
+                return RedirectToAction(nameof(Index));
+            }
+
+            ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom");
+            return View(personne);
+        }
+
+        //Edit Membre
+        public async Task<IActionResult> EditMember(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var personne = await _context.PersonneMembre.FindAsync(id);
+            if (personne == null)
+            {
+                return NotFound();
+            }
+
+            ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom");
+            return View(personne);
+        }
+
+        // POST: Personnes/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditMember(int id, PersonneMembre personne)
+        {
+            if (id != personne.PersonneMembreId)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                _context.Update(personne);
+                await _context.SaveChangesAsync();
+                
+                return RedirectToAction(nameof(Index));
+            }
+
+            ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom");
+            return View(personne);
+        }
+
+        //Delete Membre
+        public async Task<IActionResult> DeleteMember(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var personne = await _context.PersonneMembre.FindAsync(id);
+            if (personne == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                _context.PersonneMembre.Remove(personne);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+        
     }
 }
