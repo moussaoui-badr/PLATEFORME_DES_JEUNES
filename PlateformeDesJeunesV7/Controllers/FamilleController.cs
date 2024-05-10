@@ -160,50 +160,7 @@ namespace Web.Controllers
             }
         }
 
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var model = new PivotRespoMembreModel();
-
-            var personne = await _context.Personnes
-                .Include(c => c.Secteur)
-                .Include(c => c.RelationParente)
-                .Include(c => c.Pivot)
-                .FirstOrDefaultAsync(m => m.PersonneId == id);
-
-            //Vérification pivot
-            if(personne.PivotId == null)
-            {
-                model.Pivot = personne;
-                model.Responsables = await _context.Personnes.Where(c => c.PivotId == personne.PersonneId && c.IsResponsable == true).ToListAsync();
-                model.Membres = await _context.Personnes.Where(c => c.PivotId == personne.PersonneId && (c.IsResponsable == null || c.IsResponsable == false)).ToListAsync();
-            }
-            //Vérification responsable
-            else if(personne.IsResponsable == true)
-            {
-                model.Pivot = personne.Pivot;
-                model.Responsables = await _context.Personnes.Where(c => c.PivotId == personne.PivotId && c.IsResponsable == true).ToListAsync();
-                model.Membres = await _context.Personnes.Where(c => c.PivotId == personne.PivotId && (c.IsResponsable == null || c.IsResponsable == false)).ToListAsync();
-            }
-            //Vérification membre
-            else if(personne.PivotId != null && (personne.IsResponsable == null || personne.IsResponsable == false))
-            {
-                model.Pivot = personne.Pivot;
-                model.Responsables = await _context.Personnes.Where(c => c.PivotId == personne.PivotId && c.IsResponsable == true).ToListAsync();
-                model.Membres = await _context.Personnes.Where(c => c.PivotId == personne.PivotId && (c.IsResponsable == null || c.IsResponsable == false)).ToListAsync();
-            }
-
-            if (model == null)
-            {
-                return NotFound();
-            }
-
-            return View(model);
-        }
+        
 
         //Mofification PersonnePivot
         public async Task<IActionResult> EditPivot(int? id)
