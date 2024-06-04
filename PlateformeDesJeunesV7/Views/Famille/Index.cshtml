@@ -1,6 +1,6 @@
 ﻿@model Domain.Models.Election.StatistiqueFamille
 @{
-    Layout = "_LayoutDashboard";
+    Layout = "_LayoutDashboard2";
     ViewData["Title"] = "Home Page";
 
     var pivots = ViewBag.Pivot as List<Domain.Entities.V2.PersonnePivot>;
@@ -13,13 +13,19 @@
     var indexPivot = 0;
     var indexResponsables = 0;
     var indexMembres = 0;
+
+}
+@using System.Globalization
+@{
+    var nfi = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
+    nfi.NumberGroupSeparator = " ";
 }
 <div class="container-fluid">
 
 <div class="card mb-4 mt-3">
 
 <!-- start page title -->
-    <div class="card-header" style="display:flex;justify-content:space-between;">
+    <div class="card-header" style="display:flex;justify-content:space-between;margin-top:90px;">
         <div>
             <h3 class="mb-0">Famille</h3>
             <span>
@@ -36,6 +42,9 @@
         </div>
         <div>
             <a type="button" class="btn btn-secondary" asp-controller="Famille" asp-action="CreateMember">Création d'un membre d'une famille</a>
+        </div>
+        <div>
+            <a type="button" class="btn btn-danger" asp-controller="StatistiqueFamille" asp-action="Index">Voir les statistiques</a>
         </div>
     </div>
 
@@ -122,14 +131,14 @@
                         <tr class="bg-danger text-white">
                             <td>@pivot.Nom @pivot.Prenom</td>
                             <td>@pivot.CIN</td>
-                            <td>@(pivot.DateNaissance == null ? "" : pivot.DateNaissance.Value.Date.ToShortDateString())</td>
+                                <td>@(pivot.DateNaissance == null ? "" : pivot.DateNaissance.Value.Date.ToString("dd/MM/yyyy", nfi))</td>
                             <td>@pivot.Adresse</td>
                             <td>@pivot.GSM</td>
                             <td>@pivot.Secteur?.Nom</td>
                             <td class="table-action">
                                 <a href="javascript: void(0);" class="action-icon toggle-pivot-details" id="@pivot.PersonnePivotId"> <i class="fas fa-chevron-down dropdown-item-icon text-white"></i></a>
-                                <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-edit dropdown-item-icon text-white"></i></a>
-                                <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-trash dropdown-item-icon text-white"></i></a>
+                                <a asp-action="EditPivot" asp-route-id="@pivot.PersonnePivotId" class="action-icon"> <i class="fe fe-edit dropdown-item-icon text-white"></i></a>
+                                <a asp-action="DeletePivot" asp-route-id="@pivot.PersonnePivotId" class="action-icon"> <i class="fe fe-trash dropdown-item-icon text-white"></i></a>
                             </td>
                         </tr>
 
@@ -142,14 +151,14 @@
                                     <tr class="details-row-pivot-@(pivot.PersonnePivotId) bg-warning text-white border border-primary" style="display: none;">
                                         <td>@responsable.Nom @responsable.Prenom</td>
                                         <td>@responsable.CIN</td>
-                                        <td>@(responsable.DateNaissance == null ? "" : responsable.DateNaissance.Value.Date.ToShortDateString())</td>
+                                        <td>@(responsable.DateNaissance == null ? "" : responsable.DateNaissance.Value.Date.ToString("dd/MM/yyyy", nfi))</td>
                                         <td>@responsable.Adresse</td>
                                         <td>@responsable.GSM</td>
                                         <td>@responsable.Secteur?.Nom</td>
                                         <td class="table-action">
                                             <a href="javascript: void(0);" class="action-icon toggle-responsable-details" id="@responsable.PersonneResponsableId"> <i class="fas fa-chevron-down dropdown-item-icon text-white"></i></a>
-                                            <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-edit dropdown-item-icon text-white"></i></a>
-                                            <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-trash dropdown-item-icon text-white"></i></a>
+                                            <a asp-action="EditResponsable" asp-route-id="@responsable.PersonneResponsableId" class="action-icon"> <i class="fe fe-edit dropdown-item-icon text-white"></i></a>
+                                            <a asp-action="DeleteResponsable" asp-route-id="@responsable.PersonneResponsableId" class="action-icon"> <i class="fe fe-trash dropdown-item-icon text-white"></i></a>
 
                                         </td>
                                     </tr>
@@ -163,13 +172,13 @@
                                             <tr class="details-row-membre-@(responsable.PersonneResponsableId) bg-white border border-secondary" style="display: none;">
                                                 <td>@membre.Nom @membre.Prenom (@(membre.RelationParente?.Nom ?? ""))</td>
                                                 <td>@membre.CIN</td>
-                                                <td>@(membre.DateNaissance == null ? "" : membre.DateNaissance.Value.Date.ToShortDateString())</td>
+                                                <td>@(membre.DateNaissance == null ? "" : membre.DateNaissance.Value.Date.ToString("dd/MM/yyyy", nfi))</td>
                                                 <td>@membre.Adresse</td>
                                                 <td>@membre.GSM</td>
                                                 <td>@membre.Secteur?.Nom</td>
                                                 <td class="table-action">
-                                                    <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-edit dropdown-item-icon text-white"></i></a>
-                                                    <a href="javascript: void(0);" class="action-icon"> <i class="fe fe-trash dropdown-item-icon text-white"></i></a>
+                                                    <a asp-action="EditMembre" asp-route-id="@membre.PersonneMembreId" class="action-icon"> <i class="fe fe-edit dropdown-item-icon text-secondary"></i></a>
+                                                    <a asp-action="DeleteMember" asp-route-id="@membre.PersonneMembreId" class="action-icon"> <i class="fe fe-trash dropdown-item-icon text-secondary"></i></a>
                                                 </td>
                                             </tr>
 

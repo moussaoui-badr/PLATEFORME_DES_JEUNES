@@ -2,7 +2,7 @@
 @using System.Globalization
 @{
     ViewBag.Title = "Statistiques";
-    Layout = "_LayoutDashboard";
+    Layout = "_LayoutDashboard2";
     var nfi = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
     nfi.NumberGroupSeparator = " ";
 
@@ -154,24 +154,26 @@
                 </div>
 
 
+                <!--Total général-->
                 <div class="col-xl-6 col-lg-6 col-md-12 col-12">
                     <div class="card mb-4">
                         <div class="card-body">
                             <div class="d-flex align-items-center justify-content-between mb-3 lh-1">
                                 <div>
-                                    <span class="font-size-xs text-uppercase font-weight-semi-bold">Total famille</span>
+                                    <span class="font-size-xs text-uppercase font-weight-semi-bold">Total général</span>
                                 </div>
                                 <div>
                                     <a target="_blank" asp-controller="Famille" asp-action="Index"><span class="fe fe-book-open font-size-lg text-primary"></span></a>
                                 </div>
                             </div>
                             <h2 class="font-weight-bold mb-1">
-                                @Model.NombreMembre
+                                @Model.TotalGeneral
                             </h2>
-                            <span class="ml-1 font-weight-medium">Total famille</span>
+                            <span class="ml-1 font-weight-medium">Total général</span>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
 

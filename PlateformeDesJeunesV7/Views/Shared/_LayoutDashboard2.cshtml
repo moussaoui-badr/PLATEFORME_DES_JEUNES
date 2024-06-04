@@ -95,184 +95,28 @@
         <nav class="navbar-vertical navbar" style="background-color: #002F44!important;border-right: #03354c 1px solid;">
             <div class="nav-scroller" style="text-align:center;">
                 <!-- Brand logo -->
-                <a class="navbar-brand" asp-controller="Candidats" asp-action="Index" style="padding:0px!important;"><img style="width:80%!important;height:180px;margin-bottom:3px;" src="~/background/logo143.jpeg" alt="" /></a>
+                <a class="navbar-brand" style="padding:0px!important;"></a>
                 <!-- Navbar nav -->
                 <ul class="navbar-nav flex-column" id="sideNavbar">
-                    @if (User.IsInRole("Gestionnaire") || User.IsInRole("Admin") || User.IsInRole("HeureJoyeuse") || User.IsInRole("Amideast"))
-                    {
-                        <!-- Nav item -->
-                        <li class="nav-item active">
-                            <a class="nav-link active" href="#!" data-toggle="collapse" data-target="#navCourses1" aria-expanded="true"
-                            aria-controls="navCourses1">
-                                <i class="nav-icon fe fe-user mr-2"></i>Phase 1 :
-                            </a>
-                            <div id="navCourses1" class="collapse @(!User.IsInRole("Admin") ? "show" : "")" data-parent="#sideNavbar">
-                                <ul class="nav flex-column">
-                                    @if (User.IsInRole("Gestionnaire") || User.IsInRole("Admin"))
-                                    {
-                                        <li class="nav-item">
-                                            <a class="nav-link active" asp-controller="GestionCandidatPublic" asp-action="Index" style="color: white!important;">
-                                                <i class="nav-icon fe fe-user-plus mr-2" style="color: white!important;"></i>Validation
-                                            </a>
-                                        </li>
-                                    }
-                                    @if (User.IsInRole("Admin"))
-                                    {
-                                        <li class="nav-item">
-                                            <a class="nav-link active" asp-controller="Statistiques" asp-action="Index" style="color: white!important;">
-                                                <i class="nav-icon fe fe-trending-up mr-2" style="color: white!important;"></i>Statistiques
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link active" asp-controller="GestionUtilisateur" asp-action="index" style="color: white!important;">
-                                                <i class="nav-icon fe fe-users mr-2" style="color: white!important;"></i>Utilisateurs
-                                            </a>
-                                        </li>
-                                        @if (!User.IsInRole("Gestionnaire"))
-                                        {
-                                            <li class="nav-item">
-                                                <a class="nav-link active" asp-controller="GestionCandidatPublic" asp-action="Index" style="color: white!important;">
-                                                    <i class="nav-icon fe fe-user-plus mr-2" style="color: white!important;"></i>Validation
-                                                </a>
-                                            </li>
-                                        }
-                                    }
-                                    @if (User.IsInRole("Gestionnaire") || User.IsInRole("Admin") || User.IsInRole("HeureJoyeuse") || User.IsInRole("Amideast"))
-                                    {
-                                        <li class="nav-item">
-                                            <a class="nav-link active" asp-controller="Formations" asp-action="index" style="color: white!important;">
-                                                <i class="nav-icon fe fe-plus-square mr-2" style="color: white!important;"></i>Formations
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link active" asp-controller="Candidats" asp-action="Orientation" style="color: white!important;">
-                                                <i class="nav-icon fe fe-check-circle mr-2" style="color: white!important;"></i>Orientations
-                                            </a>
-                                        </li>
-                                    }
-
-
-                                </ul>
-                            </div>
-                        </li>
-
-                    }
-                    @if (User.IsInRole("Finance") || User.IsInRole("Admin"))
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#!" data-toggle="collapse" data-target="#navCourses2" aria-expanded="true"
-                               aria-controls="navCourses2">
-                                <i class="nav-icon fe fe-book mr-2"></i>Phase finance :
-                            </a>
-                            <div id="navCourses2" class="collapse " data-parent="#sideNavbar">
-                                <ul class="nav flex-column">
-
-                                    <li class="nav-item">
-                                        <a class="nav-link active" asp-controller="Finances" asp-action="Index" style="color: white!important;">
-                                            <i class="nav-icon fe fe-user-plus mr-2" style="color: white!important;"></i>Financement
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link active" asp-controller="Finances" asp-action="Filtre" style="color: white!important;">
-                                            <i class="nav-icon fe fe-user-plus mr-2" style="color: white!important;"></i>Détails
-                                        </a>
-                                    </li>
-                                    @if (User.IsInRole("Admin"))
-                                    {
-                                        <li class="nav-item">
-                                            <a class="nav-link active" asp-controller="Statistiques" asp-action="P2" style="color: white!important;">
-                                                <i class="nav-icon fe fe-trending-up mr-2" style="color: white!important;"></i>Statistique
-                                            </a>
-                                        </li>
-                                    }
-                                </ul>
-                            </div>
-                        </li>
-                    }
-
-                    @if (User.IsInRole("Comptable") || User.IsInRole("Admin"))
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#!" data-toggle="collapse" data-target="#navCourses3" aria-expanded="true"
-                               aria-controls="navCourses3">
-                                <i class="nav-icon fe fe-book mr-2"></i>Phase comptabilité :
-                            </a>
-@*                             <div id="navCourses3" class="collapse @(User.IsInRole("Admin") ? "show" : "")" data-parent="#sideNavbar">
- *@
-                            <div id="navCourses3" class="collapse" data-parent="#sideNavbar">
-
-                                <ul class="nav flex-column">
-                                    @if (User.IsInRole("Admin"))
-                                    {
-                                        <li class="nav-item">
-                                            <a class="nav-link active" asp-controller="Comptabilite" asp-action="Exercices" style="color: white!important;">
-                                                <i class="nav-icon fe fe-user-plus mr-2" style="color: white!important;"></i>Exercices
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link active" asp-controller="Comptabilite" asp-action="Chapitres" style="color: white!important;">
-                                                <i class="nav-icon fe fe-user-plus mr-2" style="color: white!important;"></i>Chapitres
-                                            </a>
-                                        </li>
-                                    }
-                                    <li class="nav-item">
-                                        <a class="nav-link active" asp-controller="Comptabilite" asp-action="Fonctionnements" style="color: white!important;">
-                                            <i class="nav-icon fe fe-user-plus mr-2" style="color: white!important;"></i>Fonctionnement
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link active" asp-controller="Comptabilite" asp-action="Financements" style="color: white!important;">
-                                            <i class="nav-icon fe fe-user-plus mr-2" style="color: white!important;"></i>Financement
-                                        </a>
-                                    </li>
-
-
-                                    @if (User.IsInRole("Admin"))
-                                    {
-                                        <li class="nav-item">
-                                            <a class="nav-link active" asp-controller="Comptabilite" asp-action="BudgetFonctionnement" style="color: white!important;">
-                                                <i class="nav-icon fe fe-trending-up mr-2" style="color: white!important;"></i>Budget fonctionnement
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link active" asp-controller="Comptabilite" asp-action="BudgetFinancement" style="color: white!important;">
-                                                <i class="nav-icon fe fe-trending-up mr-2" style="color: white!important;"></i>Budget financement
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link active" asp-controller="Statistiques" asp-action="P3" style="color: white!important;">
-                                                <i class="nav-icon fe fe-trending-up mr-2" style="color: white!important;"></i>Statistiques
-                                            </a>
-                                        </li>
-                                    }
-                                </ul>
-                            </div>
-                        </li>
-                    }
-                    <!--PHASE BLOG-->
-                    @if (User.IsInRole("GestionneurBlog"))
-                    {
+                    
                         <li class="nav-item">
                             <a class="nav-link active" href="#!" data-toggle="collapse" data-target="#navCourses4" aria-expanded="true"
                                aria-controls="navCourses4">
-                                <i class="nav-icon fe fe-book mr-2"></i>Gestion de blog :
+                                <i class="nav-icon fe fe-book mr-2"></i>Famille
                             </a>
-                            <div id="navCourses4" class="collapse @(User.IsInRole("GestionneurBlog") ? "show" : "")" data-parent="#sideNavbar">
+                            <div id="navCourses4" class="collapse @(User.IsInRole("Admin") ? "show" : "")" data-parent="#sideNavbar">
                                 <ul class="nav flex-column">
                                     <li class="nav-item">
-                                        <a class="nav-link active" asp-controller="GestionContenu" asp-action="Index" style="color: white!important;">
-                                            <i class="nav-icon fe fe-user-plus mr-2" style="color: white!important;"></i>Gestion de blog
+                                        <a class="nav-link active" asp-controller="Famille" asp-action="Index" style="color: white!important;">
+                                            <i class="nav-icon fe fe-user-plus mr-2" style="color: white!important;"></i>Famille
                                         </a>
                                     </li>
                                 </ul>
                             </div>
                         </li>
-                    }
                 </ul>
             </div>
-            @* <a class="navbar-brand" asp-controller="Candidats" asp-action="index" style="position: absolute;padding: 0px!important;bottom: 0px;width: 100%; display: flex;justify-content: center;">
-                <img style="width: 80%!important;height: 135px;margin-top: 20px;" src="~/background/newlogo.jpg" alt="" />
-            </a> *@
+           
         </nav>
         <!-- sidebar -->
         <!-- Page Content -->
@@ -288,10 +132,9 @@
                         </a>
                     </div>
                     <a id="nav-toggle" href="#!" class="ml-lg-3 "><i class="fe fe-menu"></i></a>
-                    <div class="ml-lg-3 d-none d-md-none d-lg-block" id="containerDiv">
+                   @*  <div class="ml-lg-3 d-none d-md-none d-lg-block" id="containerDiv">
                         <div id="backgroundDiv" style="top: 0; z-index: 1; position: absolute; height: 180px; width: 260px; background-color:white;"></div>
-                        <img id="logoImage" src="~/Uploads/imglogoplateforme.jfif" style="z-index: 2; position: absolute; height: 140px;" />
-                    </div>
+                    </div> *@
 
 
                     <ul class="navbar-nav navbar-right-wrap ml-auto  d-flex nav-top-wrap ">

@@ -7,6 +7,7 @@ using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Domain.Models.Election;
 using Domain.Entities.V2;
+using Repository.Data.Migrations;
 
 namespace Web.Controllers
 {
@@ -24,6 +25,72 @@ namespace Web.Controllers
 #nullable disable
         public async Task<IActionResult> Index(StatistiqueFamille model)
         {
+            try
+            {
+                var datenow = DateTime.Now.Date;
+                var startDate = new DateTime(datenow.Year, 5, 20);
+                var endDate = new DateTime(datenow.Year, 5, 25);
+
+                var anniversaireProche = await _context.PersonnePivot
+                    .Where(c => c.DateNaissance != null &&
+                                c.DateNaissance.Value.Month == 5 &&
+                                c.DateNaissance.Value.Day >= 20 &&
+                                c.DateNaissance.Value.Day <= 25)
+                    .Select(c => new PersonnePivot
+                    {
+                        Nom = c.Nom + " " + c.Prenom,
+                        DateNaissance = c.DateNaissance,
+                        GSM = c.GSM,
+                        Adresse = c.Adresse,
+                        Secteur = c.Secteur,
+                        DateCreation = c.DateCreation
+                    })
+                    .ToListAsync();
+
+                var anniversaireProcheResponsables = await _context.PersonneResponsable
+                    .Where(c => c.DateNaissance != null &&
+                                c.DateNaissance.Value.Month == 5 &&
+                                c.DateNaissance.Value.Day >= 20 &&
+                                c.DateNaissance.Value.Day <= 25)
+                    .Select(c => new PersonnePivot
+                    {
+                        Nom = c.Nom + " " + c.Prenom,
+                        DateNaissance = c.DateNaissance,
+                        GSM = c.GSM,
+                        Adresse = c.Adresse,
+                        Secteur = c.Secteur,
+                        DateCreation = c.DateCreation
+                    })
+                    .ToListAsync();
+
+                var anniversaireProcheMembres = await _context.PersonneMembre
+                    .Where(c => c.DateNaissance != null &&
+                                c.DateNaissance.Value.Month == 5 &&
+                                c.DateNaissance.Value.Day >= 20 &&
+                                c.DateNaissance.Value.Day <= 25)
+                    .Select(c => new PersonnePivot
+                    {
+                        Nom = c.Nom + " " + c.Prenom,
+                        DateNaissance = c.DateNaissance,
+                        GSM = c.GSM,
+                        Adresse = c.Adresse,
+                        Secteur = c.Secteur,
+                        DateCreation = c.DateCreation
+                    })
+                    .ToListAsync();
+
+                var allAnniversairesProche = anniversaireProche.Concat(anniversaireProcheResponsables)
+                                                              .Concat(anniversaireProcheMembres)
+                                                              .ToList();
+
+                ViewBag.AnniversaireProche = allAnniversairesProche;
+
+            }
+            catch (Exception ex)
+            {
+                
+            }
+
             var secteurs = await _context.Secteurs.ToListAsync();
             var pivots = await _context.PersonnePivot.ToListAsync();
 
@@ -45,19 +112,19 @@ namespace Web.Controllers
             //Récupération du pivot et de ses responsables et membres
             if (model.PivotId != null && model.PivotId != 0)
             {
-                membres = membres.Where(c => c.PersonnePivotId == model.PivotId);
+                membres = membres.Where(c => c.PersonnePivotId == model.PivotId || c.Responsables.Any(a => a.PivotId == model.PivotId) || c.Responsables.Any(b => b.Pivot.PersonnePivotId == model.PivotId));
             }
             if (model.SecteurId != null && model.SecteurId != 0)
             {
-                membres = membres.Where(c => c.SecteurId == model.SecteurId );
+                membres = membres.Where(c => c.SecteurId == model.SecteurId || c.Responsables.Any(a => a.SecteurId == model.SecteurId) || c.Responsables.Any(b => b.Pivot.SecteurId == model.SecteurId));
             }
             if (!string.IsNullOrEmpty(model.SearchNom))
             {
-                membres = membres.Where(c => c.Nom.Contains(model.SearchNom) || c.Prenom.Contains(model.SearchNom) );
+                membres = membres.Where(c => c.Nom.Contains(model.SearchNom) || c.Prenom.Contains(model.SearchNom) || c.Responsables.Any(a => a.Nom == model.SearchNom || a.Prenom == model.SearchNom) || c.Responsables.Any(b => b.Nom == model.SearchNom || b.Prenom == model.SearchNom));
             }
             if (!string.IsNullOrEmpty(model.SearchCIN))
             {
-                membres = membres.Where(c => c.CIN.Contains(model.SearchCIN));
+                membres = membres.Where(c => c.CIN.Contains(model.SearchCIN) || c.Responsables.Any(a => a.CIN == model.SearchCIN) || c.Responsables.Any(b => b.Pivot.CIN == model.SearchCIN));
             }
 
             var result = await membres.ToListAsync();
@@ -86,6 +153,13 @@ namespace Web.Controllers
         {
             try
             {
+                var CINExist = await _context.PersonnePivot.AnyAsync(c => c.CIN == personne.CIN) || await _context.PersonneResponsable.AnyAsync(c => c.CIN == personne.CIN) || await _context.PersonneMembre.AnyAsync(c => c.CIN == personne.CIN);
+                if(CINExist == true)
+                {
+                    ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom");
+                    ModelState.AddModelError("CIN", "Ce CIN existe déjà");
+                    return View(personne);
+                }
                 await _context.PersonnePivot.AddAsync(personne);
                 await _context.SaveChangesAsync();
 
@@ -112,6 +186,17 @@ namespace Web.Controllers
         {
             try
             {
+                var CINExist = await _context.PersonnePivot.AnyAsync(c => c.CIN == personne.CIN) || await _context.PersonneResponsable.AnyAsync(c => c.CIN == personne.CIN) || await _context.PersonneMembre.AnyAsync(c => c.CIN == personne.CIN);
+                if (CINExist == true)
+                {
+                    var pivots = await _context.PersonnePivot.ToListAsync();
+                    ViewBag.Pivot = pivots;
+                    ViewData["RelationParenteId"] = new SelectList(await _context.TypesRelationParente.ToListAsync(), "Id", "Nom");
+                    ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom");
+
+                    ModelState.AddModelError("CIN", "Ce CIN existe déjà");
+                    return View(personne);
+                }
                 await _context.AddAsync(personne);
                 await _context.SaveChangesAsync();
 
@@ -149,6 +234,30 @@ namespace Web.Controllers
         {
             try
             {
+                var CINExist = await _context.PersonnePivot.AnyAsync(c => c.CIN == personne.CIN) || await _context.PersonneResponsable.AnyAsync(c => c.CIN == personne.CIN) || await _context.PersonneMembre.AnyAsync(c => c.CIN == personne.CIN);
+                if (CINExist == true)
+                {
+                    var pivots = await _context.PersonnePivot.ToListAsync();
+                    var responsables = await _context.PersonneResponsable.Select(c => new PersonneResponsable
+                    {
+                        PersonneResponsableId = c.PersonneResponsableId,
+                        Nom = c.Nom + " " + c.Prenom,
+                        PivotId = c.PivotId
+                    }).ToListAsync();
+
+                    //Convertir en json responsables
+                    var json = Newtonsoft.Json.JsonConvert.SerializeObject(responsables);
+
+                    ViewBag.Responsable = json;
+                    ViewBag.Pivot = pivots;
+
+                    ViewData["RelationParenteId"] = new SelectList(await _context.TypesRelationParente.ToListAsync(), "Id", "Nom");
+                    ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom");
+
+
+                    ModelState.AddModelError("CIN", "Ce CIN existe déjà");
+                    return View(personne);
+                }
                 await _context.AddAsync(personne);
                 await _context.SaveChangesAsync();
 
@@ -184,21 +293,34 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPivot(int id, PersonnePivot personne)
         {
-            if (id != personne.PersonnePivotId)
+            try 
             {
-                return NotFound();
-            }
+                var CINExist = await _context.PersonnePivot.Where(c => c.PersonnePivotId != id && c.CIN == personne.CIN).CountAsync() > 1 || await _context.PersonneResponsable.AnyAsync(c => c.CIN == personne.CIN) || await _context.PersonneMembre.AnyAsync(c => c.CIN == personne.CIN);
+                if (CINExist == true)
+                {
+                    ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom");
+                    ModelState.AddModelError("CIN", "Ce CIN existe déjà");
+                    return View(personne);
+                }
+                var pivot = await _context.PersonnePivot.FindAsync(id);
+                pivot.Nom = personne.Nom;
+                pivot.Prenom = personne.Prenom;
+                pivot.CIN = personne.CIN;
+                pivot.DateNaissance = personne.DateNaissance;
+                pivot.GSM = personne.GSM;
+                pivot.Adresse = personne.Adresse;
+                pivot.SecteurId = personne.SecteurId;
 
-            if (ModelState.IsValid)
-            {
-                _context.Update(personne);
+                _context.Update(pivot);
                 await _context.SaveChangesAsync();
-                
+
                 return RedirectToAction(nameof(Index));
             }
-
-            ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom");
-            return View(personne);
+            catch(Exception ex)
+            {
+                ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom");
+                return View(personne);
+            }
         }
         //Edit Responsable
         public async Task<IActionResult> EditResponsable(int? id)
@@ -208,13 +330,24 @@ namespace Web.Controllers
                 return NotFound();
             }
 
+            var pivots = await _context.PersonnePivot.ToListAsync();
+            ViewBag.Pivot = pivots;
+            ViewData["RelationParenteId"] = new SelectList(await _context.TypesRelationParente.ToListAsync(), "Id", "Nom");
+            ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom");
+
+            var pivotsSelect = new SelectList(pivots?.Select(c => new Domain.Entities.V2.PersonnePivot
+            {
+                PersonnePivotId = c.PersonnePivotId,
+                Nom = c.Nom + " " + c.Prenom
+            }).ToList(), "PersonnePivotId", "Nom") ?? new SelectList(new List<Domain.Entities.V2.PersonnePivot>());
+            ViewBag.Pivot = pivotsSelect;
+
             var personne = await _context.PersonneResponsable.FindAsync(id);
             if (personne == null)
             {
                 return NotFound();
             }
 
-            ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom");
             return View(personne);
         }
 
@@ -223,25 +356,43 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditResponsable(int id, PersonneResponsable personne)
         {
-            if (id != personne.PersonneResponsableId)
+            var CINExist = await _context.PersonnePivot.AnyAsync(c => c.CIN == personne.CIN) || await _context.PersonneResponsable.Where(c => c.PersonneResponsableId != id && c.CIN == personne.CIN).CountAsync() > 1 || await _context.PersonneMembre.AnyAsync(c => c.CIN == personne.CIN);
+            if (CINExist == true)
             {
-                return NotFound();
+                var pivots = await _context.PersonnePivot.ToListAsync();
+                ViewBag.Pivot = pivots;
+                ViewData["RelationParenteId"] = new SelectList(await _context.TypesRelationParente.ToListAsync(), "Id", "Nom");
+                ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom");
+
+                var pivotsSelect = new SelectList(pivots?.Select(c => new Domain.Entities.V2.PersonnePivot
+                {
+                    PersonnePivotId = c.PersonnePivotId,
+                    Nom = c.Nom + " " + c.Prenom
+                }).ToList(), "PersonnePivotId", "Nom") ?? new SelectList(new List<Domain.Entities.V2.PersonnePivot>());
+                ViewBag.Pivot = pivotsSelect;
+
+                ModelState.AddModelError("CIN", "Ce CIN existe déjà");
+                return View(personne);
             }
 
-            if (ModelState.IsValid)
-            {
-                _context.Update(personne);
-                await _context.SaveChangesAsync();
-                
-                return RedirectToAction(nameof(Index));
-            }
+            var responsable = await _context.PersonneResponsable.FindAsync(id);
+            responsable.Nom = personne.Nom;
+            responsable.Prenom = personne.Prenom;
+            responsable.CIN = personne.CIN;
+            responsable.DateNaissance = personne.DateNaissance;
+            responsable.GSM = personne.GSM;
+            responsable.Adresse = personne.Adresse;
+            responsable.SecteurId = personne.SecteurId;
+            responsable.PivotId = personne.PivotId;
 
-            ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom");
-            return View(personne);
+            _context.Update(responsable);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
         //Edit Membre
-        public async Task<IActionResult> EditMember(int? id)
+        public async Task<IActionResult> EditMembre(int? id)
         {
             if (id == null)
             {
@@ -254,30 +405,90 @@ namespace Web.Controllers
                 return NotFound();
             }
 
+            var pivots = await _context.PersonnePivot.ToListAsync();
+            var responsables = await _context.PersonneResponsable.Select(c => new PersonneResponsable
+            {
+                PersonneResponsableId = c.PersonneResponsableId,
+                Nom = c.Nom + " " + c.Prenom,
+                PivotId = c.PivotId
+            }).ToListAsync();
+
+            //Convertir en json responsables
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(responsables);
+
+            ViewBag.Responsable = json;
+
+            ViewData["RelationParenteId"] = new SelectList(await _context.TypesRelationParente.ToListAsync(), "Id", "Nom");
             ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom");
+
+            var pivotsSelect = new SelectList(pivots?.Select(c => new Domain.Entities.V2.PersonnePivot
+            {
+                PersonnePivotId = c.PersonnePivotId,
+                Nom = c.Nom + " " + c.Prenom
+            }).ToList(), "PersonnePivotId", "Nom") ?? new SelectList(new List<Domain.Entities.V2.PersonnePivot>());
+
+            ViewBag.Pivot = pivotsSelect;
+
+            ViewBag.ResponsableSelect = new SelectList(responsables, "PersonneResponsableId", "Nom");
+
             return View(personne);
         }
 
         // POST: Personnes/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditMember(int id, PersonneMembre personne)
+        public async Task<IActionResult> EditMembre(int id, PersonneMembre personne)
         {
-            if (id != personne.PersonneMembreId)
+            var CINExist = await _context.PersonnePivot.AnyAsync(c => c.CIN == personne.CIN) || await _context.PersonneResponsable.AnyAsync(c => c.CIN == personne.CIN) || await _context.PersonneMembre.Where(c => c.PersonneMembreId != id && c.CIN == personne.CIN ).CountAsync() > 1;
+            if (CINExist == true)
             {
-                return NotFound();
+                var pivots = await _context.PersonnePivot.ToListAsync();
+                var responsables = await _context.PersonneResponsable.Select(c => new PersonneResponsable
+                {
+                    PersonneResponsableId = c.PersonneResponsableId,
+                    Nom = c.Nom + " " + c.Prenom,
+                    PivotId = c.PivotId
+                }).ToListAsync();
+
+                //Convertir en json responsables
+                var json = Newtonsoft.Json.JsonConvert.SerializeObject(responsables);
+
+                ViewBag.Responsable = json;
+
+                ViewData["RelationParenteId"] = new SelectList(await _context.TypesRelationParente.ToListAsync(), "Id", "Nom");
+                ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom");
+
+                var pivotsSelect = new SelectList(pivots?.Select(c => new Domain.Entities.V2.PersonnePivot
+                {
+                    PersonnePivotId = c.PersonnePivotId,
+                    Nom = c.Nom + " " + c.Prenom
+                }).ToList(), "PersonnePivotId", "Nom") ?? new SelectList(new List<Domain.Entities.V2.PersonnePivot>());
+
+                ViewBag.Pivot = pivotsSelect;
+
+                ViewBag.ResponsableSelect = new SelectList(responsables, "PersonneResponsableId", "Nom");
+
+                ModelState.AddModelError("CIN", "Ce CIN existe déjà");
+
+                return View(personne);
             }
 
-            if (ModelState.IsValid)
-            {
-                _context.Update(personne);
-                await _context.SaveChangesAsync();
+            var personneMembre = await _context.PersonneMembre.FindAsync(id);
+            personneMembre.Nom = personne.Nom;
+            personneMembre.Prenom = personne.Prenom;
+            personneMembre.CIN = personne.CIN;
+            personneMembre.DateNaissance = personne.DateNaissance;
+            personneMembre.GSM = personne.GSM;
+            personneMembre.Adresse = personne.Adresse;
+            personneMembre.SecteurId = personne.SecteurId;
+            personneMembre.PivotId = personne.PivotId;
+            personneMembre.ResponsableId = personne.ResponsableId;
+
+            //Update
+            _context.Update(personneMembre);
+            await _context.SaveChangesAsync();
                 
-                return RedirectToAction(nameof(Index));
-            }
-
-            ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom");
-            return View(personne);
+            return RedirectToAction(nameof(Index));
         }
 
         //Delete Membre
@@ -296,6 +507,48 @@ namespace Web.Controllers
             else
             {
                 _context.PersonneMembre.Remove(personne);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+        //Delete Responsable
+        public async Task<IActionResult> DeleteResponsable(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var personne = await _context.PersonneResponsable.FindAsync(id);
+            if (personne == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                _context.PersonneResponsable.Remove(personne);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+        //Delete Pivot
+        public async Task<IActionResult> DeletePivot(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var personne = await _context.PersonnePivot.FindAsync(id);
+            if (personne == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                _context.PersonnePivot.Remove(personne);
                 await _context.SaveChangesAsync();
             }
 

@@ -1,7 +1,7 @@
 ﻿@model Domain.Entities.V2.PersonnePivot
 
 @{
-    Layout = "_LayoutDashboard";
+    Layout = "_LayoutDashboard2";
     ViewData["Title"] = "Création d'un pivot";
 }
 
@@ -34,6 +34,7 @@
             <div class="col-lg-6 mb-2 col-md-6 col-12">
                     <label asp-for="CIN" class="control-label"></label>
                     <input asp-for="CIN" class="form-control" />
+
                     <span asp-validation-for="CIN" class="text-danger"></span>
                 </div>
             <div class="col-lg-6 mb-2 col-md-6 col-12">

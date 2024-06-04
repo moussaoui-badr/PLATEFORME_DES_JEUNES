@@ -21,6 +21,8 @@ namespace Domain.Models.Election
 
         public int TotalFamille { get; set; }
 
+        public int TotalGeneral { get; set; }
+
 
         public string? SearchNom { get; set; }
         public string? SearchCIN { get; set; }

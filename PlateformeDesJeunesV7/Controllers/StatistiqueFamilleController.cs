@@ -43,6 +43,8 @@ namespace Web.Controllers
                 model.NombreResponsable = await responsableParSecteurQuery.CountAsync();
                 model.NombreMembre = await membreParSecteurQuery.CountAsync();
 
+                model.TotalGeneral = model.NombrePivot + model.NombreResponsable + model.NombreMembre;
+
                 var secteurs = await _context.Secteurs.ToListAsync();
                 var pivots = await _context.PersonnePivot.ToListAsync();
 
