@@ -67,7 +67,7 @@
             
             <div class="col-lg-6 mb-2 col-md-6 col-12">
                 <label asp-for="PivotId" class="control-label">Pivot</label>
-                <select asp-for="PivotId" class="selectpicker" data-width="100%" data-live-search="true" asp-items="@(new SelectList(pivots, "PersonnePivotId", "Nom"))">
+                <select required asp-for="PivotId" class="selectpicker" data-width="100%" data-live-search="true" asp-items="@(new SelectList(pivots, "PersonnePivotId", "Nom"))">
                     <option value="" selected>--Pivot--</option>
                 </select>
                 <span asp-validation-for="PivotId" class="text-danger"></span>

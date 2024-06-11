@@ -197,7 +197,11 @@ namespace Web.Controllers
                     ModelState.AddModelError("CIN", "Ce CIN existe déjà");
                     return View(personne);
                 }
-
+                if (personne.PivotId == null || personne.PivotId == 0)
+                {
+                    ModelState.AddModelError("PivotId", "Veuiller selectionner un pivot"); 
+                    return View(personne);
+                }
                 await _context.AddAsync(personne);
                 await _context.SaveChangesAsync();
 
@@ -259,6 +263,13 @@ namespace Web.Controllers
                     ModelState.AddModelError("CIN", "Ce CIN existe déjà");
                     return View(personne);
                 }
+
+                if (personne.ResponsableId == null || personne.ResponsableId == 0)
+                {
+                    ModelState.AddModelError("ResponsableId", "Veuiller selectionner un responsable");
+                    return View(personne);
+                }
+
                 await _context.AddAsync(personne);
                 await _context.SaveChangesAsync();
 

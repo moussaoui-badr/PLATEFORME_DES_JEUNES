@@ -82,7 +82,7 @@
             </div>
             <div class="col-lg-6 mb-2 col-md-6 col-12">
                 <label asp-for="ResponsableId" class="control-label">Responsable famille</label>
-                <select id="responsable" asp-for="ResponsableId" class="selectpicker" data-width="100%" data-live-search="true">
+            <select required id="responsable" asp-for="ResponsableId" class="selectpicker" data-width="100%" data-live-search="true">
                     <option value="" selected>--Responsable famille--</option>
                 </select>
                 <span asp-validation-for="ResponsableId" class="text-danger"></span>
