@@ -1,6 +1,7 @@
 ﻿using KhalfiElection.Models.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,7 +24,7 @@ namespace Domain.Entities.V2
 
         public int? RelationParenteId { get; set; }
         public TypeRelationParente? RelationParente { get; set; }
-
+        [Required(ErrorMessage = "Le responsable est obligatoire.")]
         public int? ResponsableId { get; set; }
         public PersonneResponsable? Responsable { get; set; }
 

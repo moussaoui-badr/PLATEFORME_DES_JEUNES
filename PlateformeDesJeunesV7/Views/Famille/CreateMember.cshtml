@@ -76,7 +76,7 @@
             <!--PIVOT-->
             <div class="col-lg-6 mb-2 col-md-6 col-12">
                 <label class="control-label">Pivot</label>
-            <select id="pivot" asp-for="PivotId" class="selectpicker" data-width="100%" data-live-search="true" asp-items="@(new SelectList(pivots, "PersonnePivotId", "Nom"))">
+                <select id="pivot" asp-for="PivotId" class="selectpicker" data-width="100%" data-live-search="true" asp-items="@(new SelectList(pivots, "PersonnePivotId", "Nom"))">
                     <option value="" selected>--Pivot--</option>
                 </select>
             </div>

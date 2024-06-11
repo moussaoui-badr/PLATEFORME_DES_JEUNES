@@ -197,6 +197,7 @@ namespace Web.Controllers
                     ModelState.AddModelError("CIN", "Ce CIN existe déjà");
                     return View(personne);
                 }
+
                 await _context.AddAsync(personne);
                 await _context.SaveChangesAsync();
 

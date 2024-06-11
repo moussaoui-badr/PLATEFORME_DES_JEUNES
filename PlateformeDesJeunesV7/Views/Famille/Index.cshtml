@@ -140,12 +140,13 @@
                                 <a asp-action="EditPivot" asp-route-id="@pivot.PersonnePivotId" class="action-icon"> <i class="fe fe-edit dropdown-item-icon text-white"></i></a>
                                 <a asp-action="DeletePivot" asp-route-id="@pivot.PersonnePivotId" class="action-icon"> <i class="fe fe-trash dropdown-item-icon text-white"></i></a>
                             </td>
-                        </tr>
+                            </tr>
 
                             var responsables = pivot.Responsables;
 
                             if(responsables != null && responsables.Any())
                             {
+                                if (Model.SecteurId != null && Model.SecteurId != 0) responsables = responsables.Where(c => c.SecteurId == Model.SecteurId).ToList();
                                 foreach (var responsable in responsables)
                                 {
                                     <tr class="details-row-pivot-@(pivot.PersonnePivotId) bg-warning text-white border border-primary" style="display: none;">

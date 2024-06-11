@@ -1,6 +1,7 @@
 ﻿using KhalfiElection.Models.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,7 @@ namespace Domain.Entities.V2
         public int? SecteurId { get; set; }
         public Secteur? Secteur { get; set; }
 
+        [Required(ErrorMessage = "Le pivot est obligatoire.")]
         public int? PivotId { get; set; }
         public PersonnePivot? Pivot { get; set; }
 
