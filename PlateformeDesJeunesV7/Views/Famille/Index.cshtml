@@ -251,7 +251,8 @@
             url += '?secteurId=' + encodeURIComponent(secteur) +
                 '&pivotId=' + encodeURIComponent(pivot) +
                 '&SearchNom=' + encodeURIComponent(nom) +
-                '&SearchCIN=' + encodeURIComponent(cin);
+                '&SearchCIN=' + encodeURIComponent(cin)+
+                '&TotalGeneral=1';
             window.location.href = url; // Redirect to the constructed URL
         });
 

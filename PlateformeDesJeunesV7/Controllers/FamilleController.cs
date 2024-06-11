@@ -97,7 +97,7 @@ namespace Web.Controllers
             ViewBag.Pivot = pivots;
             ViewBag.Secteur = secteurs;
 
-            if (model.SecteurId == null && model.PivotId == null && string.IsNullOrEmpty(model.SearchNom) && string.IsNullOrEmpty(model.SearchCIN))
+            if (model.SecteurId == null && model.PivotId == null && string.IsNullOrEmpty(model.SearchNom) && string.IsNullOrEmpty(model.SearchCIN) && (model?.TotalGeneral == null || model?.TotalGeneral == 0))
             {
                 return View(model);
             }
