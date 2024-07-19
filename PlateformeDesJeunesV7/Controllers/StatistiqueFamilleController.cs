@@ -21,9 +21,9 @@ namespace Web.Controllers
         {
             try
             {
-                var pivotParSecteurQuery = _context.PersonnePivot.AsQueryable();
-                var responsableParSecteurQuery = _context.PersonneResponsable.AsQueryable();
-                var membreParSecteurQuery = _context.PersonneMembre.AsQueryable();
+                var pivotParSecteurQuery = _context.PersonnePivot.Include(c => c.Responsables).AsQueryable();
+                var responsableParSecteurQuery = _context.PersonneResponsable.Include(c => c.Pivot).Include(c => c.Membres).AsQueryable();
+                var membreParSecteurQuery = _context.PersonneMembre.Include(c => c.Responsable).ThenInclude(c => c.Pivot).AsQueryable();
 
                 if (model?.SecteurId != null)
                 {
@@ -39,17 +39,34 @@ namespace Web.Controllers
                     membreParSecteurQuery = membreParSecteurQuery.Where(p => p.PivotId == model.PivotId);
                 }
 
-                model.NombrePivot = await pivotParSecteurQuery.CountAsync();
-                model.NombreResponsable = await responsableParSecteurQuery.CountAsync();
+                if (model?.ResponsableId != null)
+                {
+                    responsableParSecteurQuery = responsableParSecteurQuery.Where(p => p.PersonneResponsableId == model.ResponsableId);
+                    membreParSecteurQuery = membreParSecteurQuery.Where(p => p.ResponsableId == model.ResponsableId);
+                }
+
+                if (model?.MembreId != null)
+                {
+                    membreParSecteurQuery = membreParSecteurQuery.Where(p => p.PersonneMembreId == model.MembreId);
+                }
+
+                model.NombrePivot = model?.MembreId != null ? await membreParSecteurQuery.Select(c => c.Responsable).Select(c => c.Pivot).CountAsync() : model.ResponsableId != null ? await responsableParSecteurQuery.Select(c => c.Pivot).CountAsync()  : await pivotParSecteurQuery.CountAsync();
+                model.NombreResponsable = model?.MembreId != null ? await membreParSecteurQuery.Select(c => c.Responsable).CountAsync() : await responsableParSecteurQuery.CountAsync();
                 model.NombreMembre = await membreParSecteurQuery.CountAsync();
 
                 model.TotalGeneral = model.NombrePivot + model.NombreResponsable + model.NombreMembre;
 
                 var secteurs = await _context.Secteurs.ToListAsync();
+
                 var pivots = await _context.PersonnePivot.ToListAsync();
+                var responsables = await _context.PersonneResponsable.ToListAsync();
+                var membres = await _context.PersonneMembre.ToListAsync();
+
+                ViewBag.Secteur = secteurs;
 
                 ViewBag.Pivot = pivots;
-                ViewBag.Secteur = secteurs;
+                ViewBag.Responsable = responsables;
+                ViewBag.Membre = membres;
 
                 return View(model);
             }

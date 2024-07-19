@@ -8,9 +8,14 @@ using Microsoft.EntityFrameworkCore;
 using Domain.Models.Election;
 using Domain.Entities.V2;
 using Repository.Data.Migrations;
+using Microsoft.AspNetCore.Authorization;
+using OfficeOpenXml.Style;
+using OfficeOpenXml;
+using System.Drawing;
 
 namespace Web.Controllers
 {
+    [Authorize(Roles = "GestionnaireFamille")]
     public class FamilleController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -239,30 +244,30 @@ namespace Web.Controllers
         {
             try
             {
-                var CINExist = await _context.PersonnePivot.AnyAsync(c => c.CIN == personne.CIN) || await _context.PersonneResponsable.AnyAsync(c => c.CIN == personne.CIN) || await _context.PersonneMembre.AnyAsync(c => c.CIN == personne.CIN);
-                if (CINExist == true)
-                {
-                    var pivots = await _context.PersonnePivot.ToListAsync();
-                    var responsables = await _context.PersonneResponsable.Select(c => new PersonneResponsable
-                    {
-                        PersonneResponsableId = c.PersonneResponsableId,
-                        Nom = c.Nom + " " + c.Prenom,
-                        PivotId = c.PivotId
-                    }).ToListAsync();
+                //var CINExist = await _context.PersonnePivot.AnyAsync(c => c.CIN == personne.CIN) || await _context.PersonneResponsable.AnyAsync(c => c.CIN == personne.CIN) || await _context.PersonneMembre.AnyAsync(c => c.CIN == personne.CIN);
+                //if (CINExist == true)
+                //{
+                //    var pivots = await _context.PersonnePivot.ToListAsync();
+                //    var responsables = await _context.PersonneResponsable.Select(c => new PersonneResponsable
+                //    {
+                //        PersonneResponsableId = c.PersonneResponsableId,
+                //        Nom = c.Nom + " " + c.Prenom,
+                //        PivotId = c.PivotId
+                //    }).ToListAsync();
 
-                    //Convertir en json responsables
-                    var json = Newtonsoft.Json.JsonConvert.SerializeObject(responsables);
+                //    //Convertir en json responsables
+                //    var json = Newtonsoft.Json.JsonConvert.SerializeObject(responsables);
 
-                    ViewBag.Responsable = json;
-                    ViewBag.Pivot = pivots;
+                //    ViewBag.Responsable = json;
+                //    ViewBag.Pivot = pivots;
 
-                    ViewData["RelationParenteId"] = new SelectList(await _context.TypesRelationParente.ToListAsync(), "Id", "Nom");
-                    ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom");
+                //    ViewData["RelationParenteId"] = new SelectList(await _context.TypesRelationParente.ToListAsync(), "Id", "Nom");
+                //    ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom");
 
 
-                    ModelState.AddModelError("CIN", "Ce CIN existe déjà");
-                    return View(personne);
-                }
+                //    ModelState.AddModelError("CIN", "Ce CIN existe déjà");
+                //    return View(personne);
+                //}
 
                 if (personne.ResponsableId == null || personne.ResponsableId == 0)
                 {
@@ -566,6 +571,125 @@ namespace Web.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-        
+
+
+        public async Task<IActionResult> GeneratePivotExcel()
+        {
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "ExcelCandidats", "MaListe.xlsx");
+
+            // Remplacer cette ligne par la méthode appropriée pour obtenir vos pivots
+            var pivots = await _context.PersonnePivot.Include(p => p.Responsables)
+                                                     .ThenInclude(r => r.Membres)
+                                                     .ToListAsync();
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using var package = new ExcelPackage(new FileInfo(path));
+            ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Pivots");
+
+            // Ajouter les en-têtes
+            worksheet.Cells[1, 1].Value = "Nom";
+            worksheet.Cells[1, 2].Value = "Prénom";
+            worksheet.Cells[1, 3].Value = "CIN";
+            worksheet.Cells[1, 4].Value = "Date de naissance";
+            worksheet.Cells[1, 5].Value = "Adresse";
+            worksheet.Cells[1, 6].Value = "GSM";
+            worksheet.Cells[1, 7].Value = "Date de création";
+            worksheet.Cells[1, 8].Value = "Secteur";
+
+            int rowIndex = 2;
+            foreach (var pivot in pivots)
+            {
+                // Ajouter les informations du pivot
+                worksheet.Cells[rowIndex, 1].Value = pivot.Nom;
+                worksheet.Cells[rowIndex, 2].Value = pivot.Prenom;
+                worksheet.Cells[rowIndex, 3].Value = pivot.CIN;
+                worksheet.Cells[rowIndex, 4].Value = pivot.DateNaissance?.ToString("yyyy-MM-dd");
+                worksheet.Cells[rowIndex, 5].Value = pivot.Adresse;
+                worksheet.Cells[rowIndex, 6].Value = pivot.GSM;
+                worksheet.Cells[rowIndex, 7].Value = pivot.DateCreation.ToString("yyyy-MM-dd");
+                worksheet.Cells[rowIndex, 8].Value = pivot.Secteur?.Nom; // Suppose que Secteur a une propriété Nom
+
+                // Appliquer le style rouge aux lignes des pivots
+                using (var range = worksheet.Cells[rowIndex, 1, rowIndex, 8])
+                {
+                    range.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    range.Style.Fill.BackgroundColor.SetColor(Color.Red);
+                }
+
+                rowIndex++;
+
+                // Ajouter les responsables pour ce pivot
+                if (pivot.Responsables != null)
+                {
+                    foreach (var responsable in pivot.Responsables)
+                    {
+                        // Ajouter les informations du responsable
+                        worksheet.Cells[rowIndex, 1].Value = responsable.Nom;
+                        worksheet.Cells[rowIndex, 2].Value = responsable.Prenom;
+                        worksheet.Cells[rowIndex, 3].Value = responsable.CIN;
+                        worksheet.Cells[rowIndex, 4].Value = responsable.DateNaissance?.ToString("yyyy-MM-dd");
+                        worksheet.Cells[rowIndex, 5].Value = responsable.Adresse;
+                        worksheet.Cells[rowIndex, 6].Value = responsable.GSM;
+                        worksheet.Cells[rowIndex, 7].Value = responsable.DateCreation.ToString("yyyy-MM-dd");
+                        worksheet.Cells[rowIndex, 8].Value = responsable.Secteur?.Nom;
+
+                        // Appliquer le style jaune aux lignes des responsables
+                        using (var range = worksheet.Cells[rowIndex, 1, rowIndex, 8])
+                        {
+                            range.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                            range.Style.Fill.BackgroundColor.SetColor(Color.Yellow);
+                        }
+
+                        rowIndex++;
+
+                        // Ajouter les membres pour ce responsable
+                        if (responsable.Membres != null)
+                        {
+                            foreach (var membre in responsable.Membres)
+                            {
+                                // Ajouter les informations du membre
+                                worksheet.Cells[rowIndex, 1].Value = membre.Nom;
+                                worksheet.Cells[rowIndex, 2].Value = membre.Prenom;
+                                worksheet.Cells[rowIndex, 3].Value = membre.CIN;
+                                worksheet.Cells[rowIndex, 4].Value = membre.DateNaissance?.ToString("yyyy-MM-dd");
+                                worksheet.Cells[rowIndex, 5].Value = membre.Adresse;
+                                worksheet.Cells[rowIndex, 6].Value = membre.GSM;
+                                worksheet.Cells[rowIndex, 7].Value = membre.DateCreation.ToString("yyyy-MM-dd");
+                                worksheet.Cells[rowIndex, 8].Value = membre.Secteur?.Nom;
+
+                                // Appliquer le style blanc aux lignes des membres
+                                using (var range = worksheet.Cells[rowIndex, 1, rowIndex, 8])
+                                {
+                                    range.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                    range.Style.Fill.BackgroundColor.SetColor(Color.White);
+                                }
+
+                                rowIndex++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Mise en forme des en-têtes
+            using (var range = worksheet.Cells[1, 1, 1, 8])
+            {
+                range.Style.Font.Bold = true;
+                range.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                range.Style.Fill.BackgroundColor.SetColor(Color.DarkBlue);
+                range.Style.Font.Color.SetColor(Color.White);
+                range.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                range.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+            }
+
+            // Ajuster automatiquement la largeur des colonnes
+            worksheet.Cells.AutoFitColumns();
+
+            // Sauvegarder le fichier Excel
+            string excelName = $"ListePivots.xlsx";
+            return File(package.GetAsByteArray(), "application/octet-stream", excelName);
+        }
+
     }
 }

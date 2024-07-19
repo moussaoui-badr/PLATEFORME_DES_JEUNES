@@ -53,9 +53,15 @@ namespace PlateformeDesJeunesAinSebaa.Controllers
                         return View();
                     }
 
+                    var roles = userAuth.Message.Split(',');
+
                     if (User.IsInRole("GestionneurBlog"))
                     {
                         return RedirectToAction("Index", "GestionContenu");
+                    }
+                    if (roles.Contains("GestionnaireFamille"))
+                    {
+                        return RedirectToAction("Index", "Famille");
                     }
                     return RedirectToAction("Index", "Candidats");
                 }
@@ -101,13 +107,13 @@ namespace PlateformeDesJeunesAinSebaa.Controllers
                         ViewData["ClientKey"] = _captchaSettings.ClientKey;
                         return View();
                     }
-                    var user2 = await _userManager.FindByIdAsync(userAuth.Message2);
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(
-                       user2);
-                    string codeHtmlVersion = HttpUtility.UrlEncode(code);
+                    //var user2 = await _userManager.FindByIdAsync(userAuth.Message2);
+                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(
+                    //   user2);
+                    //string codeHtmlVersion = HttpUtility.UrlEncode(code);
 
-                    var link = Url.Action(nameof(VerifyEmail), "Authentication", new { userId = userAuth.Message2, code = codeHtmlVersion }, Request.Scheme, Request.Host.ToString());
-                    await _emailService.SendEmailAsyncConfirmEmail(user.Email, "Confirmation email", link);
+                    //var link = Url.Action(nameof(VerifyEmail), "Authentication", new { userId = userAuth.Message2, code = codeHtmlVersion }, Request.Scheme, Request.Host.ToString());
+                    //await _emailService.SendEmailAsyncConfirmEmail(user.Email, "Confirmation email", link);
                     return RedirectToAction("EmailConfirmation", "Authentication");
                 }
                 ViewData["ClientKey"] = _captchaSettings.ClientKey;

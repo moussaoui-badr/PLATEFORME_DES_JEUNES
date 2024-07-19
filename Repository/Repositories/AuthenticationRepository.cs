@@ -31,7 +31,11 @@ namespace Repository.Repositories
                 var result = await _signInManager.PasswordSignInAsync(loginModel.UserName, loginModel.Password, false, lockoutOnFailure: true);
 
                 if (result.Succeeded)
-                    return new Response { Success = true, Message = "" };
+                {
+                    var roles = await _userManager.GetRolesAsync(user);
+                    return new Response { Success = true, Message = string.Join(",", roles) };
+                }
+                    
                 else
                 {
                     if (!user.EmailConfirmed) return new Response { Success = false, Message = "Veuiller confirmer votre email" };
@@ -78,6 +82,7 @@ namespace Repository.Repositories
             {
                 UserName = registerModel.UserName,
                 Email = registerModel.Email,
+                EmailConfirmed = true,
             };
             try
             {

@@ -15,6 +15,10 @@ namespace Domain.Models.Election
         public string PivotName { get; set; }
         public int? PivotId { get; set; }
 
+        public int? ResponsableId { get; set; }
+
+        public int? MembreId { get; set; }
+
         public int NombrePivot { get; set; }
         public int NombreResponsable { get; set; }
         public int NombreMembre { get; set; }

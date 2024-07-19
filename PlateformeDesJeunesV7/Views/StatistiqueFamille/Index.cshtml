@@ -12,6 +12,20 @@
                 PersonnePivotId = c.PersonnePivotId,
                 Nom = c.Nom + " " + c.Prenom
             }).ToList() ?? new List<Domain.Entities.V2.PersonnePivot>();
+
+    var responsables = ViewBag.Responsable as List<Domain.Entities.V2.PersonneResponsable>;
+    responsables = responsables?.Select(c => new Domain.Entities.V2.PersonneResponsable
+            {
+                PersonneResponsableId = c.PersonneResponsableId,
+                Nom = c.Nom + " " + c.Prenom
+            }).ToList() ?? new List<Domain.Entities.V2.PersonneResponsable>();
+
+    var membres = ViewBag.Membre as List<Domain.Entities.V2.PersonneMembre>;
+    membres = membres?.Select(c => new Domain.Entities.V2.PersonneMembre
+            {
+                PersonneMembreId = c.PersonneMembreId,
+                Nom = c.Nom + " " + c.Prenom
+            }).ToList() ?? new List<Domain.Entities.V2.PersonneMembre>();
 }
 <style>
     div.separator {
@@ -75,6 +89,50 @@
                                     else
                                     {
                                         <option value="@item.PersonnePivotId" selected>@item.Nom</option>
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6 col-12 mb-2">
+                    <div class="mb-3">
+                        <select class="selectpicker" data-live-search="true" id="responsableselect" name="ResponsableId" data-width="100%">
+                            <option value="" selected>--- Responsable ---</option>
+                            @if (responsables != null)
+                            {
+                                foreach (var item in responsables)
+                                {
+                                    if (Model.ResponsableId.GetValueOrDefault() != item.PersonneResponsableId)
+                                    {
+                                        <option value="@item.PersonneResponsableId">@item.Nom</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@item.PersonneResponsableId" selected>@item.Nom</option>
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6 col-12 mb-2">
+                    <div class="mb-3">
+                        <select class="selectpicker" data-live-search="true" id="membreselect" name="MembreId" data-width="100%">
+                            <option value="" selected>--- Membre ---</option>
+                            @if (membres != null)
+                            {
+                                foreach (var item in membres)
+                                {
+                                    if (Model.MembreId.GetValueOrDefault() != item.PersonneMembreId)
+                                    {
+                                        <option value="@item.PersonneMembreId">@item.Nom</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@item.PersonneMembreId" selected>@item.Nom</option>
                                     }
                                 }
                             }
