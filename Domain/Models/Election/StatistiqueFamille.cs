@@ -31,5 +31,7 @@ namespace Domain.Models.Election
         public string? SearchNom { get; set; }
         public string? SearchCIN { get; set; }
         public List<PersonnePivot>? PersonnePivot { get; set; }
+
+        public string? Extend { get; set; }
     }
 }

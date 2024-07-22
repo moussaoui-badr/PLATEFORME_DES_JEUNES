@@ -1,7 +1,10 @@
 ﻿@model Domain.Models.Election.StatistiqueFamille
+@using System.Globalization
 @{
     Layout = "_LayoutDashboard2";
-    ViewData["Title"] = "Home Page";
+
+    var nfi = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
+    nfi.NumberGroupSeparator = " ";
 
     var pivots = ViewBag.Pivot as List<Domain.Entities.V2.PersonnePivot>;
     pivots = pivots?.Select(c => new Domain.Entities.V2.PersonnePivot
@@ -15,11 +18,7 @@
     var indexMembres = 0;
 
 }
-@using System.Globalization
-@{
-    var nfi = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
-    nfi.NumberGroupSeparator = " ";
-}
+
 <div class="container-fluid">
 
 <div class="card mb-4 mt-3">
@@ -125,25 +124,30 @@
                         <th style="line-height:1.3" class="font-weight-bold text-uppercase">Adresse</th>
                         <th style="line-height:1.3" class="font-weight-bold text-uppercase">GSM</th>
                         <th style="line-height:1.3" class="font-weight-bold text-uppercase">Secteur</th>
+                        <th style="line-height:1.3" class="font-weight-bold text-uppercase">Associé</th>
                         <th style="line-height:1.3" class="font-weight-bold text-uppercase">Action</th>
                 </tr>
             </thead>
             <tbody>
                     @foreach (var pivot in Model.PersonnePivot ?? new List<Domain.Entities.V2.PersonnePivot>())
                     {
-                        <tr class="bg-danger text-white">
-                            <td>@pivot.Nom @pivot.Prenom</td>
-                            <td>@pivot.CIN</td>
-                                <td>@(pivot.DateNaissance == null ? "" : pivot.DateNaissance.Value.Date.ToString("dd/MM/yyyy", nfi))</td>
-                            <td>@pivot.Adresse</td>
-                            <td>@pivot.GSM</td>
-                            <td>@pivot.Secteur?.Nom</td>
-                            <td class="table-action">
-                                <a href="javascript: void(0);" class="action-icon toggle-pivot-details" id="@pivot.PersonnePivotId"> <i class="fas fa-chevron-down dropdown-item-icon text-white"></i></a>
-                                <a asp-action="EditPivot" asp-route-id="@pivot.PersonnePivotId" class="action-icon"> <i class="fe fe-edit dropdown-item-icon text-white"></i></a>
-                                <a asp-action="DeletePivot" asp-route-id="@pivot.PersonnePivotId" class="action-icon"> <i class="fe fe-trash dropdown-item-icon text-white"></i></a>
-                            </td>
+                            var FiltreByPivot = (Model.PivotId != null && Model.PivotId != 0 && pivot.PersonnePivotId == Model.PivotId);
+
+                            <tr class="bg-danger text-white">
+                                <td @(FiltreByPivot == true ? "style=text-decoration:underline;" : "")>@pivot.Nom @pivot.Prenom</td>
+                                <td @(FiltreByPivot == true ? "style=text-decoration:underline;" : "")>@pivot.CIN</td>
+                                <td @(FiltreByPivot == true ? "style=text-decoration:underline;" : "")>@(pivot.DateNaissance == null ? "" : pivot.DateNaissance.Value.Date.ToString("dd/MM/yyyy", nfi))</td>
+                                <td @(FiltreByPivot == true ? "style=text-decoration:underline;" : "")>@pivot.Adresse</td>
+                                <td @(FiltreByPivot == true ? "style=text-decoration:underline;" : "")>@pivot.GSM</td>
+                                <td @(FiltreByPivot == true ? "style=text-decoration:underline;" : "")>@pivot.Secteur?.Nom</td>
+                                <td @(FiltreByPivot == true ? "style=text-decoration:underline;" : "")>@(pivot.Responsables != null ? pivot.Responsables.Count() : 0)</td>
+                                    <td class="table-action">
+                                        <a href="javascript: void(0);" class="action-icon toggle-pivot-details" id="@pivot.PersonnePivotId"> <i class="fas fa-chevron-down dropdown-item-icon text-white"></i></a>
+                                        <a asp-action="EditPivot" asp-route-id="@pivot.PersonnePivotId" class="action-icon"> <i class="fe fe-edit dropdown-item-icon text-white"></i></a>
+                                        <a asp-action="DeletePivot" asp-route-id="@pivot.PersonnePivotId" class="action-icon"> <i class="fe fe-trash dropdown-item-icon text-white"></i></a>
+                                    </td>
                             </tr>
+
 
                             var responsables = pivot.Responsables;
 
@@ -152,13 +156,15 @@
                                 if (Model.SecteurId != null && Model.SecteurId != 0) responsables = responsables.Where(c => c.SecteurId == Model.SecteurId).ToList();
                                 foreach (var responsable in responsables)
                                 {
-                                    <tr class="details-row-pivot-@(pivot.PersonnePivotId) bg-warning text-white border border-primary" style="display: none;">
-                                        <td>@responsable.Nom @responsable.Prenom</td>
-                                        <td>@responsable.CIN</td>
-                                        <td>@(responsable.DateNaissance == null ? "" : responsable.DateNaissance.Value.Date.ToString("dd/MM/yyyy", nfi))</td>
-                                        <td>@responsable.Adresse</td>
-                                        <td>@responsable.GSM</td>
-                                        <td>@responsable.Secteur?.Nom</td>
+                                    var FiltreByResponsable = (Model.ResponsableId != null && Model.ResponsableId != 0 && responsable.PersonneResponsableId == Model.ResponsableId) || (responsable.Membres.Any(c => c.PersonneMembreId == Model.MembreId));
+                                    <tr @(FiltreByResponsable == true || FiltreByPivot == true ? "style=display:table-row;" : "style=display:none;") class="details-row-pivot-@(pivot.PersonnePivotId) bg-warning text-white border border-primary">
+                                        <td @(FiltreByResponsable == true ? "style=text-decoration:underline;" : "")>@responsable.Nom @responsable.Prenom</td>
+                                        <td @(FiltreByResponsable == true ? "style=text-decoration:underline;" : "")>@responsable.CIN</td>
+                                        <td @(FiltreByResponsable == true ? "style=text-decoration:underline;" : "")>@(responsable.DateNaissance == null ? "" : responsable.DateNaissance.Value.Date.ToString("dd/MM/yyyy", nfi))</td>
+                                        <td @(FiltreByResponsable == true ? "style=text-decoration:underline;" : "")>@responsable.Adresse</td>
+                                        <td @(FiltreByResponsable == true ? "style=text-decoration:underline;" : "")>@responsable.GSM</td>
+                                        <td @(FiltreByResponsable == true ? "style=text-decoration:underline;" : "")>@responsable.Secteur?.Nom</td>
+                                        <td @(FiltreByResponsable == true ? "style=text-decoration:underline;" : "")>@(responsable.Membres != null ? responsable.Membres.Count() : 0)</td>
                                         <td class="table-action">
                                             <a href="javascript: void(0);" class="action-icon toggle-responsable-details" id="@responsable.PersonneResponsableId"> <i class="fas fa-chevron-down dropdown-item-icon text-white"></i></a>
                                             <a asp-action="EditResponsable" asp-route-id="@responsable.PersonneResponsableId" class="action-icon"> <i class="fe fe-edit dropdown-item-icon text-white"></i></a>
@@ -173,13 +179,14 @@
                                     {
                                         foreach (var membre in membres)
                                         {
-                                            <tr class="details-row-membre-@(responsable.PersonneResponsableId) bg-white border border-secondary" style="display: none;">
-                                                <td>@membre.Nom @membre.Prenom (@(membre.RelationParente?.Nom ?? ""))</td>
-                                                <td>@membre.CIN</td>
-                                                <td>@(membre.DateNaissance == null ? "" : membre.DateNaissance.Value.Date.ToString("dd/MM/yyyy", nfi))</td>
-                                                <td>@membre.Adresse</td>
-                                                <td>@membre.GSM</td>
-                                                <td>@membre.Secteur?.Nom</td>
+                                            var FiltreByMembre = (Model.MembreId != null && Model.MembreId != 0 && membre.PersonneMembreId == Model.MembreId);
+                                            <tr @(FiltreByMembre == true || FiltreByResponsable == true ? "style=display:table-row;" : "style=display:none;") class="details-row-membre-@(responsable.PersonneResponsableId) bg-white border border-secondary">
+                                                <td @(FiltreByMembre == true ? "style=text-decoration:underline;" : "")>@membre.Nom @membre.Prenom (@(membre.RelationParente?.Nom ?? ""))</td>
+                                                <td @(FiltreByMembre == true ? "style=text-decoration:underline;" : "")>@membre.CIN</td>
+                                                <td @(FiltreByMembre == true ? "style=text-decoration:underline;" : "")>@(membre.DateNaissance == null ? "" : membre.DateNaissance.Value.Date.ToString("dd/MM/yyyy", nfi))</td>
+                                                <td @(FiltreByMembre == true ? "style=text-decoration:underline;" : "")>@membre.Adresse</td>
+                                                <td @(FiltreByMembre == true ? "style=text-decoration:underline;" : "")>@membre.GSM</td>
+                                                <td @(FiltreByMembre == true ? "style=text-decoration:underline;" : "")>@membre.Secteur?.Nom</td>
                                                 <td class="table-action">
                                                     <a asp-action="EditMembre" asp-route-id="@membre.PersonneMembreId" class="action-icon"> <i class="fe fe-edit dropdown-item-icon text-secondary"></i></a>
                                                     <a asp-action="DeleteMember" asp-route-id="@membre.PersonneMembreId" class="action-icon"> <i class="fe fe-trash dropdown-item-icon text-secondary"></i></a>

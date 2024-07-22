@@ -15,7 +15,7 @@ using System.Drawing;
 
 namespace Web.Controllers
 {
-    [Authorize(Roles = "GestionnaireFamille")]
+    [Authorize(Roles = "Admin, GestionnaireFamille")]
     public class FamilleController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -102,7 +102,7 @@ namespace Web.Controllers
             ViewBag.Pivot = pivots;
             ViewBag.Secteur = secteurs;
 
-            if (model.SecteurId == null && model.PivotId == null && string.IsNullOrEmpty(model.SearchNom) && string.IsNullOrEmpty(model.SearchCIN) && (model?.TotalGeneral == null || model?.TotalGeneral == 0))
+            if (model.SecteurId == null && model.PivotId == null && model.ResponsableId == null && model.MembreId == null && string.IsNullOrEmpty(model.SearchNom) && string.IsNullOrEmpty(model.SearchCIN) && (model?.TotalGeneral == null || model?.TotalGeneral == 0))
             {
                 return View(model);
             }
@@ -118,6 +118,14 @@ namespace Web.Controllers
             if (model.PivotId != null && model.PivotId != 0)
             {
                 membres = membres.Where(c => c.PersonnePivotId == model.PivotId || c.Responsables.Any(a => a.PivotId == model.PivotId) || c.Responsables.Any(b => b.Pivot.PersonnePivotId == model.PivotId));
+            }
+            if(model.ResponsableId != null && model.ResponsableId != 0)
+            {
+                membres = membres.Where(c => c.Responsables.Any(r => r.PersonneResponsableId == model.ResponsableId));
+            }
+            if (model.MembreId != null && model.MembreId != 0)
+            {
+                membres = membres.Where(c => c.Responsables.Any(m => m.Membres.Any(m => m.PersonneMembreId == model.MembreId)));
             }
             if (model.SecteurId != null && model.SecteurId != 0)
             {
@@ -456,39 +464,39 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditMembre(int id, PersonneMembre personne)
         {
-            var CINExist = await _context.PersonnePivot.AnyAsync(c => c.CIN == personne.CIN) || await _context.PersonneResponsable.AnyAsync(c => c.CIN == personne.CIN) || await _context.PersonneMembre.Where(c => c.PersonneMembreId != id && c.CIN == personne.CIN ).CountAsync() > 1;
-            if (CINExist == true)
-            {
-                var pivots = await _context.PersonnePivot.ToListAsync();
-                var responsables = await _context.PersonneResponsable.Select(c => new PersonneResponsable
-                {
-                    PersonneResponsableId = c.PersonneResponsableId,
-                    Nom = c.Nom + " " + c.Prenom,
-                    PivotId = c.PivotId
-                }).ToListAsync();
+            //var CINExist = await _context.PersonnePivot.AnyAsync(c => c.CIN == personne.CIN) || await _context.PersonneResponsable.AnyAsync(c => c.CIN == personne.CIN) || await _context.PersonneMembre.Where(c => c.PersonneMembreId != id && c.CIN == personne.CIN ).CountAsync() > 1;
+            //if (CINExist == true)
+            //{
+            //    var pivots = await _context.PersonnePivot.ToListAsync();
+            //    var responsables = await _context.PersonneResponsable.Select(c => new PersonneResponsable
+            //    {
+            //        PersonneResponsableId = c.PersonneResponsableId,
+            //        Nom = c.Nom + " " + c.Prenom,
+            //        PivotId = c.PivotId
+            //    }).ToListAsync();
 
-                //Convertir en json responsables
-                var json = Newtonsoft.Json.JsonConvert.SerializeObject(responsables);
+            //    //Convertir en json responsables
+            //    var json = Newtonsoft.Json.JsonConvert.SerializeObject(responsables);
 
-                ViewBag.Responsable = json;
+            //    ViewBag.Responsable = json;
 
-                ViewData["RelationParenteId"] = new SelectList(await _context.TypesRelationParente.ToListAsync(), "Id", "Nom");
-                ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom");
+            //    ViewData["RelationParenteId"] = new SelectList(await _context.TypesRelationParente.ToListAsync(), "Id", "Nom");
+            //    ViewData["SecteurId"] = new SelectList(await _context.Secteurs.ToListAsync(), "Id", "Nom");
 
-                var pivotsSelect = new SelectList(pivots?.Select(c => new Domain.Entities.V2.PersonnePivot
-                {
-                    PersonnePivotId = c.PersonnePivotId,
-                    Nom = c.Nom + " " + c.Prenom
-                }).ToList(), "PersonnePivotId", "Nom") ?? new SelectList(new List<Domain.Entities.V2.PersonnePivot>());
+            //    var pivotsSelect = new SelectList(pivots?.Select(c => new Domain.Entities.V2.PersonnePivot
+            //    {
+            //        PersonnePivotId = c.PersonnePivotId,
+            //        Nom = c.Nom + " " + c.Prenom
+            //    }).ToList(), "PersonnePivotId", "Nom") ?? new SelectList(new List<Domain.Entities.V2.PersonnePivot>());
 
-                ViewBag.Pivot = pivotsSelect;
+            //    ViewBag.Pivot = pivotsSelect;
 
-                ViewBag.ResponsableSelect = new SelectList(responsables, "PersonneResponsableId", "Nom");
+            //    ViewBag.ResponsableSelect = new SelectList(responsables, "PersonneResponsableId", "Nom");
 
-                ModelState.AddModelError("CIN", "Ce CIN existe déjà");
+            //    ModelState.AddModelError("CIN", "Ce CIN existe déjà");
 
-                return View(personne);
-            }
+            //    return View(personne);
+            //}
 
             var personneMembre = await _context.PersonneMembre.FindAsync(id);
             personneMembre.Nom = personne.Nom;
@@ -578,9 +586,16 @@ namespace Web.Controllers
             var path = Path.Combine(Directory.GetCurrentDirectory(), "ExcelCandidats", "MaListe.xlsx");
 
             // Remplacer cette ligne par la méthode appropriée pour obtenir vos pivots
-            var pivots = await _context.PersonnePivot.Include(p => p.Responsables)
-                                                     .ThenInclude(r => r.Membres)
-                                                     .ToListAsync();
+            var pivots = await _context.PersonnePivot
+                .Include(c => c.Secteur)
+                .Include(p => p.Responsables)
+                .ThenInclude(c => c.Secteur)
+                .Include(p => p.Responsables)
+                .ThenInclude(c => c.Secteur)
+                .Include(p => p.Responsables)
+                .ThenInclude(r => r.Membres)
+
+                .ToListAsync();
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
