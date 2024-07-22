@@ -33,14 +33,14 @@ namespace Web.Controllers
             try
             {
                 var datenow = DateTime.Now.Date;
-                var startDate = new DateTime(datenow.Year, 5, 20);
-                var endDate = new DateTime(datenow.Year, 5, 25);
+                var nextMonth = datenow.AddMonths(1);
+                var startDay = datenow.Day;
+                var endDay = datenow.Day;
 
                 var anniversaireProche = await _context.PersonnePivot
                     .Where(c => c.DateNaissance != null &&
-                                c.DateNaissance.Value.Month == 5 &&
-                                c.DateNaissance.Value.Day >= 20 &&
-                                c.DateNaissance.Value.Day <= 25)
+                                ((c.DateNaissance.Value.Month == nextMonth.Month && c.DateNaissance.Value.Day >= startDay) ||
+                                 (c.DateNaissance.Value.Month == nextMonth.AddMonths(1).Month && c.DateNaissance.Value.Day <= endDay)))
                     .Select(c => new PersonnePivot
                     {
                         Nom = c.Nom + " " + c.Prenom,
@@ -54,9 +54,8 @@ namespace Web.Controllers
 
                 var anniversaireProcheResponsables = await _context.PersonneResponsable
                     .Where(c => c.DateNaissance != null &&
-                                c.DateNaissance.Value.Month == 5 &&
-                                c.DateNaissance.Value.Day >= 20 &&
-                                c.DateNaissance.Value.Day <= 25)
+                                ((c.DateNaissance.Value.Month == nextMonth.Month && c.DateNaissance.Value.Day >= startDay) ||
+                                 (c.DateNaissance.Value.Month == nextMonth.AddMonths(1).Month && c.DateNaissance.Value.Day <= endDay)))
                     .Select(c => new PersonnePivot
                     {
                         Nom = c.Nom + " " + c.Prenom,
@@ -70,9 +69,8 @@ namespace Web.Controllers
 
                 var anniversaireProcheMembres = await _context.PersonneMembre
                     .Where(c => c.DateNaissance != null &&
-                                c.DateNaissance.Value.Month == 5 &&
-                                c.DateNaissance.Value.Day >= 20 &&
-                                c.DateNaissance.Value.Day <= 25)
+                                ((c.DateNaissance.Value.Month == nextMonth.Month && c.DateNaissance.Value.Day >= startDay) ||
+                                 (c.DateNaissance.Value.Month == nextMonth.AddMonths(1).Month && c.DateNaissance.Value.Day <= endDay)))
                     .Select(c => new PersonnePivot
                     {
                         Nom = c.Nom + " " + c.Prenom,
@@ -89,6 +87,7 @@ namespace Web.Controllers
                                                               .ToList();
 
                 ViewBag.AnniversaireProche = allAnniversairesProche;
+
 
             }
             catch (Exception ex)

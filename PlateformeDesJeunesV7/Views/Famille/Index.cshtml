@@ -158,13 +158,13 @@
                                 {
                                     var FiltreByResponsable = (Model.ResponsableId != null && Model.ResponsableId != 0 && responsable.PersonneResponsableId == Model.ResponsableId) || (responsable.Membres.Any(c => c.PersonneMembreId == Model.MembreId));
                                     <tr @(FiltreByResponsable == true || FiltreByPivot == true ? "style=display:table-row;" : "style=display:none;") class="details-row-pivot-@(pivot.PersonnePivotId) bg-warning text-white border border-primary">
-                                        <td @(FiltreByResponsable == true ? "style=text-decoration:underline;" : "")>@responsable.Nom @responsable.Prenom</td>
-                                        <td @(FiltreByResponsable == true ? "style=text-decoration:underline;" : "")>@responsable.CIN</td>
-                                        <td @(FiltreByResponsable == true ? "style=text-decoration:underline;" : "")>@(responsable.DateNaissance == null ? "" : responsable.DateNaissance.Value.Date.ToString("dd/MM/yyyy", nfi))</td>
-                                        <td @(FiltreByResponsable == true ? "style=text-decoration:underline;" : "")>@responsable.Adresse</td>
-                                        <td @(FiltreByResponsable == true ? "style=text-decoration:underline;" : "")>@responsable.GSM</td>
-                                        <td @(FiltreByResponsable == true ? "style=text-decoration:underline;" : "")>@responsable.Secteur?.Nom</td>
-                                        <td @(FiltreByResponsable == true ? "style=text-decoration:underline;" : "")>@(responsable.Membres != null ? responsable.Membres.Count() : 0)</td>
+                                        <td @(FiltreByResponsable == true ? "style=text-decoration:underline;color:red;" : "")>@responsable.Nom @responsable.Prenom</td>
+                                        <td @(FiltreByResponsable == true ? "style=text-decoration:underline;color:red;" : "")>@responsable.CIN</td>
+                                        <td @(FiltreByResponsable == true ? "style=text-decoration:underline;color:red;" : "")>@(responsable.DateNaissance == null ? "" : responsable.DateNaissance.Value.Date.ToString("dd/MM/yyyy", nfi))</td>
+                                        <td @(FiltreByResponsable == true ? "style=text-decoration:underline;color:red;" : "")>@responsable.Adresse</td>
+                                        <td @(FiltreByResponsable == true ? "style=text-decoration:underline;color:red;" : "")>@responsable.GSM</td>
+                                        <td @(FiltreByResponsable == true ? "style=text-decoration:underline;color:red;" : "")>@responsable.Secteur?.Nom</td>
+                                        <td @(FiltreByResponsable == true ? "style=text-decoration:underline;color:red;" : "")>@(responsable.Membres != null ? responsable.Membres.Count() : 0)</td>
                                         <td class="table-action">
                                             <a href="javascript: void(0);" class="action-icon toggle-responsable-details" id="@responsable.PersonneResponsableId"> <i class="fas fa-chevron-down dropdown-item-icon text-white"></i></a>
                                             <a asp-action="EditResponsable" asp-route-id="@responsable.PersonneResponsableId" class="action-icon"> <i class="fe fe-edit dropdown-item-icon text-white"></i></a>
@@ -181,12 +181,12 @@
                                         {
                                             var FiltreByMembre = (Model.MembreId != null && Model.MembreId != 0 && membre.PersonneMembreId == Model.MembreId);
                                             <tr @(FiltreByMembre == true || FiltreByResponsable == true ? "style=display:table-row;" : "style=display:none;") class="details-row-membre-@(responsable.PersonneResponsableId) bg-white border border-secondary">
-                                                <td @(FiltreByMembre == true ? "style=text-decoration:underline;" : "")>@membre.Nom @membre.Prenom (@(membre.RelationParente?.Nom ?? ""))</td>
-                                                <td @(FiltreByMembre == true ? "style=text-decoration:underline;" : "")>@membre.CIN</td>
-                                                <td @(FiltreByMembre == true ? "style=text-decoration:underline;" : "")>@(membre.DateNaissance == null ? "" : membre.DateNaissance.Value.Date.ToString("dd/MM/yyyy", nfi))</td>
-                                                <td @(FiltreByMembre == true ? "style=text-decoration:underline;" : "")>@membre.Adresse</td>
-                                                <td @(FiltreByMembre == true ? "style=text-decoration:underline;" : "")>@membre.GSM</td>
-                                                <td @(FiltreByMembre == true ? "style=text-decoration:underline;" : "")>@membre.Secteur?.Nom</td>
+                                                <td @(FiltreByMembre == true ? "style=text-decoration:underline;color:red;" : "")>@membre.Nom @membre.Prenom (@(membre.RelationParente?.Nom ?? ""))</td>
+                                                <td @(FiltreByMembre == true ? "style=text-decoration:underline;color:red;" : "")>@membre.CIN</td>
+                                                <td @(FiltreByMembre == true ? "style=text-decoration:underline;color:red;" : "")>@(membre.DateNaissance == null ? "" : membre.DateNaissance.Value.Date.ToString("dd/MM/yyyy", nfi))</td>
+                                                <td @(FiltreByMembre == true ? "style=text-decoration:underline;color:red;" : "")>@membre.Adresse</td>
+                                                <td @(FiltreByMembre == true ? "style=text-decoration:underline;color:red;" : "")>@membre.GSM</td>
+                                                <td @(FiltreByMembre == true ? "style=text-decoration:underline;color:red;" : "")>@membre.Secteur?.Nom</td>
                                                 <td class="table-action">
                                                     <a asp-action="EditMembre" asp-route-id="@membre.PersonneMembreId" class="action-icon"> <i class="fe fe-edit dropdown-item-icon text-secondary"></i></a>
                                                     <a asp-action="DeleteMember" asp-route-id="@membre.PersonneMembreId" class="action-icon"> <i class="fe fe-trash dropdown-item-icon text-secondary"></i></a>
@@ -209,10 +209,42 @@
 
 @section Scripts {
     <script>
+        var firstExecution = 0;
+        function resetAllDetails() {
+            // Réinitialiser tous les détails des pivots
+            document.querySelectorAll('[class^="details-row-pivot-"]').forEach(detailsRow => {
+                detailsRow.style.display = 'none';
+            });
+
+            // Réinitialiser tous les détails des responsables
+            document.querySelectorAll('[class^="details-row-membre-"]').forEach(detailsRow => {
+                detailsRow.style.display = 'none';
+            });
+
+            // Réinitialiser les icônes des pivots
+            document.querySelectorAll('.toggle-pivot-details i').forEach(icon => {
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            });
+
+            // Réinitialiser les icônes des responsables
+            document.querySelectorAll('.toggle-responsable-details i').forEach(icon => {
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            });
+
+            firstExecution = 1;
+        }
+
         document.querySelectorAll('.toggle-pivot-details').forEach(icon => {
             icon.addEventListener('click', function () {
+                if (firstExecution === 0) {
+                    resetAllDetails();
+                }
+                
                 let pivotId = this.id; // Récupérer l'ID du pivot à partir de l'élément toggle
                 let detailsRows = document.querySelectorAll('.details-row-pivot-' + pivotId);
+
                 detailsRows.forEach(detailsRow => {
                     detailsRow.style.display = detailsRow.style.display === 'none' ? 'table-row' : 'none';
                 });
@@ -224,8 +256,12 @@
 
         document.querySelectorAll('.toggle-responsable-details').forEach(icon => {
             icon.addEventListener('click', function () {
+                if (firstExecution === 0) {
+                    resetAllDetails();
+                }
                 let responsableId = this.id; // Récupérer l'ID du responsable à partir de l'élément toggle
                 let detailsRows = document.querySelectorAll('.details-row-membre-' + responsableId);
+
                 detailsRows.forEach(detailsRow => {
                     detailsRow.style.display = detailsRow.style.display === 'none' ? 'table-row' : 'none';
                 });
@@ -234,6 +270,7 @@
                 this.querySelector('i').classList.toggle('fa-chevron-down');
             });
         });
+
 
         // document.querySelectorAll('.toggle-membre-details').forEach(icon => {
         //     icon.addEventListener('click', function () {

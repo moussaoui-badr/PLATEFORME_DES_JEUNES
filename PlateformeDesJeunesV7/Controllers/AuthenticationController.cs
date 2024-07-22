@@ -59,7 +59,7 @@ namespace PlateformeDesJeunesAinSebaa.Controllers
                     {
                         return RedirectToAction("Index", "GestionContenu");
                     }
-                    if (roles.Contains("GestionnaireFamille") && roles.Contains("Admin"))
+                    if (roles.Contains("GestionnaireFamille") && !roles.Contains("Admin"))
                     {
                         return RedirectToAction("Index", "Famille");
                     }
